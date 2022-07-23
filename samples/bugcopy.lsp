@@ -1,0 +1,6 @@
+(setq b1 (make-box 10 15 20))
+(use-objects b1)
+(set-position b1 (translate 0 30 0))
+(setq b2 (copy-object b1))
+(use-objects b2)
+;(set-object b2 :color '(255 0 0))

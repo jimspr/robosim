@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>mapcar</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="mapcar">
+</OBJECT>
+
+<P><A NAME="id_mapcar"></A><B>(mapcar <I>fn</I> {<I>lists</I>}+)</B></P>
+
+<P>The function <I>fn</I> is called first with the first element of each list, then the second element, and so on until the <I>lists</I> are exhausted. The return value is a list formed from the results of the successive function calls.</P>
+<PRE><CODE>(mapcar #'+ '(1 2 3 4) '(100 200 300 400)) =&gt;
+    (101 202 303 404)
+(mapcar #'cons '(1 2 3 4) '(100 200 300 400)) =&gt;
+    ((1 . 100) (2 . 200) (3 . 300) (4 . 400))</CODE></PRE>
+
+</BODY>
+</HTML>

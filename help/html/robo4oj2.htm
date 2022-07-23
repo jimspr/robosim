@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>defun</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="defun">
+</OBJECT>
+
+<P><A NAME="id_defun"></A><B>(defun <I>name lambda-list </I>{<I>form</I>}*)</B></P>
+
+<P>Defines a function called <I>name</I>. For example,</P>
+<PRE><CODE>(defun distance (x y)
+        (sqrt (+ (* x x) (* y y)))
+)</CODE></PRE>
+<P>This defines a function called distance that takes two parameters and returns the distance to the origin. A function can be declared with no parameters:</P>
+<PRE><CODE>(defun add1tox nil
+        (setq x (+ x 1))
+)</CODE></PRE>
+<P>This function adds one to the global variable x and return the value.</P>
+
+</BODY>
+</HTML>

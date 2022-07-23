@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>if</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="if">
+</OBJECT>
+
+<P><A NAME="id_if"></A><B>(if <I>test then </I>[<I>else</I>])</B></P>
+
+<P>If the result of evaluating the <I>test</I> form is not <A HREF="robo4euk.htm">nil</A>, the <I>then</I> form is evaluated and its value returned. Otherwise, the <I>else</I> form is evaluated and its value returned. If the <I>else</I> form is omitted, then <A HREF="robo4euk.htm">nil</A> is returned.</P>
+<PRE><CODE>(setq x 1) =&gt; 1
+(if (= x 1) (+ x 1) (- x 1)) =&gt; 2
+(setq x 5) =&gt; 5
+(if (= x 1) (+ x 1) (- x 1)) =&gt; 4</CODE></PRE>
+
+</BODY>
+</HTML>

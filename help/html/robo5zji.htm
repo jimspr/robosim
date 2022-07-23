@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>function</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="function">
+</OBJECT>
+
+<P><A NAME="id_function"></A><B>(function <I>fn</I>)</B></P>
+
+<P>If <I>fn</I> is a symbol then the function associated with that symbol is returned. If <I>fn</I> is a lambda expression the lexical closure of the lambda expression is returned.</P>
+<PRE><CODE>(setq stepfunc (function -)) =&gt; #&lt;subr:xxxxxxxx&gt;
+(apply stepfunc '(4)) =&gt; -4</CODE></PRE>
+
+</BODY>
+</HTML>

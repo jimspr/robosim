@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>tref</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="tref">
+</OBJECT>
+
+<P><A NAME="id_tref"></A><B>(tref <I>transform</I> <I>row</I> <I>col</I>)</B></P>
+
+<P>Returns the specified element of a transformation matrix. The row and column indexes are zero based. Valid values for row and col are 0 - 3. A transformation is in the following form.</P>
+
+<TABLE border=1 cols=4 frame=box rules=all width=384>
+
+<TR VALIGN="top">
+<TD width=25%>
+<PRE><CODE>Nx</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Sx</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Ax</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Px</CODE></PRE>
+</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>
+<PRE><CODE>Ny</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Sy</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Ay</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Py</CODE></PRE>
+</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>
+<PRE><CODE>Nz</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Sz</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Az</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>Pz</CODE></PRE>
+</TD>
+</TR>
+
+<TR VALIGN="top">
+<TD width=25%>
+<PRE><CODE>0</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>0</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>0</CODE></PRE>
+</TD>
+<TD width=25%>
+<PRE><CODE>1</CODE></PRE>
+</TD>
+</TR>
+</TABLE><BR>
+
+<PRE><CODE>(aref (scale 2 3 4) 1 1) =&gt; 3    ;Sy element
+(aref (scale 2 3 4) 1 2) =&gt; 0    ;Ay element</CODE></PRE>
+
+</BODY>
+</HTML>

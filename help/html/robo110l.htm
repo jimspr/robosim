@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>make-primitive</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="make-primitive">
+</OBJECT>
+
+<P><A NAME="id_make_primitive"></A><B>(make-primitive {<I>polygon</I>}*)</B></P>
+
+<P>Creates a set of polygons using the given polygons. A polygon is a list of points. The last point of a polygon must be the same as the first point. There must be at least three points in a polygon. All points should lie in the same plane. The syntax for a point is <B>#(x y z [nx ny nz])</B>, where x, y, and z are the coordinates of a point and nx, ny, and nz are the normal for that point. The normal is optional and is only used for smooth (Gouraud) shading.</P>
+<PRE><CODE>(make-polygon
+    '(
+        #(0 0 0)
+        #(0 10 0)
+        #(10 10 0)
+        #(10 0 0)
+        #(0 0 0)
+    )
+)</CODE></PRE>
+
+</BODY>
+</HTML>

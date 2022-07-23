@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>eval</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="eval">
+</OBJECT>
+
+<P><A NAME="id_eval"></A><B>(eval <I>form</I>)</B></P>
+
+<P>The <I>form</I> is evaluated in a null lexical environment. (i.e. no lexical bindings are visible)</P>
+<PRE><CODE>(setq x 10) =&gt; 10
+(prog
+    (
+        (x 0)
+    )
+    (eval (+ x 5))
+) =&gt;    15
+(setq a 'b) =&gt; b
+(setq b 3) =&gt; 3
+a =&gt; b
+b =&gt; 3
+(eval a) =&gt; 3</CODE></PRE>
+
+</BODY>
+</HTML>

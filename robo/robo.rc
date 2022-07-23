@@ -1,0 +1,515 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#include ""robo.rc2""  // non-App Studio edited resources\r\n"
+    "\r\n"
+    "#include ""afxres.rc""  // Standard components\r\n"
+    "#include ""afxprint.rc""  // printing/print preview resources\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "WROBO.ICO"
+
+IDR_ROBOTYPE            ICON                    "ROBODOC.ICO"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+END
+
+IDR_ROBOTYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New Window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
+        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About ROBO...",              ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+ACCEL ACCELERATORS
+BEGIN
+    VK_F1,          IDM_ABOUT,              VIRTKEY 
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_VIEWMDIALOG DIALOGEX 16, 31, 301, 70
+STYLE DS_SETFONT | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Set View"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Look From (Spherical)",-1,2,0,80,50,WS_GROUP
+    LTEXT           "Elevation",-1,5,12,38,8
+    LTEXT           "Rotation",-1,5,25,38,8
+    LTEXT           "Distance",-1,5,38,36,8
+    EDITTEXT        IDE_ELEV,47,10,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDE_ROT,47,23,25,12,ES_AUTOHSCROLL
+    EDITTEXT        IDE_DIST,47,36,25,12,ES_AUTOHSCROLL
+    GROUPBOX        "Look From",-1,82,0,56,50,WS_GROUP
+    LTEXT           "X",-1,91,12,8,8
+    EDITTEXT        IDE_FX,103,10,25,12,ES_AUTOHSCROLL
+    LTEXT           "Y",-1,91,25,8,8
+    EDITTEXT        IDE_FY,103,23,25,12,ES_AUTOHSCROLL
+    LTEXT           "Z",-1,91,38,8,8
+    EDITTEXT        IDE_FZ,103,36,25,12,ES_AUTOHSCROLL
+    GROUPBOX        "Look At",-1,138,0,56,50,WS_GROUP
+    LTEXT           "X",-1,147,12,8,8
+    EDITTEXT        IDE_TX,159,10,25,12,ES_AUTOHSCROLL
+    LTEXT           "Y",-1,147,25,8,8
+    EDITTEXT        IDE_TY,159,23,25,12,ES_AUTOHSCROLL
+    LTEXT           "Z",-1,147,38,8,8
+    EDITTEXT        IDE_TZ,159,36,25,12,ES_AUTOHSCROLL
+    GROUPBOX        "Camera",-1,193,0,91,50,WS_GROUP
+    LTEXT           "Near Plane",-1,205,12,39,8
+    EDITTEXT        IDE_FOCAL,249,10,25,12,ES_AUTOHSCROLL
+    LTEXT           "Far Plane",-1,210,25,31,8
+    EDITTEXT        IDE_TWIST,249,23,25,12,ES_AUTOHSCROLL
+    LTEXT           "Zoom %",-1,215,38,26,8
+    EDITTEXT        IDE_ZOOM,249,36,25,12,ES_AUTOHSCROLL
+    CTEXT           "Ready",IDT_MSG,5,57,278,8
+    CONTROL         ":-)",IDB_FX,"SpinButton",0x0,128,10,6,12
+    CONTROL         ":-)",IDB_FY,"SpinButton",0x0,128,23,6,12
+    CONTROL         ":-)",IDB_FZ,"SpinButton",0x0,128,36,6,12
+    CONTROL         ":-)",IDB_TX,"SpinButton",0x0,184,10,6,12
+    CONTROL         ":-)",IDB_TY,"SpinButton",0x0,184,23,6,12
+    CONTROL         ":-)",IDB_TZ,"SpinButton",0x0,184,36,6,12
+    CONTROL         ":-)",IDB_FOCAL,"SpinButton",0x0,274,10,6,12
+    CONTROL         ":-)",IDB_TWIST,"SpinButton",0x0,274,23,6,12
+    CONTROL         ":-)",IDB_ZOOM,"SpinButton",0x0,274,36,6,12
+    CONTROL         ":-)",IDB_ELEV,"SpinButton",0x0,72,10,6,12
+    CONTROL         ":-)",IDB_ROT,"SpinButton",0x0,72,23,6,12
+    CONTROL         ":-)",IDB_DIST,"SpinButton",0x0,72,36,6,12
+END
+
+IDD_PRINT DIALOG 56, 61, 128, 66
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Print"
+FONT 8, "MS Sans Serif"
+BEGIN
+    RTEXT           "Printing",IDD_LINESDIALOG,2,6,44,8,NOT WS_GROUP
+    LTEXT           "",IDD_PRINTTITLE,51,6,78,8,NOT WS_GROUP
+    RTEXT           "on the",IDE_LINES,4,15,43,8,NOT WS_GROUP
+    LTEXT           "",IDD_PRINTDEVICE,51,15,78,8,NOT WS_GROUP
+    RTEXT           "on",IDE_A,21,24,26,8,NOT WS_GROUP
+    LTEXT           "",IDD_PRINTPORT,51,24,78,8,NOT WS_GROUP
+    DEFPUSHBUTTON   "Cancel",IDOK,41,46,46,14
+END
+
+IDD_ASKDIALOG DIALOG 6, 18, 160, 100
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Ask"
+FONT 8, "MS Sans Serif"
+BEGIN
+END
+
+IDD_ABOUTDIALOG DIALOG 0, 0, 160, 86
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Ok",IDOK,59,65,40,14
+    LTEXT           "ROBOSIM II",IDC_STATIC,59,9,41,8
+    LTEXT           "Developed by Jim Springfield",IDC_STATIC,32,34,95,8
+    LTEXT           "All Rights Reserved",IDC_STATIC,46,49,66,8
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,9,18,20
+    LTEXT           "Version 1.4",IDC_STATIC,61,21,41,8
+END
+
+IDD_LIGHTPAGE DIALOGEX 0, 0, 325, 190
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "0"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "&On",IDC_CHECKENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,5,54,10
+    GROUPBOX        "Position",IDC_STATIC,9,22,89,74
+    LTEXT           "&X",IDC_STATIC,26,42,16,8
+    EDITTEXT        IDC_EDITX,49,39,40,14,ES_AUTOHSCROLL
+    LTEXT           "&Y",IDC_STATIC,26,59,16,8
+    EDITTEXT        IDC_EDITY,49,56,40,14,ES_AUTOHSCROLL
+    LTEXT           "&Z",IDC_STATIC,26,76,16,8
+    EDITTEXT        IDC_EDITZ,49,73,40,14,ES_AUTOHSCROLL
+    GROUPBOX        "Color",IDC_STATIC,109,21,205,75
+    LTEXT           "A&mbient (-1,1)",IDC_STATIC,111,44,47,8
+    LTEXT           "&Diffuse (-1,1)",IDC_STATIC,111,60,47,8
+    LTEXT           "&Specular (-1,1)",IDC_STATIC,111,76,47,8
+    LTEXT           "Red",IDC_STATIC,176,31,30,8
+    LTEXT           "Green",IDC_STATIC,225,31,30,8
+    LTEXT           "Blue",IDC_STATIC,277,31,30,8
+    EDITTEXT        IDC_EDITRA,166,42,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITGA,215,42,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITBA,266,42,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITRD,166,58,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITGD,216,58,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITBD,265,58,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITRS,165,74,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITGS,215,74,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDITBS,265,74,40,14,ES_AUTOHSCROLL
+    GROUPBOX        "Attenuation",IDC_STATIC,7,105,99,78
+    LTEXT           "Constant",IDC_STATIC,17,124,36,8
+    LTEXT           "Linear",IDC_STATIC,18,141,29,8
+    LTEXT           "Quadratic",IDC_STATIC,17,158,35,8
+    EDITTEXT        IDC_KCA,64,122,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_KLA,63,139,40,13,ES_AUTOHSCROLL
+    EDITTEXT        IDC_KQA,64,156,40,13,ES_AUTOHSCROLL
+    GROUPBOX        "Spotlight",IDC_STATIC,119,106,196,77
+    CONTROL         "Enable",IDC_SPOTLIGHTON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,134,118,52,9
+    LTEXT           "Direction",IDC_STATIC,155,133,33,8
+    LTEXT           "Cutoff",IDC_STATIC,155,150,33,8
+    LTEXT           "Exponent",IDC_STATIC,154,168,33,8
+    EDITTEXT        IDC_SPX,192,130,29,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SPY,228,130,29,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SPZ,262,130,29,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCUTOF,192,147,29,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SEPO,192,165,29,15,ES_AUTOHSCROLL
+END
+
+IDD_AMBIENTPAGE DIALOGEX 0, 0, 325, 117
+STYLE DS_SETFONT | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "0"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "&On",IDC_CHECKENABLED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,5,54,10
+    LTEXT           "Ambient Light",-1,39,43,45,10
+    EDITTEXT        IDC_GLOAMBLR,93,41,31,14,ES_AUTOHSCROLL
+    LTEXT           "Red",-1,98,30,30,8
+    LTEXT           "Green",-1,137,30,30,8
+    LTEXT           "Blue",-1,177,30,30,8
+    EDITTEXT        IDC_GLOAMBLG,134,41,31,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_GLOAMBLB,171,41,31,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_VIEWMDIALOG, DIALOG
+    BEGIN
+        RIGHTMARGIN, 285
+    END
+
+    IDD_PRINT, DIALOG
+    BEGIN
+    END
+
+    IDD_ABOUTDIALOG, DIALOG
+    BEGIN
+    END
+
+    IDD_LIGHTPAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 318
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 183
+    END
+
+    IDD_AMBIENTPAGE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 318
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 110
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,2,0,1
+ PRODUCTVERSION 1,2,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Robosim"
+            VALUE "FileDescription", "Robosim II"
+            VALUE "FileVersion", "1, 3, 0, 1"
+            VALUE "InternalName", "robosim"
+            VALUE "LegalCopyright", "Copyright © 2022"
+            VALUE "OriginalFilename", "robosim.exe"
+            VALUE "ProductName", "Robosim 1.4"
+            VALUE "ProductVersion", "1, 4, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_LIGHTPAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_AMBIENTPAGE AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_VIEWMDIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "Robosim II"
+    IDR_ROBOTYPE            "\nRobosim\nRobosim Document"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_APP_TITLE       "Robosim II"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Create a new document"
+    ID_FILE_OPEN            "Open an existing document"
+    ID_FILE_CLOSE           "Close the active document"
+    ID_FILE_SAVE            "Save the active document"
+    ID_FILE_SAVE_AS         "Save the active document with a new name"
+    ID_FILE_PAGE_SETUP      "Change the printing options"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options"
+    ID_FILE_PRINT           "Print the active document"
+    ID_FILE_PRINT_PREVIEW   "Display full pages"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright"
+    ID_APP_EXIT             "Quit the application; prompts to save documents"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane"
+    ID_PREV_PANE            "Switch back to the previous window pane"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_NEW           "Open another window for the active document"
+    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window"
+    ID_WINDOW_CASCADE       "Arrange windows so they overlap"
+    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles"
+    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles"
+    ID_WINDOW_SPLIT         "Split the active window into panes"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection"
+    ID_EDIT_CLEAR_ALL       "Erase everything"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard"
+    ID_EDIT_FIND            "Find the specified text"
+    ID_EDIT_PASTE           "Insert Clipboard contents"
+    ID_EDIT_REPEAT          "Repeat the last action"
+    ID_EDIT_REPLACE         "Replace specific text with different text"
+    ID_EDIT_SELECT_ALL      "Select the entire document"
+    ID_EDIT_UNDO            "Undo the last action"
+    ID_EDIT_REDO            "Redo the previously undone action"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+    AFX_IDS_MDICHILD        "Activate this window"
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "robo.rc2"  // non-App Studio edited resources
+
+#include "afxres.rc"  // Standard components
+#include "afxprint.rc"  // printing/print preview resources
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

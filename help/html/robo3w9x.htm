@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>make-extrude-surface</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="make-extrude-surface">
+</OBJECT>
+
+<P><A NAME="id_make_extrude_surface"></A><B>(make-extrude-surface <I>object</I> <I>height</I>)</B></P>
+
+<P>Creates an extruded object of the given <I>height</I>.</P>
+<PRE><CODE>(make-extrude-surface
+        (make-primitive
+            '(
+                #(0 0 0)
+                #(0 10 0)
+                #(10 10 0)
+                #(10 0 0)
+                #(0 0 0)
+            )
+        )
+        10
+)</CODE></PRE>
+
+</BODY>
+</HTML>

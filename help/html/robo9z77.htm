@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>add-objects</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="add-objects">
+</OBJECT>
+
+<P><A NAME="id_add_objects"></A><B>(add-objects {<I>object</I>}+)</B></P>
+
+<P>Returns a new object that is the union of all of the specified objects. This copy is not affected by any changes made later to the component objects.</P>
+<PRE><CODE>(setq stack (add-objects box1 box2 box3)) =&gt; creates a single object that consists of box1, box2, and box3. This occurs by combining the display lists. Therefore, there can not be multiple attributes, such as color, for the object.
+(setq stack (add-objects box1 box2 box3)) =&gt; #&lt;SimOb:x&gt;</CODE></PRE>
+
+</BODY>
+</HTML>

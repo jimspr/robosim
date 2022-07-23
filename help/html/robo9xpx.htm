@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>set-window-menu</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="set-window-menu">
+</OBJECT>
+
+<P><A NAME="id_set_window_menu"></A><B>(set-window-menu <I>menu</I>)</B></P>
+
+<P>Sets the menu of the program to the menu specified by <I>menu</I>. The format of a menu is a list of strings and actions. A list within a list corresponds to a submenu. The easiest way to understand this format is to look at an example.</P>
+<PRE><CODE>(set-window-menu
+    '(
+        ("&amp;File"
+            "&amp;New" (clear-simulation)
+            "&amp;Open..." (open-file)
+            nil
+            "&amp;Print..." (printer-dialog)
+            nil
+            "E&amp;xit" (exit)
+        )
+        ("&amp;View"
+            "&amp;Copy" (copy-window)
+            nil
+            "&amp;New View" (new-view)
+            "New &amp;3D View" (new-view3d 15)
+            "&amp;Set View..." (set-view-dialog)
+        )
+        ("&amp;Options"
+            "&amp;Font..." (set-font-dialog)
+            "&amp;Lines..." (set-lines)
+            "Double Buffer O&amp;n"
+                (set-double-buffer t)
+            "Double Buffer O&amp;ff"
+                (set-double-buffer nil)
+            "&amp;Show Frames" (show-frames t)
+            "&amp;Don't Show Frames" (show-frames nil)
+        )
+        ("&amp;Simulation"
+            ("&amp;Agent"
+                "&amp;T3" (setq robot t3-1)
+                "&amp;Puma" (setq robot puma-1)
+                "&amp;SS" (setq robot ss-1)
+            )
+            ("&amp;Object"
+                "&amp;Box" (setq object box)
+                "&amp;Cyl" (setq object cyl)
+            )
+            "&amp;Move Object" (simulate robot object)
+            "Move &amp;Robot" (move-it robot)
+            "&amp;Demo" (demo)
+        )
+        ("&amp;Window"
+            "&amp;Cascade" (cascade-windows)
+            ("&amp;Tile"
+                "Tile &amp;Horizontal"
+                    (tile-windows-h)
+                "Tile &amp;Vertical"
+                    (tile-windows-v)
+            )
+            "&amp;Arrange Icons" (arrange-icons)
+        )
+        ("&amp;Help"
+            "&amp;About..." (about-dialog)
+        )
+    )
+)</CODE></PRE>
+
+</BODY>
+</HTML>

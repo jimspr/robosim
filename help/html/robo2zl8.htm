@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>equal</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="equal">
+</OBJECT>
+
+<P><A NAME="id_equal"></A><B>(equal <I>x y</I>)</B></P>
+
+<P>Returns <A HREF="robo8vck.htm">t</A> if <I>x</I> and <I>y</I> are structurally similar. Same as <A HREF="robo3mss.htm"><B>eql</B></A> except for the following cases. Strings are compared character by character. Conses are <B>equal</B> if the car's are <B>equal</B> and the cdr's are <B>equal</B>.</P>
+<PRE><CODE>(equal 1 1) =&gt; t
+(equal "hello" "hello") =&gt; t
+(equal '(a b) '(a b)) =&gt; t</CODE></PRE>
+
+</BODY>
+</HTML>

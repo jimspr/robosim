@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>move-inter-to</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="move-inter-to">
+</OBJECT>
+
+<P><A NAME="id_move_inter_to"></A><B>(move-inter-to <I>agent transform solution-index steps</I>)</B></P>
+
+<P>Solves the inverse kinematics for <I>agent</I> and moves the <I>agent</I> using joint-interpolated motion in <I>steps</I> steps using the solution specified by <I>solution-index</I>.</P>
+<PRE><CODE>(setq puma-1 (make-puma560))
+(setq b1 (make-box 26 26 1))
+(remove-objects)
+(set-position puma-1 (translate 0 0 1))
+(use-objects b1 puma-1)
+(move-inter-to puma-1 (matmult (translate 13 13 1.1) (rotatex 180)) 3 20)</CODE></PRE>
+
+</BODY>
+</HTML>

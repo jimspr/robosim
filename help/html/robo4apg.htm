@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>unwind-protect</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="unwind-protect">
+</OBJECT>
+
+<P><A NAME="id_unwind_protect"></A><B>(unwind-protect <I>protected-form</I> {<I>cleanup-form</I>}*)</B></P>
+
+<P>Executes the <I>protected-form</I> and returns the value returned. However, if an exception is generated, then the <I>cleanup-form</I>'s are executed before the exception handler gets the exception.</P>
+<PRE><CODE>(unwind-protect
+    (progn
+        (start-motor)
+        (drill-hole)
+    )
+    (stop-motor)
+)</CODE></PRE>
+
+</BODY>
+</HTML>

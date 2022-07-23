@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>return-from</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="return-from">
+</OBJECT>
+
+<P><A NAME="id_return_from"></A><B>(return-from <I>name</I> [<I>result</I>])</B></P>
+
+<P>Returns from a block named by <I>name</I>, returning the value of <I>result</I>. If <I>result</I> is omitted <A HREF="robo4euk.htm">nil</A> is returned.</P>
+<PRE><CODE>(setq x 2) =&gt; 2
+(block myblock
+    (if
+        (= x 2)
+        (return-from myblock nil)
+    )
+    (setq x (1+ x))
+) =&gt; nil</CODE></PRE>
+
+</BODY>
+</HTML>

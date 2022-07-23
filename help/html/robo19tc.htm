@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>equalp</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="equalp">
+</OBJECT>
+
+<P><A NAME="id_equalp"></A><B>(equalp <I>x y</I>)</B></P>
+
+<P>Same as for <A HREF="robo2zl8.htm"><B>equal</B></A> except for the following cases. If they are characters, a case-insensitive comparison is made. Numbers do not have to be the same type to be <B>equalp</B>. Objects that have components, such as lists, strings, and vectors, are <B>equalp</B> if the components are <B>equalp</B>.</P>
+<PRE><CODE>(equalp '(a b) '(a b)) =&gt; t
+(equalp 3 3.0) =&gt; t
+(equalp '(1 2 3) '(1.0 2.0 3.0)) =&gt; t</CODE></PRE>
+
+</BODY>
+</HTML>

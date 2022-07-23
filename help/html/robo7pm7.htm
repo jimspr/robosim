@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>do</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="do">
+</OBJECT>
+
+<P><A NAME="id_do"></A><B>(do[*] <BR>
+( {<I>var</I> | (<I>var</I> [<I>init</I> [<I>step</I>]])}*)<BR>
+(<I>end-test</I> {<I>result</I>}*)<BR>
+{<I>statement</I>}*<BR>
+)</B></P>
+
+<P>All of the <I>init</I> forms are evaluated and then bound to the corresponding <I>var</I>. <B>do</B> evaluates all of the <I>init</I> forms before binding. <B>do*</B> evaluates and binds left to right. The <I>end-test</I> is evaluated. If the <I>end-test</I> returns <A HREF="robo4euk.htm">nil</A> then the <I>statements</I> are evaluated in left to right order. Then the <I>step</I> forms are evaluated and the variables are changed. The <I>end-test</I> form is then evaluated. This process continues until the <I>end-test</I> form returns a non-<A HREF="robo4euk.htm">nil</A> value. When this occurs, the <I>result</I> forms are evaluated and the result of the last <I>result</I> form is returned. If there are no <I>result</I> forms, <A HREF="robo4euk.htm">nil</A> is returned.</P>
+<PRE><CODE>(do
+    (
+        (x 1 (+ x 1))
+        (y 0)
+    )
+    ( (&gt; x 10) y)
+    (setq y (+ y x))
+) =&gt; 55</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>catch</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="catch">
+</OBJECT>
+
+<P><A NAME="id_catch"></A><B>(catch <I>tag </I>{<I>form</I>}*)</B></P>
+
+<P>The form <I>tag</I> is evaluated to produce an object that names the catch. The <I>form</I>s are executed and the value of the last one is returned. However, if a <A HREF="robo633r.htm">throw</A> occurs and the tag specified by the <A HREF="robo633r.htm">throw</A> is <A HREF="robo7po1.htm">eq</A> to this <I>tag</I> then the value specified in the throw is returned.</P>
+<PRE><CODE>(catch 'collision
+    (loop
+        (move-robot)
+        (if
+            (check-collision rob1 ob1)
+            (throw 'collision nil)
+        )
+    )
+)</CODE></PRE>
+
+</BODY>
+</HTML>

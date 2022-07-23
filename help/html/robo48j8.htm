@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>set-object</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="set-object">
+</OBJECT>
+
+<P><A NAME="id_set_object"></A><B>(set-object <I>object</I> [:color <I>color</I>] [:ambient <I>ambient</I>] [:diffuse <I>diffuse</I>] [:specular <I>specular</I>])</B></P>
+
+<P>Sets the <I>object</I> to the given <I>color</I>. A <I>color</I> is list of three elements representing the red, green, and blue components. Each component can have a value between 0 and 255, inclusive. The <I>ambient</I>, <I>diffuse</I>, and <I>specular</I> parameters are lists of three values in the range from -1.0 to 1.0. The return value is <I>object</I>. For example, the following command sets the object mybox to the color red. The :color and :ambient parameters actually are two different ways to specify the same.</P>
+<PRE><CODE>(set-object mybox :color '(255 0 0)) =&gt; #&lt;SimOb:xxxx&gt;
+(set-object mybox :ambient '(1.0 0.0 0.0)) =&gt; #&lt;SimOb:xxxx&gt;</B>
+</CODE></PRE>
+
+</BODY>
+</HTML>
