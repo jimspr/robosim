@@ -97,11 +97,9 @@ void stdio_window_t::put_char(CDC& dc, char ch)
 	InvalidateRect(rc, TRUE);
 }
 
-void stdio_window_t::put_stdio(CDC& dc, int len, const char* str)
+void stdio_window_t::put_stdio(CDC& dc, const char* str, size_t len)
 {
-	int i;
-
-	for (i = 0; i < len; i++)
+	for (size_t i = 0; i < len; i++)
 	{
 		switch (str[i])
 		{
@@ -116,7 +114,7 @@ void stdio_window_t::put_stdio(CDC& dc, int len, const char* str)
 			back_space(dc);
 			break;
 		case '\t':
-			put_stdio(dc, 4, "        ");
+			put_stdio(dc, "    ", 4);
 			break;
 		default:
 			//add char to buffer
@@ -144,7 +142,7 @@ int stdio_window_t::lines_per_string(const string& str) const
 	// Alwasy at least one line.
 	if (str.empty())
 		return 1;
-	return (str.size() + _chars_per_line - 1) / _chars_per_line;
+	return ((int)str.size() + _chars_per_line - 1) / _chars_per_line;
 }
 
 /* Returns line offset for given position in string. */
@@ -186,14 +184,12 @@ void stdio_window_t::init_font()
 	_text_color = GetSysColor(COLOR_WINDOWTEXT); // text color
 }
 
-void stdio_window_t::puts(const char* str, int len)
+void stdio_window_t::puts(const char* str, size_t len)
 {
 	CClientDC dc(this);
 
 	setup_stdio_dc(dc);
-	if (len == -1)
-		len = lstrlen(str);
-	put_stdio(dc, len, str);
+	put_stdio(dc, str, len);
 	dc.RestoreDC(-1);
 }
 
@@ -201,7 +197,7 @@ void stdio_window_t::putc(char ch)
 {
 	CClientDC dc(this);
 	setup_stdio_dc(dc);
-	put_stdio(dc, 1, &ch);
+	put_stdio(dc, &ch, 1);
 	dc.RestoreDC(-1);
 }
 
@@ -228,7 +224,7 @@ int stdio_window_t::paint_line(CDC& dc, int line, const std::string& str)
 	if (str.empty())
 		return 1;
 	// Print partial line
-	int lines_to_paint = (str.size() + _chars_per_line - 1)/ _chars_per_line;
+	int lines_to_paint = ((int)str.size() + _chars_per_line - 1)/ _chars_per_line;
 	ASSERT(lines_to_paint > 0);
 	auto start = str.begin();
 	for (int i = 1; i <= lines_to_paint; ++i)
@@ -239,7 +235,7 @@ int stdio_window_t::paint_line(CDC& dc, int line, const std::string& str)
 		auto end = str.end();
 		if ((end - start) > _chars_per_line)
 			end = start + _chars_per_line;
-		dc.TextOut(pt.x, pt.y, &*start, end - start);
+		dc.TextOut(pt.x, pt.y, &*start, (int)(end - start));
 		start = end;
 	}
 	return lines_to_paint;

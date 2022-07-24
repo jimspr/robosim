@@ -108,7 +108,7 @@ public:
 	simob_t();
 	simob_t(simob_t&);
 	void mark_in_use();
-	void print(std::ostream& ostr) const { ostr << "<simob_t " << (long)this << ">"; }
+	void print(std::ostream& ostr) const { ostr << "<simob_t " << (uintptr_t)this << ">"; }
 	void init(int numv, int nump);
 	void UpdateObject();
 	void UpdateModel();
@@ -138,7 +138,8 @@ public:
 	void check_in_env() const { if (!_is_in_env) throw_eval_exception(OBJECT_NOT_IN_ENV); }
 	void set_in_env(bool b) { _is_in_env = b; }
 	simob_t* GetChild(int idx = 0);
-	int GetNumChildren() { return _children.size(); }
+	simob_t* GetChild(size_t idx);
+	size_t GetNumChildren() { return _children.size(); }
 	void SetPosition(const mat44& mat);
 	void set_parent_mat(mat44* pm);
 	void PosChanged();

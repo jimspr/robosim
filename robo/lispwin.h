@@ -16,7 +16,7 @@ public:
 	lisp_window_t(void);
 	~lisp_window_t();
 
-	int out_waiting();
+	size_t out_waiting();
 
 	virtual void process();
 	virtual int overflow(int = EOF);

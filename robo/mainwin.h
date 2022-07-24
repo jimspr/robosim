@@ -35,7 +35,7 @@ public:
 	void maximize_window(bool max) override;
 	node_t* ask(function* pfn, std::vector<question>& pq, const char* title) override;
 
-	BOOL OnCommand(UINT wParam, LONG lParam);
+	BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	void RecalcLayout(BOOL bNotify = TRUE) override
 	{
 		CFrameWnd::RecalcLayout(bNotify);

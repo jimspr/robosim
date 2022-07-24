@@ -160,6 +160,11 @@ simob_t *simob_t::GetChild(int idx)
 	return (idx >= (int)_children.size()) ? nullptr : _children[idx];
 }
 
+simob_t* simob_t::GetChild(size_t idx)
+{
+	return (idx >= _children.size()) ? nullptr : _children[idx];
+}
+
 void simob_t::PosChanged()
 {
 	_invalidate_position = true;
@@ -339,7 +344,7 @@ of the position matrix of [this] and then added to the model coordinates.
 
 void simob_t::add_vector(vector_t &v)
 {
-	int n = v.size();
+	size_t n = v.size();
 	if (n != 3 && n != 6)
 		throw_eval_exception(VECTOR_NOT_POINT);
 	number_node_t *nx = (number_node_t *)v[0];
@@ -452,7 +457,7 @@ void simob_t::make_truncated_closedcone(float rl,float ru,float height, int face
 	ct.make_circle(ru,facets);
 	cb.make_circle(rl,facets);
 	Add(ct);
-	(mat44::TRANS(0.F,0.F,height)*mat44::ROTATEX(RPI)).transform(_gmodel.data(),_numvec);
+	(mat44::TRANS(0.F,0.F,height)*mat44::ROTATEX((float)RPI)).transform(_gmodel.data(),_numvec);
 	Add(tc);
 	Add(cb);
 	_invalidate_model = true;
@@ -564,7 +569,7 @@ void simob_t::make_sphere(float r,int facets)
 {
 	simob_t t;
 	make_opendome(r,facets);
-	mat44::ROTATEX(RPI).transform(_gmodel.data(),_numvec);
+	mat44::ROTATEX((float)RPI).transform(_gmodel.data(),_numvec);
 	t.make_opendome(r,facets);
 	Add(t);
 	_invalidate_model = true;
@@ -760,8 +765,8 @@ int simob_t::check_collide(simob_t *X1,simob_t *X2)
 
 			if (X2->GetNumChildren() > 1)
 			{
-				int i,n=X2->GetNumChildren();
-				for (i = 0; i < n; i++)
+				size_t n = X2->GetNumChildren();
+				for (size_t i = 0; i < n; i++)
 					if (check_collide(X1,X2->GetChild(i)))
 						return TRUE;
 				return FALSE;
@@ -770,10 +775,12 @@ int simob_t::check_collide(simob_t *X1,simob_t *X2)
 		}
 		if (X1->GetNumChildren() > 1)
 		{
-			int i,n=X1->GetNumChildren();
-			for (i = 0; i < n; i++)
-				if (check_collide(X1->GetChild(i),X2B))
+			size_t n = X1->GetNumChildren();
+			for (size_t i = 0; i < n; i++)
+			{
+				if (check_collide(X1->GetChild(i), X2B))
 					return TRUE;
+			}
 			return FALSE;
 		}
 		X1 = X1->GetChild(0);

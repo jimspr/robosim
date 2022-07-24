@@ -328,7 +328,8 @@ Global
 		Template|x86 = Template|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x64.ActiveCfg = Debug|Win32
+		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x64.ActiveCfg = Debug|x64
+		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x64.Build.0 = Debug|x64
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x86.ActiveCfg = Debug|Win32
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x86.Build.0 = Debug|Win32
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x64.ActiveCfg = Release|Win32

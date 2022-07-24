@@ -177,7 +177,7 @@ bool simulation_t::set_look_at(const point3d_t& at)
 {
 	if (!_view_wnd)
 		return false;
-	_view_wnd->set_look_from(at);
+	_view_wnd->set_look_at(at);
 	_view_wnd->UpdateWindow();
 	return true;
 }

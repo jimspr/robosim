@@ -20,7 +20,7 @@ struct solution
 		ASSERT(n < 16);
 		degrees = n;
 	}
-	float& operator [] (int i) { return values[i]; }
+	float& operator [] (size_t i) { return values[i]; }
 };
 
 typedef float fmat44[4][4];

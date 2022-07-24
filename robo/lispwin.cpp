@@ -79,7 +79,7 @@ void lisp_window_t::process(void)
 	_is_full = true;
 }
 
-int lisp_window_t::out_waiting()
+size_t lisp_window_t::out_waiting()
 {
 	return pptr() - pbase();
 }

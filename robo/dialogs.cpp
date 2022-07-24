@@ -267,14 +267,13 @@ void ask_dialog_t::OnOK(void)
 
 bool ask_dialog_t::verify(void)
 {
-	int i;
 	bool bStatus = true;
 	_stattext.SetWindowText("");
-	int numq = _questions.size();
-	for (i=0;i<numq;i++)
+	size_t numq = _questions.size();
+	for (size_t i=0;i<numq;i++)
 	{
 		_edits[i].SetModify(FALSE);
-		if (!check_edit(i))
+		if (!check_edit((int)i))
 			return false;
 	}
 	if (_func)
@@ -368,7 +367,7 @@ void ask_dialog_t::set_value(int idx,long val)
 node_t *ask_dialog_t::get_list(void)
 {
 	cons_t *base = (cons_t *) nil;
-	int n = _questions.size();
+	size_t n = _questions.size();
 	while (n--)
 		base = new cons_t( _questions[n].get_node() , base);
 	return base;
@@ -383,7 +382,7 @@ bool ask_dialog_t::call_function(void)
 	{
 		for (auto& q: _questions)
 			g_frame_stack.push(q.get_node());
-		auto numq = _questions.size();
+		int numq = (int)_questions.size();
 		res = _func->eval(numq,g_frame_stack.get_base(numq));
 	}
 	catch(eval_exception_t* e)

@@ -75,7 +75,7 @@ int main_window_t::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-BOOL main_window_t::OnCommand(UINT wParam, LONG lParam)
+BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	int idx = LOWORD(wParam);
 	if (idx == IDM_EXIT)
@@ -159,7 +159,7 @@ static void makemenu(CMenu& pm, cons_t* base, int& id, std::vector<node_t*>& par
 			auto title = ((cons_t*)sub)->Car()->as<string_node_t>();
 			menu.CreatePopupMenu();
 			makemenu(menu, ((cons_t*)sub)->CdrCONS(), id, parr);
-			pm.AppendMenu(MF_POPUP, (unsigned int)menu.Detach(), title->data());
+			pm.AppendMenu(MF_POPUP, (uintptr_t)menu.Detach(), title->data());
 		}
 		else if (sub == nil)
 			pm.AppendMenu(MF_SEPARATOR);

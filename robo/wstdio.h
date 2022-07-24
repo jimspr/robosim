@@ -45,14 +45,14 @@ public:
 	stdio_window_t();
 
 	void setup_stdio_dc(CDC& dc);
-	void put_stdio(CDC& dc, int len, const char* str);
+	void put_stdio(CDC& dc, const char* str, size_t len);
 	void set_lines(int lines);
 	int get_line_count() { return _lines; }
 	void convert_point_log_to_dev(CPoint& cpt);
 	void convert_point_dev_to_log(CPoint& cpt);
 	void convert_rect_log_to_dev(CRect& rc);
 	void convert_rect_dev_to_log(CRect& rc);
-	void puts(const char* str, int len = -1);
+	void puts(const char* str, size_t len);
 	void putc(char ch);
 	void set_caret();
 	void set_caret(CDC& dc);

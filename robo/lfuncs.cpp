@@ -1066,31 +1066,28 @@ static node_t *func_set__agent__joints(int numargs,node_t **args)
 
 static void parmsub(simob_t *ps,cons_t *base)
 {
-	node_t *parm;
-	int cnt;
-	float fdef;
 	while (ps && base->is_a(TYPE_CONS))
 	{
 		if (ps->is_joint())
 		{
-			parm = base->Car();
+			node_t* parm = base->Car();
 			if (parm != nil)
 			{
 				parm->check_number();
-				fdef = (float)*(number_node_t *)parm;
+				float fdef = (float)*(number_node_t *)parm;
 				ps->set_parameter(fdef);
 			}
 			base = base->CdrCONS();
 		}
 		if (!base->is_a(TYPE_CONS))
 			return;
-		cnt = ps->GetNumChildren();
+		size_t cnt = ps->GetNumChildren();
 		if (cnt > 1)
 		{
 			int idx=0;
 			while (ps->GetChild(idx) && base->is_a(TYPE_CONS))
 			{
-				parm = base->Car();
+				node_t* parm = base->Car();
 				parm->check_arg_type(TYPE_CONS);
 				parmsub(ps->GetChild(idx),(cons_t *)parm);
 				idx++;
@@ -1117,7 +1114,6 @@ static node_t* get_parmsub(simob_t *ps)
 {
 	cons_t* base = new cons_t(nil, nil);
 	cons_t* cons = base;
-	int cnt;
 	while (ps)
 	{
 		if (ps->is_joint())
@@ -1126,7 +1122,7 @@ static node_t* get_parmsub(simob_t *ps)
 			cons = cons->CdrCONS();
 			cons->set_car(new number_node_t(ps->get_parameter()));
 		}
-		cnt = ps->GetNumChildren();
+		size_t cnt = ps->GetNumChildren();
 		if (cnt > 1)
 		{
 			int idx=0;
@@ -1584,7 +1580,7 @@ static node_t *func_move__inter__to(int numargs,node_t **args)
 		throw_other_exception(current_package->get_symbol("REACH"),nil); // out of reach exception
 	DriveArray da;
 	da.parmsub(ps);
-	for (size_t j = 0; j<da.vec.size(); ++j)
+	for (size_t j = 0; j < da.vec.size(); ++j)
 		da.vec[j].end = pqe[0][j];
 	for (i=1;i<=steps;i++)
 	{

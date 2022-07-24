@@ -80,7 +80,7 @@ struct node_block_t
 	char _data[sizeof(T) * nodes_in_block] = {};
 	/* map tracks which elements in block are in use. */
 	char _map[nodes_in_block] = {};
-	T* node_of_block(int index)
+	T* node_of_block(size_t index)
 	{
 		return (T*)(_data + index * sizeof(T));
 	}
@@ -94,8 +94,8 @@ protected:
 	constexpr static int node_size = sizeof(T); // size of node
 	using block_t = node_block_t<T, nodes_in_block>;
 	std::vector<std::unique_ptr<block_t>> _blocks; // Each block is nodes_in_block*size chars.
-	int _current_node = 0;
-	int _current_block = 0;
+	size_t _current_node = 0;
+	size_t _current_block = 0;
 	int _nodes_total = 0;
 	int _nodes_alloc = 0;
 	const char *_name;
@@ -144,7 +144,7 @@ public:
 				/* Found a free node in the current block. */
 				cmap[_current_node] = (char)1;
 				_nodes_alloc++;
-				ptr = cblock->node_of_block(_current_node);;
+				ptr = cblock->node_of_block(_current_node);
 				_current_node++;
 				memset(ptr, 0, node_size);
 				((node_t*)ptr)->set_gc_flag(FLAG_NODE_JUST_CREATED);
@@ -174,8 +174,8 @@ public:
 		if (ptr)
 			return ptr;
 		/* None left in the current block(starting at current_node). */
-		int i, n = _blocks.size();
-		for (i = 0; i < n; i++)
+		size_t n = _blocks.size();
+		for (size_t i = 0; i < n; i++)
 		{
 			/* Search next block from beginning. */
 			_current_block++;
@@ -199,12 +199,11 @@ public:
 
 	void clear_gc_flag()
 	{
-		int i, j;
-		int n = _blocks.size();
-		for (i = 0; i < n; i++)
+		size_t n = _blocks.size();
+		for (size_t i = 0; i < n; i++)
 		{
 			auto& block = _blocks[i];
-			for (j = 0; j < nodes_in_block; j++)
+			for (size_t j = 0; j < nodes_in_block; j++)
 			{
 				auto ptr = block->node_of_block(j);
 				ptr->clear_gc_flags();
@@ -467,7 +466,7 @@ public:
 	void mark_in_use();
 	void print(std::ostream &) const;
 
-	long size() const { return _contents.size(); }
+	size_t size() const { return _contents.size(); }
 	node_t *&operator[](long i) { return _contents[i]; }
 
 	DECLARE_NODE(vector_t, 128)
@@ -570,7 +569,7 @@ public:
 	stream_node_t(const char *s);
 	~stream_node_t();
 
-	void print(std::ostream &ostr) const { ostr << "#<stream_node_t: " << (unsigned long)this << ">";}
+	void print(std::ostream &ostr) const { ostr << "#<stream_node_t: " << (std::uintptr_t)this << ">";}
 
 	std::ofstream *get_stream() const {return _stream.get();}
 	void close();
@@ -598,7 +597,7 @@ class form_t : public node_t
 {
 public:
 	form_t(node_type_e type, const char* name);
-	void print(std::ostream& ostr) const { ostr << "#<SUBR: " << (long)this << ">"; }
+	void print(std::ostream& ostr) const { ostr << "#<SUBR: " << (uintptr_t)this << ">"; }
 	virtual node_t* eval(cons_t* ths) = 0;
 protected:
 	std::string _form_name;

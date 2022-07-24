@@ -47,7 +47,7 @@ void tty_window_t::add_line_to_history()
 	// Terminate string in _active
 	_active[_active_pos] = 0;
 	_history.push_back(std::string{ _active });
-	_cur_history_item = _history.size();
+	_cur_history_item = (int)_history.size();
 }
 
 void tty_window_t::delete_char()
@@ -187,7 +187,7 @@ void tty_window_t::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case VK_UP:
 		erase_current_line();
 		if (--_cur_history_item == -1)
-			_cur_history_item = _history.size() - 1;
+			_cur_history_item = (int)_history.size() - 1;
 		add_line_from_history(_cur_history_item);
 		break;
 	case VK_DOWN:

@@ -11,9 +11,8 @@ extern void main_win_mark_in_use();
 
 void node_list_array_t::clear_flags()
 {
-	int n = _data.size();
-	int i;
-	for (i = 0; i < n; i++)
+	size_t n = _data.size();
+	for (size_t i = 0; i < n; i++)
 		_data[i]->clear_gc_flag();
 	_garbage_collected = false;
 }
@@ -22,8 +21,7 @@ int node_list_array_t::garbage_collect()
 {
 	int cnt=0;
 	_garbage_collected = true;
-	int n = _data.size();
-	int i;
+	size_t n = _data.size();
 
 //	MessageBeep(MB_ICONASTERISK);
 	g_frame_stack.mark_in_use();
@@ -36,16 +34,15 @@ int node_list_array_t::garbage_collect()
 	for (auto& ik : invkin)
 		ik->mark_in_use();
 
-	for (i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		cnt += _data[i]->delete_unused();
 	return cnt;
 }
 
 void node_list_array_t::status(ostream &ostr)
 {
-	int n = _data.size();
-	int i;
-	for (i=0;i<n;i++)
+	size_t n = _data.size();
+	for (size_t i = 0; i < n; i++)
 		_data[i]->status(ostr);
 }
 
@@ -56,9 +53,9 @@ void node_list_array_t::add(node_list_base_t* node)
 
 
 /************************************************
-******************        ***********************
-****************** symbol_t ***********************
-******************        ***********************
+******************          *********************
+****************** symbol_t *********************
+******************          *********************
 ************************************************/
 
 symbol_t::symbol_t() : node_t(TYPE_SYMBOL)
@@ -79,11 +76,10 @@ symbol_t::symbol_t(const char *n,form_t *f) : node_t(TYPE_SYMBOL), _print_name(n
 
 void symbol_t::princ(ostream &ostr) const
 {
-	int i,n;
 	if (_print_name[0] != '|')
 		print(ostr);
-	n = _print_name.size();
-	for (i=1;i<n-1;i++)
+	size_t n = _print_name.size();
+	for (size_t i = 1; i < n - 1; i++)
 		ostr << _print_name[i];
 }
 
