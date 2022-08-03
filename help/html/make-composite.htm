@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>make-composite</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="make-composite">
+</OBJECT>
+
+<P><A NAME="id_make_composite"></A><B>(make-composite {<I>object</I> <I>transform</I>*})</B></P>
+
+<P>Creates a composite object composed of the specified objects. The object is transformed by the specified transform and added to the link. The object is then transformed back, which leaves it unchanged. This function is implemented exactly the same as <A HREF="make-fixed-link.htm"><B>make-fixed-link</B></A>.</P>
+<PRE><CODE>(make-composite
+    (make-cylinder 2.7 9.16) (translate 0 0 -3.88)
+    (make-cylinder 3.5 1) (translate 0 0 6.39)
+    (make-cylinder 3 1) (translate 0 0 5.39)
+)</CODE></PRE>
+
+</BODY>
+</HTML>

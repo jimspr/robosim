@@ -25,7 +25,8 @@ public:
 	bool copy_to_clibboard() override;
 	void mark_in_use(void) override;
 	void new_simulation(void) override;
-	bool display_help(const std::string& str) override;
+	bool display_help(const std::string& file) override;
+	bool display_help(const std::string& file, const std::string& topic) override;
 	void print() override;
 	void set_font_dialog() override;
 	void show_about(void) override;

@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>tutorial</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="tutorial">
+</OBJECT>
+
+<P><A NAME="id_tutorial"></A><B>Tutorial</B></P>
+
+<P>As the language basis of ROBOSIM II is LISP, it is important to understand the concepts of LISP and LISP programming. The LISP interpreter provided in this simulation package is based on the specification provided in the book <U>COMMON LISP</U> by Guy L. Steele. This book provided the basis for this implementation of LISP and is an excellent reference manual. However, this implementation is not a complete implementation as defined by Steele's book (nor was it intended to be).</P>
+
+<P>The data types that are included in this version of LISP are the following.</P>
+
+<P>Functions are data types that can be executed and that return values as the result of execution.</P>
+
+<P>Lists are sequences represented in the form of linked cells called <I>conses</I>. There is a special object (the symbol nil) that is the empty list.</P>
+
+<P>Numbers exist in two forms: integers and floating point numbers. The integer, as implemented here, uses a 32 bit word length. Integers can have values between -2,147,483,648 and 2,147,483,647. Floating point numbers, as implemented here, are represented in 32 bits. Floating point numbers can have values in the range 3.4E +/-38 with seven digits of precision.</P>
+
+<P>Symbols are used to reference functions and variables.</P>
+
+<P>Strings are vectors of characters.</P>
+
+<P>Simulation Objects are complex structures used to represent robots and objects used in the simulator.</P>
+
+<P>Transforms are the matrix used to represent rotations and translations.</P>
+
+<P>Vectors are similar to lists but are stored such that any item can be accessed in constant time.</P>
+
+<P>LISP, which stands for LISt Processor, uses the list as the basic data structure. Almost everything is represented in terms of lists, whether it be data or programs. Lists are made up of conses, which are objects that contain pointers to two other objects. A list is made up as a chain of conses. This provides the <I>backbone</I> of the list. The elements of the list are stored in the first pointer positions of the conses. For instance, the following figure illustrates the list of numbers 1, 2, 3. The circles with the lines down the middle are the cons cells.</P>
+
+<P>In LISP, parentheses are used to delimit lists. Therefore, this list would be represented as <B>(1&nbsp;2&nbsp;3)</B>. The <A HREF="nil.htm"><B>nil</B></A> node represents the empty list and is used to signal the end of a list. It is also possible for a cons cell to point to something other than <B>nil</B> or another cons cell. When this occurs, the structure can not be printed as a list, but is instead represented as a dotted pair. For example, the structure in the following figure is written as <B>(a&nbsp;.&nbsp;b)</B>. This is called dotted pair syntax, and can be used anywhere. For instance the list <B>(a&nbsp;b&nbsp;c)</B> could also be represented as <B>(a&nbsp;.&nbsp;(b&nbsp;.&nbsp;(c)))</B> or even as <B>(a&nbsp;.&nbsp;b&nbsp;.&nbsp;(c&nbsp;.&nbsp;nil)))</B>. These are equivalent expressions and the interpreter will understand them to be exactly alike. The interpreter will not choose dotted pair notation for printing expressions, unless it is the only way to print the expression.</P>
+
+<P>The left hand side of a cons cell is called the <I>car</I> and the right hand side of the cons cell is called the <I>cdr</I>. These bizarre names stem from the original implementation of LISP. Car refers to contents of address register, and cdr refers to contents of data register. This convention has stuck ever since.</P>
+
+<P>LISP programs are made up of <I>forms</I>. The three types of forms are self-evaluating forms, symbols, and lists. A self-evaluating form is a form that returns itself. Examples of this include numbers, strings, vectors, keywords, and <A HREF="nil.htm"><B>nil</B></A>. <B>Nil</B> requires special mention. It is used to represent the empty list and also the Boolean false. Typing <B>nil</B> is equivalent to typing <B>()</B>. In the example of the list <B>(1&nbsp;2&nbsp;3)</B>, the list could also be written as <B>(1&nbsp;2&nbsp;3&nbsp;.&nbsp;nil)</B>. However, as mentioned above, this format is understood by the interpreter but never generated.</P>
+
+<P>Symbols are variables. The result of evaluating a symbol is the value bound to that symbol. For example, if the value of 2 is bound to the symbol <I>a</I>, then the result of evaluating <I>a</I> will be 2. Lists can be divided into three groups:  special forms, macros, and functions.</P>
+
+<P><A HREF="special_forms.htm">Special forms</A> do not evaluate the arguments first, but rather the arguments are passed directly to the special form. A <A HREF="macros_topic.htm">macro</A> is similar to a special form, and in fact macros can be implemented as special forms. In this implementation macros are implemented as special forms. The arguments to a function are evaluated before entrance to the function, and the results of evaluating the arguments are passed to the function. Differences in how special forms and functions handle arguments are most apparent when looking at the scope of variables. This will be addressed later. In the following examples, =&gt; indicates what the system prints as a result of entering the expression preceding it. Anything from a semi-colon (<B>;</B>) to the end of a line is a comment and ignored by the interpreter. The single quote (<B>'</B>) is a useful shorthand for the <A HREF="quote.htm"><B>quote</B></A> special form. For example, <B>'a</B> is equivalent to <B>(quote a)</B>.</P>
+
+<PRE><CODE>1 =&gt; 1
+"hello world" =&gt; "hello world"
+nil =&gt; nil
+() =&gt; nil
+a =&gt; A : unbound variable
+(setq a 1) =&gt; 1
+a =&gt; 1
+(setq a "hello world") =&gt; "hello world"
+a =&gt; "hello world"
+'a =&gt; a</CODE></PRE>
+
+<P>The <A HREF="setq.htm"><B>setq</B></A> special form is used for general variable assignment. The <B>setq</B> form does not evaluate the first argument, but does evaluate the second argument. The result of evaluating the second argument is stored in the variable specified in the first argument. Multiple assignments can be made in a single statement. For example, <B>(setq a 1 b 2 c 3)</B> sets a to 1, b to 2, and c to 3. The value returned is the result of the evaluation of the last form. In this case, it would be 3. These assignments occur sequentially, so that if a form uses a variable that was just assigned, then the new value will be used. There is also a <A HREF="psetq.htm"><B>psetq</B></A> which evaluates all of the forms first and then performs the variable assignments. The following examples will clarify this.</P>
+
+<PRE><CODE>(setq a 1 b 2) =&gt; 2
+(setq a 2 b (+ a 2)) =&gt;4
+b =&gt; 4
+(setq a 1 b 2) =&gt; 2
+(psetq a 2 b (+ a 2)) =&gt; 3
+b =&gt; 3</CODE></PRE>
+
+<P>A function's arguments are all evaluated before the function is called. There are built-in functions in LISP, and a user can also define new functions using the special form <A HREF="defun.htm"><B>defun</B></A>. Examples of functions include the math functions such as <A HREF="sym_plus.htm"><B>+</B></A>, <A HREF="sym_minus.htm"><B>-</B></A>, <A HREF="sym_times.htm"><B>*</B></A>, and <A HREF="sym_divide.htm"><B>/</B></A>.</P>
+
+<PRE><CODE>(+ 1 2) =&gt; 3
+(+ 2) =&gt; 2
+(+) =&gt; 1
+(- 5 2 1) =&gt; 2
+(* 2 (+ 3 4)) =&gt; 14
+(setq a (* 3 5)) =&gt; 15
+(/ 1 2) =&gt; 0
+(/ 1. 2) =&gt; 0
+(/ 1.0 2) =&gt; .5</CODE></PRE>
+
+<P>The form <B>(* 2 (+ 3 4))</B> shows that the form <B>(+ 3 4)</B> is treated as any other form. The form <B>2</B> is evaluated, which returns itself. The form <B>(+ 3 4)</B> is evaluated, which returns <B>7</B>. Then, the arguments <B>2</B> and <B>7</B> are passed to the <B>*</B> function, which returns <B>14</B>.</P>
+
+<P>The last three examples illustrate the difference between integers and floating point numbers. In simple mathematical expressions, integers will be promoted to floating point numbers if at least one of the numbers is a floating point number, and the result will be a floating point number. At least one digit after a decimal point is required for indicating a floating point number.</P>
+
+<P>The functions <A HREF="car.htm"><B>car</B></A> and <A HREF="cdr.htm"><B>cdr</B></A> occur often in LISP and are the basic functions for accessing a list. <B>Car</B> returns the first element of a list, and <B>cdr</B> returns everything except the first element of the list. Given the list <B>(1&nbsp;2&nbsp;3)</B>, which is illustrated again in the following figure , one can see that the car function returns what is pointed to in the left half of the first cons cell, and that the cdr functions returns what is pointed to in the right cons cell. Therefore, the <B>car</B> of the list <B>(1&nbsp;2&nbsp;3)</B> is <B>1</B>, and the <B>cdr</B> is <B>(2 3)</B>. These functions and their results are illustrated below.</P>
+
+<PRE><CODE>(car '(1 2 3)) =&gt; 1
+(cdr '(1 2 3)) =&gt; (2 3)</CODE></PRE>
+
+<P>The list <B>(1&nbsp;2&nbsp;3)</B> is written as <B>'(1&nbsp;2&nbsp;3)</B>. This is done because the list data type is not a self-evaluating form. The first element of a list is treated as a function name, special form, or macro name. The form <B>'(1&nbsp;2&nbsp;3)</B> is the same as <B>(quote&nbsp;(1&nbsp;2&nbsp;3))</B>. The <A HREF="quote.htm"><B>quote</B></A> special form simply returns its argument, which in this case is the list <B>(1&nbsp;2&nbsp;3)</B>.</P>
+
+<PRE><CODE>(setq a '(1 2 3))
+(car a) =&gt; 1
+(cdr a) =&gt; (2 3)</CODE></PRE>
+
+<P>In these examples, the value <B>(1&nbsp;2&nbsp;3)</B> is assigned to the variable <B>a</B>. Remember that <B>setq</B> is not a function, but a special form. Only the second argument is evaluated. In the <B>car</B> and <B>cdr</B> function calls, the symbol <B>a</B> is evaluated, and since its value is <B>(1&nbsp;2&nbsp;3)</B>, that is what is passed to the <B>car</B> and <B>cdr</B> functions. There are also the cases where <B>car</B> and <B>cdr</B> are called on empty lists.</P>
+
+<PRE><CODE>(car ()) =&gt; nil
+(car nil) =&gt; nil
+(cdr nil) =&gt; nil
+(cdr '(a)) =&gt; nil</CODE></PRE>
+
+<P>The function <A HREF="cons.htm"><B>cons</B></A> is used to construct lists. It takes two arguments and creates a cons cell whose car is the first argument and whose cdr is the second argument.</P>
+
+<PRE><CODE>(cons 'a nil) =&gt; (a)
+(cons 'a 'b) =&gt; (a . b)
+(cons 'a '(b)) =&gt; (a b)
+(cons 'a '(b c d e)) =&gt; (a b c d e)
+(cons '(a) '(b c d e)) =&gt; ((a) b c d e)
+(cons (car '(a)) '(b c d e)) =&gt; (a b c d e)
+(cons (cdr '(a)) '(b c d e)) =&gt; (nil b c d e)
+(cons '(a b c) '(d e f)) =&gt; ((a b c) d e f)</CODE></PRE>
+
+<P>Another useful function is the <A HREF="list.htm"><B>list</B></A> function. It takes its arguments and creates a list from them.</P>
+
+<PRE><CODE>(list 1 2 3) =&gt; (1 2 3)
+(list 1 2 (+ 1 2)) =&gt; (1 2 3)
+(list '(a b c) 2 (+ 2 2)) =&gt; ((a b c) 2 4)
+(list '(a b c) (list 1 2 (+ 1 2))) =&gt; ((a b c) (1 2 3))</CODE></PRE>
+
+<P>A user can define new functions using the special form <A HREF="defun.htm"><B>defun</B></A>. For example, <B>(defun&nbsp;cube&nbsp;(x)&nbsp;(*&nbsp;x&nbsp;x&nbsp;x)&nbsp;)</B> defines a function named cube that cubes a number. Once the function is defined it can be used. <B>(cube 3)</B> will return the value of <B>27</B>. This use of the name <B>cube</B> as a function is separate from its use as a variable. The name <B>cube</B> could be used as a variable as well. The <A HREF="defun.htm"><B>defun</B></A> special form takes three arguments:  the name of the function, the list of arguments, and the body of the function. If there are no arguments, then <A HREF="nil.htm"><B>nil</B></A> or <B>()</B> can be used to indicate this. The variables used in the argument list are local variables. Upon entrance to the function, the values of the arguments passed in are bound to these variables. These variables are only visible within the body of this function.</P>
+
+<P>It is useful to discuss the scope and extent of variable bindings in LISP. The scope of a variable refers to where it can be referenced. The extent of a variable refers to when it can be referenced. In the cube function shown above, the scope of the local variable x is the body of the function, and the extent of the variable is the time from when the function is entered to the time that it exits.</P>
+
+</BODY>
+</HTML>

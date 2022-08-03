@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>get-file-dialog</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="get-file-dialog">
+</OBJECT>
+
+<P><A NAME="id_get_file_dialog"></A><B>(get-file-dialog [<I>defext</I> <I>filetypes</I>])</B></P>
+
+<P>This command pops up a dialog box from which a user can select a file. It returns a string containing the filename the user picked or <A HREF="nil.htm">nil</A> if the user pressed the CANCEL button. <I>defext</I> is the default extension when the dialog box is opened. <I>filetypes</I> are the available types listed in the dialog box.</P>
+<PRE><CODE>(get-file-dialog "LISP Files (*.lsp)|*.lsp"
+    "LISP Files (*.lsp)|*.lsp|All Files (*.*)|*.*") </CODE></PRE>
+
+</BODY>
+</HTML>

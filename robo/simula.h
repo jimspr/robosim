@@ -152,7 +152,8 @@ public:
 	virtual bool copy_to_clibboard() = 0;
 	virtual void mark_in_use() = 0;
 	virtual void new_simulation() = 0;
-	virtual bool display_help(const std::string& str) = 0;
+	virtual bool display_help(const std::string& file) = 0;
+	virtual bool display_help(const std::string& file, const std::string& topic) = 0;
 	virtual void print() = 0;
 	virtual void set_font_dialog() = 0;
 	virtual void show_about(void) = 0;

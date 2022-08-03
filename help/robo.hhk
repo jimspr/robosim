@@ -6,1201 +6,1201 @@
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="*">
 		<param name="Name" value="*">
-		<param name="Local" value="html/robo610z.htm">
+		<param name="Local" value="html/sym_times.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="+">
 		<param name="Name" value="+">
-		<param name="Local" value="html/robo1bxv.htm">
+		<param name="Local" value="html/sym_plus.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="-">
 		<param name="Name" value="-">
-		<param name="Local" value="html/robo8zar.htm">
+		<param name="Local" value="html/sym_minus.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="/">
 		<param name="Name" value="/">
-		<param name="Local" value="html/robo2i91.htm">
+		<param name="Local" value="html/sym_divide.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="/=">
 		<param name="Name" value="/=">
-		<param name="Local" value="html/robo0xik.htm">
+		<param name="Local" value="html/sym_divide_equal.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="1+">
 		<param name="Name" value="1+">
-		<param name="Local" value="html/robo34qb.htm">
+		<param name="Local" value="html/sym_oneplus.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="1-">
 		<param name="Name" value="1-">
-		<param name="Local" value="html/robo45v7.htm">
+		<param name="Local" value="html/sym_oneminus.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="&lt;">
 		<param name="Name" value="&lt;">
-		<param name="Local" value="html/robo6pim.htm">
+		<param name="Local" value="html/sym_lt.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="&lt;=">
 		<param name="Name" value="&lt;=">
-		<param name="Local" value="html/robo497w.htm">
+		<param name="Local" value="html/sym_lessthan_equal.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="=">
 		<param name="Name" value="=">
-		<param name="Local" value="html/robo7rjg.htm">
+		<param name="Local" value="html/sym_equal.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="&gt;">
 		<param name="Name" value="&gt;">
-		<param name="Local" value="html/robo6coe.htm">
+		<param name="Local" value="html/sym_greaterthan.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="&gt;=">
 		<param name="Name" value="&gt;=">
-		<param name="Local" value="html/robo5r1o.htm">
+		<param name="Local" value="html/sym_greaterthan_equal.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="about-dialog">
 		<param name="Name" value="about-dialog">
-		<param name="Local" value="html/robo9ulj.htm">
+		<param name="Local" value="html/about-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="abs">
 		<param name="Name" value="abs">
-		<param name="Local" value="html/robo39f7.htm">
+		<param name="Local" value="html/abs.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="acos">
 		<param name="Name" value="acos">
-		<param name="Local" value="html/robo8u2b.htm">
+		<param name="Local" value="html/acos.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="add-objects">
 		<param name="Name" value="add-objects">
-		<param name="Local" value="html/robo9z77.htm">
+		<param name="Local" value="html/add-objects.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="adjust-lights">
 		<param name="Name" value="adjust-lights">
-		<param name="Local" value="html/robo5xbn.htm">
+		<param name="Local" value="html/adjust-lights.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="and">
 		<param name="Name" value="and">
-		<param name="Local" value="html/robo3a04.htm">
+		<param name="Local" value="html/and.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="append">
 		<param name="Name" value="append">
-		<param name="Local" value="html/robo7vtw.htm">
+		<param name="Local" value="html/append.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="append-objects">
 		<param name="Name" value="append-objects">
-		<param name="Local" value="html/robo3zar.htm">
+		<param name="Local" value="html/append-objects.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="apply">
 		<param name="Name" value="apply">
-		<param name="Local" value="html/robo8kjd.htm">
+		<param name="Local" value="html/apply.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="aref">
 		<param name="Name" value="aref">
-		<param name="Local" value="html/robo04yu.htm">
+		<param name="Local" value="html/aref.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="arrange-icons">
 		<param name="Name" value="arrange-icons">
-		<param name="Local" value="html/robo8mpf.htm">
+		<param name="Local" value="html/arrange-icons.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="asin">
 		<param name="Name" value="asin">
-		<param name="Local" value="html/robo08by.htm">
+		<param name="Local" value="html/asin.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="ask-dialog">
 		<param name="Name" value="ask-dialog">
-		<param name="Local" value="html/robo8baf.htm">
+		<param name="Local" value="html/ask-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="atan">
 		<param name="Name" value="atan">
-		<param name="Local" value="html/robo0b3i.htm">
+		<param name="Local" value="html/atan.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="atom">
 		<param name="Name" value="atom">
-		<param name="Local" value="html/robo0bsd.htm">
+		<param name="Local" value="html/atom.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="bit-vector-p">
 		<param name="Name" value="bit-vector-p">
-		<param name="Local" value="html/robo9icw.htm">
+		<param name="Local" value="html/bit-vector-p.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="block">
 		<param name="Name" value="Block Special Form">
-		<param name="Local" value="html/robo5l7v.htm">
+		<param name="Local" value="html/block.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caaaar">
 		<param name="Name" value="caaaar">
-		<param name="Local" value="html/robo7cqa.htm">
+		<param name="Local" value="html/caaaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caaadr">
 		<param name="Name" value="caaadr">
-		<param name="Local" value="html/robo7cvm.htm">
+		<param name="Local" value="html/caaadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caaar">
 		<param name="Name" value="caaar">
-		<param name="Local" value="html/robo259u.htm">
+		<param name="Local" value="html/caaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caadar">
 		<param name="Name" value="caadar">
-		<param name="Local" value="html/robo7m7m.htm">
+		<param name="Local" value="html/caadar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caaddr">
 		<param name="Name" value="caaddr">
-		<param name="Local" value="html/robo7mcy.htm">
+		<param name="Local" value="html/caaddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caadr">
 		<param name="Name" value="caadr">
-		<param name="Local" value="html/robo25f6.htm">
+		<param name="Local" value="html/caadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caar">
 		<param name="Name" value="caar">
-		<param name="Local" value="html/robo9vle.htm">
+		<param name="Local" value="html/caar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cadaar">
 		<param name="Name" value="cadaar">
-		<param name="Local" value="html/robo47jm.htm">
+		<param name="Local" value="html/cadaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cadadr">
 		<param name="Name" value="cadadr">
-		<param name="Local" value="html/robo47oy.htm">
+		<param name="Local" value="html/cadadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cadar">
 		<param name="Name" value="cadar">
-		<param name="Local" value="html/robo2er6.htm">
+		<param name="Local" value="html/cadar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caddar">
 		<param name="Name" value="caddar">
-		<param name="Local" value="html/robo4h0y.htm">
+		<param name="Local" value="html/caddar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cadddr">
 		<param name="Name" value="cadddr">
-		<param name="Local" value="html/robo4h6a.htm">
+		<param name="Local" value="html/cadddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="caddr">
 		<param name="Name" value="caddr">
-		<param name="Local" value="html/robo2ewi.htm">
+		<param name="Local" value="html/caddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cadr">
 		<param name="Name" value="cadr">
-		<param name="Local" value="html/robo9vqq.htm">
+		<param name="Local" value="html/cadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="car">
 		<param name="Name" value="car">
-		<param name="Local" value="html/robo3foy.htm">
+		<param name="Local" value="html/car.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cascade-windows">
 		<param name="Name" value="cascade-windows">
-		<param name="Local" value="html/robo4p4j.htm">
+		<param name="Local" value="html/cascade-windows.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="catch">
 		<param name="Name" value="catch">
-		<param name="Local" value="html/robo3tew.htm">
+		<param name="Local" value="html/catch.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdaaar">
 		<param name="Name" value="cdaaar">
-		<param name="Local" value="html/robo64vm.htm">
+		<param name="Local" value="html/cdaaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdaadr">
 		<param name="Name" value="cdaadr">
-		<param name="Local" value="html/robo650y.htm">
+		<param name="Local" value="html/cdaadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdaar">
 		<param name="Name" value="cdaar">
-		<param name="Local" value="html/robo9036.htm">
+		<param name="Local" value="html/cdaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdadar">
 		<param name="Name" value="cdadar">
-		<param name="Local" value="html/robo6ecy.htm">
+		<param name="Local" value="html/cdadar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdaddr">
 		<param name="Name" value="cdaddr">
-		<param name="Local" value="html/robo6eia.htm">
+		<param name="Local" value="html/cdaddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdadr">
 		<param name="Name" value="cdadr">
-		<param name="Local" value="html/robo908i.htm">
+		<param name="Local" value="html/cdadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdar">
 		<param name="Name" value="cdar">
-		<param name="Local" value="html/robo052q.htm">
+		<param name="Local" value="html/cdar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cddaar">
 		<param name="Name" value="cddaar">
-		<param name="Local" value="html/robo2zoy.htm">
+		<param name="Local" value="html/cddaar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cddadr">
 		<param name="Name" value="cddadr">
-		<param name="Local" value="html/robo2zua.htm">
+		<param name="Local" value="html/cddadr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cddar">
 		<param name="Name" value="cddar">
-		<param name="Local" value="html/robo99ki.htm">
+		<param name="Local" value="html/cddar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdddar">
 		<param name="Name" value="cdddar">
-		<param name="Local" value="html/robo396a.htm">
+		<param name="Local" value="html/cdddar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cddddr">
 		<param name="Name" value="cddddr">
-		<param name="Local" value="html/robo39bm.htm">
+		<param name="Local" value="html/cddddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdddr">
 		<param name="Name" value="cdddr">
-		<param name="Local" value="html/robo99pu.htm">
+		<param name="Local" value="html/cdddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cddr">
 		<param name="Name" value="cddr">
-		<param name="Local" value="html/robo0582.htm">
+		<param name="Local" value="html/cddr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cdr">
 		<param name="Name" value="cdr">
-		<param name="Local" value="html/robo3fua.htm">
+		<param name="Local" value="html/cdr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="characterp">
 		<param name="Name" value="characterp">
-		<param name="Local" value="html/robo0ltc.htm">
+		<param name="Local" value="html/characterp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="check-collision">
 		<param name="Name" value="check-collision">
-		<param name="Local" value="html/robo548e.htm">
+		<param name="Local" value="html/check-collision.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="check-stream">
 		<param name="Name" value="check-stream">
-		<param name="Local" value="html/robo2wx9.htm">
+		<param name="Local" value="html/check-stream.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="clear-simulation">
 		<param name="Name" value="clear-simulation">
-		<param name="Local" value="html/robo08fi.htm">
+		<param name="Local" value="html/clear-simulation.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="close">
 		<param name="Name" value="close">
-		<param name="Local" value="html/robo57dx.htm">
+		<param name="Local" value="html/close.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="complexp">
 		<param name="Name" value="complexp">
-		<param name="Local" value="html/robo9kvk.htm">
+		<param name="Local" value="html/complexp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cond">
 		<param name="Name" value="cond">
-		<param name="Local" value="html/robo14h0.htm">
+		<param name="Local" value="html/cond.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cons">
 		<param name="Name" value="cons">
-		<param name="Local" value="html/robo14hf.htm">
+		<param name="Local" value="html/cons.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="consp">
 		<param name="Name" value="consp">
-		<param name="Local" value="html/robo1z1s.htm">
+		<param name="Local" value="html/consp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="Contents">
 		<param name="Name" value="Contents">
-		<param name="Local" value="html/robo0wc8.htm">
+		<param name="Local" value="html/main_index.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="copy-object">
 		<param name="Name" value="copy-object">
-		<param name="Local" value="html/robo6sok.htm">
+		<param name="Local" value="html/copy-object.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="copy-window">
 		<param name="Name" value="copy-window">
-		<param name="Local" value="html/robo8gtz.htm">
+		<param name="Local" value="html/copy-window.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cos">
 		<param name="Name" value="cos">
-		<param name="Local" value="html/robo3gdv.htm">
+		<param name="Local" value="html/cos.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="cosh">
 		<param name="Name" value="cosh">
-		<param name="Local" value="html/robo14q0.htm">
+		<param name="Local" value="html/cosh.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="d-h">
 		<param name="Name" value="d-h">
-		<param name="Local" value="html/robo3iqw.htm">
+		<param name="Local" value="html/d-h.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="defconstant">
 		<param name="Name" value="defconstant">
-		<param name="Local" value="html/robo1oms.htm">
+		<param name="Local" value="html/defconstant.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="defparameter">
 		<param name="Name" value="defparameter">
-		<param name="Local" value="html/robo1hgy.htm">
+		<param name="Local" value="html/defparameter.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="defun">
 		<param name="Name" value="defun">
-		<param name="Local" value="html/robo4oj2.htm">
+		<param name="Local" value="html/defun.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="defvar">
 		<param name="Name" value="defvar">
-		<param name="Local" value="html/robo9ohe.htm">
+		<param name="Local" value="html/defvar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="display-help">
 		<param name="Name" value="display-help">
-		<param name="Local" value="html/robo72pc.htm">
+		<param name="Local" value="html/display-help.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="do">
 		<param name="Name" value="do">
-		<param name="Local" value="html/robo7pm7.htm">
+		<param name="Local" value="html/do.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="drive-agent">
 		<param name="Name" value="drive-agent">
-		<param name="Local" value="html/robo0gok.htm">
+		<param name="Local" value="html/drive-agent.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="enable-cull">
 		<param name="Name" value="enable-cull">
-		<param name="Local" value="html/robo1euk.htm">
+		<param name="Local" value="html/enable-cull.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="enable-lighting">
 		<param name="Name" value="enable-lighting">
-		<param name="Local" value="html/robo431j.htm">
+		<param name="Local" value="html/enable-lighting.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="enable-smooth-shading">
 		<param name="Name" value="enable-smooth-shading">
-		<param name="Local" value="html/robo09d3.htm">
+		<param name="Local" value="html/enable-smooth-shading.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="enable-solid">
 		<param name="Name" value="enable-solid">
-		<param name="Local" value="html/robo06qs.htm">
+		<param name="Local" value="html/enable-solid.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="endp">
 		<param name="Name" value="endp">
-		<param name="Local" value="html/robo29dc.htm">
+		<param name="Local" value="html/endp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="eq">
 		<param name="Name" value="eq">
-		<param name="Local" value="html/robo7po1.htm">
+		<param name="Local" value="html/eq.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="eql">
 		<param name="Name" value="eql">
-		<param name="Local" value="html/robo3mss.htm">
+		<param name="Local" value="html/eql.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="equal">
 		<param name="Name" value="equal">
-		<param name="Local" value="html/robo2zl8.htm">
+		<param name="Local" value="html/equal.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="equalp">
 		<param name="Name" value="equalp">
-		<param name="Local" value="html/robo19tc.htm">
+		<param name="Local" value="html/equalp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="euler">
 		<param name="Name" value="euler">
-		<param name="Local" value="html/robo4ofm.htm">
+		<param name="Local" value="html/euler.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="eval">
 		<param name="Name" value="eval">
-		<param name="Local" value="html/robo2yi4.htm">
+		<param name="Local" value="html/eval.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="evenp">
 		<param name="Name" value="evenp">
-		<param name="Local" value="html/robo9p0w.htm">
+		<param name="Local" value="html/evenp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="exit">
 		<param name="Name" value="exit">
-		<param name="Local" value="html/robo3584.htm">
+		<param name="Local" value="html/exit.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="exp">
 		<param name="Name" value="exp">
-		<param name="Local" value="html/robo3n5c.htm">
+		<param name="Local" value="html/exp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="floatp">
 		<param name="Name" value="floatp">
-		<param name="Local" value="html/robo3m5s.htm">
+		<param name="Local" value="html/floatp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="funcall">
 		<param name="Name" value="funcall">
-		<param name="Local" value="html/robo7hpo.htm">
+		<param name="Local" value="html/funcall.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="function">
 		<param name="Name" value="function">
-		<param name="Local" value="html/robo5zji.htm">
+		<param name="Local" value="html/function.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="functionp">
 		<param name="Name" value="functionp">
-		<param name="Local" value="html/robo36r4.htm">
+		<param name="Local" value="html/functionp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="gc">
 		<param name="Name" value="gc">
-		<param name="Local" value="html/robo7pr7.htm">
+		<param name="Local" value="html/gc.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-agent-joints">
 		<param name="Name" value="get-agent-joints">
-		<param name="Local" value="html/robo9beb.htm">
+		<param name="Local" value="html/get-agent-joints.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-camera">
 		<param name="Name" value="get-camera">
-		<param name="Local" value="html/robo3pi9.htm">
+		<param name="Local" value="html/get-camera.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-child">
 		<param name="Name" value="get-child">
-		<param name="Local" value="html/robo83xg.htm">
+		<param name="Local" value="html/get-child.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-d-h">
 		<param name="Name" value="get-d-h">
-		<param name="Local" value="html/robo5hgo.htm">
+		<param name="Local" value="html/get-d-h.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-file-dialog">
 		<param name="Name" value="get-file-dialog">
-		<param name="Local" value="html/robo2bon.htm">
+		<param name="Local" value="html/get-file-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-look-at">
 		<param name="Name" value="get-look-at">
-		<param name="Local" value="html/robo6o8k.htm">
+		<param name="Local" value="html/get-look-at.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-look-from">
 		<param name="Name" value="get-look-from">
-		<param name="Local" value="html/robo1s19.htm">
+		<param name="Local" value="html/get-look-from.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-num-facets">
 		<param name="Name" value="get-num-facets">
-		<param name="Local" value="html/robo5to3.htm">
+		<param name="Local" value="html/get-num-facets.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-num-solutions">
 		<param name="Name" value="get-num-solutions">
-		<param name="Local" value="html/robo0l83.htm">
+		<param name="Local" value="html/get-num-solutions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-position">
 		<param name="Name" value="get-position">
-		<param name="Local" value="html/robo3e3y.htm">
+		<param name="Local" value="html/get-position.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-solution">
 		<param name="Name" value="get-solution">
-		<param name="Local" value="html/robo0ze6.htm">
+		<param name="Local" value="html/get-solution.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="get-solutions">
 		<param name="Name" value="get-solutions">
-		<param name="Local" value="html/robo2x9v.htm">
+		<param name="Local" value="html/get-solutions.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="grasp">
 		<param name="Name" value="grasp">
-		<param name="Local" value="html/robo62b4.htm">
+		<param name="Local" value="html/grasp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="if">
 		<param name="Name" value="if">
-		<param name="Local" value="html/robo7puu.htm">
+		<param name="Local" value="html/if.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="integerp">
 		<param name="Name" value="integerp">
-		<param name="Local" value="html/robo8a5s.htm">
+		<param name="Local" value="html/integerp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="invert-transform">
 		<param name="Name" value="invert-transformt">
-		<param name="Local" value="html/robo1kod.htm">
+		<param name="Local" value="html/invert-transform.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="last">
 		<param name="Name" value="last">
-		<param name="Local" value="html/robo0gxg.htm">
+		<param name="Local" value="html/last.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="let">
 		<param name="Name" value="let">
-		<param name="Local" value="html/robo48c4.htm">
+		<param name="Local" value="html/let.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="list">
 		<param name="Name" value="list">
-		<param name="Local" value="html/robo167o.htm">
+		<param name="Local" value="html/list.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="listp">
 		<param name="Name" value="listp">
-		<param name="Local" value="html/robo51ps.htm">
+		<param name="Local" value="html/listp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="load">
 		<param name="Name" value="load">
-		<param name="Local" value="html/robo1o9w.htm">
+		<param name="Local" value="html/load.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="log">
 		<param name="Name" value="log">
-		<param name="Local" value="html/robo48tj.htm">
+		<param name="Local" value="html/log.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="loop">
 		<param name="Name" value="loop">
-		<param name="Local" value="html/robo1oz4.htm">
+		<param name="Local" value="html/loop.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-box">
 		<param name="Name" value="make-box">
-		<param name="Local" value="html/robo89x4.htm">
+		<param name="Local" value="html/make-box.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-circle">
 		<param name="Name" value="make-circle">
-		<param name="Local" value="html/robo70md.htm">
+		<param name="Local" value="html/make-circle.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-composite">
 		<param name="Name" value="make-composite">
-		<param name="Local" value="html/robo6qxx.htm">
+		<param name="Local" value="html/make-composite.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-cone">
 		<param name="Name" value="make-cone">
-		<param name="Local" value="html/robo58px.htm">
+		<param name="Local" value="html/make-cone.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-cylinder">
 		<param name="Name" value="make-cylinder">
-		<param name="Local" value="html/robo7ho2.htm">
+		<param name="Local" value="html/make-cylinder.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-dome">
 		<param name="Name" value="make-dome">
-		<param name="Local" value="html/robo0uxx.htm">
+		<param name="Local" value="html/make-dome.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-extrude-surface">
 		<param name="Name" value="make-extrude-surface">
-		<param name="Local" value="html/robo3w9x.htm">
+		<param name="Local" value="html/make-extrude-surface.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-fixed_link">
 		<param name="Name" value="make-fixed_link">
-		<param name="Local" value="html/robo8xuz.htm">
+		<param name="Local" value="html/make-fixed-link.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-parallel-agent">
 		<param name="Name" value="make-parallel-agent">
-		<param name="Local" value="html/robo5er8.htm">
+		<param name="Local" value="html/make-parallel-agent.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-primitive">
 		<param name="Name" value="make-primitive">
-		<param name="Local" value="html/robo110l.htm">
+		<param name="Local" value="html/make-primitive.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-prismatic-link">
 		<param name="Name" value="make-prismatic-link">
-		<param name="Local" value="html/robo0nsb.htm">
+		<param name="Local" value="html/make-prismatic-link.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-revolute-link">
 		<param name="Name" value="make-revolute-link">
-		<param name="Local" value="html/robo88vf.htm">
+		<param name="Local" value="html/make-revolute-link.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-revolve-surface">
 		<param name="Name" value="make-revolve-surface">
-		<param name="Local" value="html/robo5rxh.htm">
+		<param name="Local" value="html/make-revolve-surface.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-serial-agent">
 		<param name="Name" value="make-serial-agent">
-		<param name="Local" value="html/robo0ues.htm">
+		<param name="Local" value="html/make-serial-agent.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-sphere">
 		<param name="Name" value="make-sphere">
-		<param name="Local" value="html/robo2e3p.htm">
+		<param name="Local" value="html/make-sphere.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="make-truncated-cone">
 		<param name="Name" value="make-truncated-cone">
-		<param name="Local" value="html/robo3q79.htm">
+		<param name="Local" value="html/make-truncated-cone.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="mapcar">
 		<param name="Name" value="mapcar">
-		<param name="Local" value="html/robo1y2a.htm">
+		<param name="Local" value="html/mapcar.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="matmult">
 		<param name="Name" value="matmult">
-		<param name="Local" value="html/robo0vas.htm">
+		<param name="Local" value="html/matmult.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="maximize">
 		<param name="Name" value="maximize">
-		<param name="Local" value="html/robo84bp.htm">
+		<param name="Local" value="html/maximize.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="maximize-active-window">
 		<param name="Name" value="maximize-active-window">
-		<param name="Local" value="html/robo5ol3.htm">
+		<param name="Local" value="html/maximize-active-window.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="message-box">
 		<param name="Name" value="message-box">
-		<param name="Local" value="html/robo6aig.htm">
+		<param name="Local" value="html/message-box.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="minusp">
 		<param name="Name" value="minusp">
-		<param name="Local" value="html/robo92cw.htm">
+		<param name="Local" value="html/minusp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="move-inter-to">
 		<param name="Name" value="move-inter-to">
-		<param name="Local" value="html/robo3fjj.htm">
+		<param name="Local" value="html/move-inter-to.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="move-straight-to">
 		<param name="Name" value="move-straight-to">
-		<param name="Local" value="html/robo88vj.htm">
+		<param name="Local" value="html/move-straight-to.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="new-view">
 		<param name="Name" value="new-view">
-		<param name="Local" value="html/robo6ek7.htm">
+		<param name="Local" value="html/new-view.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="new-view3d">
 		<param name="Name" value="new-view3d">
-		<param name="Local" value="html/robo2s9w.htm">
+		<param name="Local" value="html/new-view3d.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="nil">
 		<param name="Name" value="nil">
-		<param name="Local" value="html/robo4euk.htm">
+		<param name="Local" value="html/nil.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="not">
 		<param name="Name" value="not">
-		<param name="Local" value="html/robo4f5g.htm">
+		<param name="Local" value="html/not.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="nth">
 		<param name="Name" value="nth">
-		<param name="Local" value="html/robo4fe0.htm">
+		<param name="Local" value="html/nth.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="nthcdr">
 		<param name="Name" value="nthcdr">
-		<param name="Local" value="html/robo3asy.htm">
+		<param name="Local" value="html/nthcdr.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="null">
 		<param name="Name" value="null">
-		<param name="Local" value="html/robo3gbw.htm">
+		<param name="Local" value="html/null.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="numberp">
 		<param name="Name" value="numberp">
-		<param name="Local" value="html/robo7nu8.htm">
+		<param name="Local" value="html/numberp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="object-in-use-p">
 		<param name="Name" value="object-in-use-p">
-		<param name="Local" value="html/robo3774.htm">
+		<param name="Local" value="html/object-in-use-p.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="oddp">
 		<param name="Name" value="oddp">
-		<param name="Local" value="html/robo7khc.htm">
+		<param name="Local" value="html/oddp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="offset-position">
 		<param name="Name" value="offset-position">
-		<param name="Local" value="html/robo43la.htm">
+		<param name="Local" value="html/offset-position.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="open">
 		<param name="Name" value="open">
-		<param name="Local" value="html/robo8mge.htm">
+		<param name="Local" value="html/open.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="open-stream-p">
 		<param name="Name" value="open-stream-p">
-		<param name="Local" value="html/robo6v8w.htm">
+		<param name="Local" value="html/open-stream-p.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="or">
 		<param name="Name" value="or">
-		<param name="Local" value="html/robo7q5u.htm">
+		<param name="Local" value="html/or.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="pi">
 		<param name="Name" value="pi">
-		<param name="Local" value="html/robo7q7d.htm">
+		<param name="Local" value="html/pi.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="plusp">
 		<param name="Name" value="plusp">
-		<param name="Local" value="html/robo0gc0.htm">
+		<param name="Local" value="html/plusp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="prin1">
 		<param name="Name" value="prin1">
-		<param name="Local" value="html/robo33qp.htm">
+		<param name="Local" value="html/prin1.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="princ">
 		<param name="Name" value="princ">
-		<param name="Local" value="html/robo33s3.htm">
+		<param name="Local" value="html/princ.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="print">
 		<param name="Name" value="print">
-		<param name="Local" value="html/robo33sk.htm">
+		<param name="Local" value="html/print.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="printer-dialog">
 		<param name="Name" value="printer-dialog">
-		<param name="Local" value="html/robo4azr.htm">
+		<param name="Local" value="html/printer-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="printer-setup-dialog">
 		<param name="Name" value="printer-setup-dialog">
-		<param name="Local" value="html/robo74pz.htm">
+		<param name="Local" value="html/printer-setup-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="prog">
 		<param name="Name" value="prog">
-		<param name="Local" value="html/robo4fjb.htm">
+		<param name="Local" value="html/prog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="prog1">
 		<param name="Name" value="prog1">
-		<param name="Local" value="html/robo3mcx.htm">
+		<param name="Local" value="html/prog1.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="prog2">
 		<param name="Name" value="prog2">
-		<param name="Local" value="html/robo3mcy.htm">
+		<param name="Local" value="html/prog2.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="progn">
 		<param name="Name" value="progn">
-		<param name="Local" value="html/robo3mem.htm">
+		<param name="Local" value="html/progn.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="psetq">
 		<param name="Name" value="psetq">
-		<param name="Local" value="html/robo8dpt.htm">
+		<param name="Local" value="html/psetq.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="quote">
 		<param name="Name" value="quote">
-		<param name="Local" value="html/robo038l.htm">
+		<param name="Local" value="html/quote.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rationalp">
 		<param name="Name" value="rationalp">
-		<param name="Local" value="html/robo6z1s.htm">
+		<param name="Local" value="html/rationalp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="realp">
 		<param name="Name" value="realp">
-		<param name="Local" value="html/robo8jn4.htm">
+		<param name="Local" value="html/realp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="release">
 		<param name="Name" value="release">
-		<param name="Local" value="html/robo7v6t.htm">
+		<param name="Local" value="html/release.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="remove-objects">
 		<param name="Name" value="remove-objects">
-		<param name="Local" value="html/robo165v.htm">
+		<param name="Local" value="html/remove-objects.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="return">
 		<param name="Name" value="return">
-		<param name="Local" value="html/robo4gvi.htm">
+		<param name="Local" value="html/return.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="return-from">
 		<param name="Name" value="return-from">
-		<param name="Local" value="html/robo0ox9.htm">
+		<param name="Local" value="html/return-from.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rotatex">
 		<param name="Name" value="rotatex">
-		<param name="Local" value="html/robo3xh4.htm">
+		<param name="Local" value="html/rotatex.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rotatey">
 		<param name="Name" value="rotatey">
-		<param name="Local" value="html/robo3xh5.htm">
+		<param name="Local" value="html/rotatey.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rotatez">
 		<param name="Name" value="rotatez">
-		<param name="Local" value="html/robo3xh6.htm">
+		<param name="Local" value="html/rotatez.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rplaca">
 		<param name="Name" value="rplaca">
-		<param name="Local" value="html/robo39y9.htm">
+		<param name="Local" value="html/rplace.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rplacd">
 		<param name="Name" value="rplacd">
-		<param name="Local" value="html/robo39yc.htm">
+		<param name="Local" value="html/rplacd.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="rpy">
 		<param name="Name" value="rpy">
-		<param name="Local" value="html/robo4ruh.htm">
+		<param name="Local" value="html/rpy.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="scale">
 		<param name="Name" value="scale">
-		<param name="Local" value="html/robo6wh1.htm">
+		<param name="Local" value="html/scale.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set">
 		<param name="Name" value="set">
-		<param name="Local" value="html/robo4ugk.htm">
+		<param name="Local" value="html/set.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-agent-joints">
 		<param name="Name" value="set-agent-joints">
-		<param name="Local" value="html/robo16nn.htm">
+		<param name="Local" value="html/set-agent-joints.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-background-color">
 		<param name="Name" value="set-background-color">
-		<param name="Local" value="html/robo0nci.htm">
+		<param name="Local" value="html/set-background-color.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-camera">
 		<param name="Name" value="set-camera">
-		<param name="Local" value="html/robo3crl.htm">
+		<param name="Local" value="html/set-camera.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-clipplane">
 		<param name="Name" value="set-clipplane">
-		<param name="Local" value="html/robo2mw5.htm">
+		<param name="Local" value="html/set-clipplane.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-collision-check">
 		<param name="Name" value="set-collision-check">
-		<param name="Local" value="html/robo99gr.htm">
+		<param name="Local" value="html/set-collision-check.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-command-lines">
 		<param name="Name" value="set-command-lines">
-		<param name="Local" value="html/robo890z.htm">
+		<param name="Local" value="html/set-command-lines.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-double-buffer">
 		<param name="Name" value="set-double-buffer">
-		<param name="Local" value="html/robo2gtu.htm">
+		<param name="Local" value="html/set-double-buffer.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-eye-separation">
 		<param name="Name" value="set-eye-separation">
-		<param name="Local" value="html/robo3bji.htm">
+		<param name="Local" value="html/set-eye-separation.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-font-dialog">
 		<param name="Name" value="set-font-dialog">
-		<param name="Local" value="html/robo9bmv.htm">
+		<param name="Local" value="html/set-font-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-light">
 		<param name="Name" value="set-light">
-		<param name="Local" value="html/robo362c.htm">
+		<param name="Local" value="html/set-light.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-look-at">
 		<param name="Name" value="set-look-at">
-		<param name="Local" value="html/robo40tw.htm">
+		<param name="Local" value="html/set-look-at.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-look-from">
 		<param name="Name" value="set-look-from">
-		<param name="Local" value="html/robo6jal.htm">
+		<param name="Local" value="html/set-look-from.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-num-facets">
 		<param name="Name" value="set-num-facets">
-		<param name="Local" value="html/robo0a9f.htm">
+		<param name="Local" value="html/set-num-facets.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-object">
 		<param name="Name" value="set-object">
-		<param name="Local" value="html/robo48j8.htm">
+		<param name="Local" value="html/set-object.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-position">
 		<param name="Name" value="set-position">
-		<param name="Local" value="html/robo3s1a.htm">
+		<param name="Local" value="html/set-position.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-update">
 		<param name="Name" value="set-update">
-		<param name="Local" value="html/robo8let.htm">
+		<param name="Local" value="html/set-update.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-view-dialog">
 		<param name="Name" value="set-view-dialog">
-		<param name="Local" value="html/robo42hz.htm">
+		<param name="Local" value="html/set-view-dialog.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="set-window-menu">
 		<param name="Name" value="set-window-menu">
-		<param name="Local" value="html/robo9xpx.htm">
+		<param name="Local" value="html/set-window-menu.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="setq">
 		<param name="Name" value="setq">
-		<param name="Local" value="html/robo05ip.htm">
+		<param name="Local" value="html/setq.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="show-frames">
 		<param name="Name" value="show-frames">
-		<param name="Local" value="html/robo9i9f.htm">
+		<param name="Local" value="html/show-frames.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="simobp">
 		<param name="Name" value="simobp">
-		<param name="Local" value="html/robo6z8w.htm">
+		<param name="Local" value="html/simobp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="sin">
 		<param name="Name" value="sin">
-		<param name="Local" value="html/robo4uni.htm">
+		<param name="Local" value="html/sin.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="sinh">
 		<param name="Name" value="sinh">
-		<param name="Local" value="html/robo0huw.htm">
+		<param name="Local" value="html/sinh.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="sleep">
 		<param name="Name" value="sleep">
-		<param name="Local" value="html/robo7t80.htm">
+		<param name="Local" value="html/sleep.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="sqrt">
 		<param name="Name" value="sqrt">
-		<param name="Local" value="html/robo17ck.htm">
+		<param name="Local" value="html/sqrt.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="streamp">
 		<param name="Name" value="streamp">
-		<param name="Local" value="html/robo2i7k.htm">
+		<param name="Local" value="html/streamp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="stringp">
 		<param name="Name" value="stringp">
-		<param name="Local" value="html/robo6434.htm">
+		<param name="Local" value="html/stringp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="symbolp">
 		<param name="Name" value="symbolp">
-		<param name="Local" value="html/robo8z5c.htm">
+		<param name="Local" value="html/symbolp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="t">
 		<param name="Name" value="t">
-		<param name="Local" value="html/robo8vck.htm">
+		<param name="Local" value="html/t.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tan">
 		<param name="Name" value="tan">
-		<param name="Local" value="html/robo4xf2.htm">
+		<param name="Local" value="html/tan.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tanh">
 		<param name="Name" value="tanh">
-		<param name="Local" value="html/robo5eug.htm">
+		<param name="Local" value="html/tanh.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="terpri">
 		<param name="Name" value="terpri">
-		<param name="Local" value="html/robo0tih.htm">
+		<param name="Local" value="html/terpri.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="throw">
 		<param name="Name" value="throw">
-		<param name="Local" value="html/robo633r.htm">
+		<param name="Local" value="html/throw.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tile-windows-h">
 		<param name="Name" value="tile-windows-h">
-		<param name="Local" value="html/robo33jc.htm">
+		<param name="Local" value="html/tile-windows-h.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tile-windows-v">
 		<param name="Name" value="tile-windows-v">
-		<param name="Local" value="html/robo33jq.htm">
+		<param name="Local" value="html/tile-windows-v.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="time">
 		<param name="Name" value="time">
-		<param name="Local" value="html/robo642t.htm">
+		<param name="Local" value="html/time.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="transformp">
 		<param name="Name" value="transformp">
-		<param name="Local" value="html/robo6w4w.htm">
+		<param name="Local" value="html/transformp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="translate">
 		<param name="Name" value="translate">
-		<param name="Local" value="html/robo0k85.htm">
+		<param name="Local" value="html/translate.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tref">
 		<param name="Name" value="tref">
-		<param name="Local" value="html/robo6w4m.htm">
+		<param name="Local" value="html/tref.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="tutorial">
 		<param name="Name" value="tutorial">
-		<param name="Local" value="html/robo6jvw.htm">
+		<param name="Local" value="html/tutorial.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="unless">
 		<param name="Name" value="unless">
-		<param name="Local" value="html/robo6i43.htm">
+		<param name="Local" value="html/unless.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="unwind-protect">
 		<param name="Name" value="unwind-protect">
-		<param name="Local" value="html/robo4apg.htm">
+		<param name="Local" value="html/unwind-protect.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="use-kinematics">
 		<param name="Name" value="use-kinematics">
-		<param name="Local" value="html/robo8awj.htm">
+		<param name="Local" value="html/use-kinematics.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="use-kinematics-lisp">
 		<param name="Name" value="use-kinematics-lisp">
-		<param name="Local" value="html/robo7gkw.htm">
+		<param name="Local" value="html/use-kinematics-lisp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="use-objects">
 		<param name="Name" value="use-objects">
-		<param name="Local" value="html/robo9k37.htm">
+		<param name="Local" value="html/use-objects.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="vector">
 		<param name="Name" value="vector">
-		<param name="Local" value="html/robo4wxe.htm">
+		<param name="Local" value="html/vector.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="vectorp">
 		<param name="Name" value="vectorp">
-		<param name="Local" value="html/robo4jg0.htm">
+		<param name="Local" value="html/vectorp.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="when">
 		<param name="Name" value="when">
-		<param name="Local" value="html/robo2vce.htm">
+		<param name="Local" value="html/when.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="winexec">
 		<param name="Name" value="winexec">
-		<param name="Local" value="html/robo9hyb.htm">
+		<param name="Local" value="html/winexec.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="zerop">
 		<param name="Name" value="zerop">
-		<param name="Local" value="html/robo6skw.htm">
+		<param name="Local" value="html/zerop.htm">
 		</OBJECT>
 </UL></HTML>

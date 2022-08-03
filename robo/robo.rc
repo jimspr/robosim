@@ -138,7 +138,7 @@ END
 
 ACCEL ACCELERATORS
 BEGIN
-    VK_F1,          IDM_ABOUT,              VIRTKEY 
+    VK_F1,          IDM_HELP,               VIRTKEY
 END
 
 

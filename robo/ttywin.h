@@ -23,6 +23,7 @@ public:
 	virtual void process();
 	int get_buffer(char* probuf);
 	int get_buffer_len();
+	std::string get_current_ident();
 
 	void add_line_to_history();
 	void add_line_from_history(int index);

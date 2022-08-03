@@ -16,7 +16,7 @@ void package_t::mark_in_use(void)
 	}
 }
 
-symbol_t *package_t::get_symbol(const char *name)
+symbol_t* package_t::get_symbol(const char* name)
 {
 	symbol_t* psym;
 	auto iter = _map.find(name);
@@ -32,7 +32,7 @@ symbol_t *package_t::get_symbol(const char *name)
 	return psym;
 }
 
-void package_t::add_symbol(const char *name,symbol_t *psym)
+void package_t::add_symbol(const char* name, symbol_t* psym)
 {
 	_map[name] = psym;
 }

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>or</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="or">
+</OBJECT>
+
+<P><A NAME="id_or"></A><B>(or {<I>form</I>}*)</B></P>
+
+<P>Evaluates the <I>forms</I> sequentially. As soon as one of the forms evaluates to something other than <A HREF="nil.htm">nil</A> that value is returned. Otherwise, <B>or</B> returns <A HREF="nil.htm">nil</A>.</P>
+<PRE><CODE>(or t) =&gt; t
+(or t nil) =&gt; t
+(or 1 2) =&gt; t
+(setq x 1 y 2)
+(or (= x 1) (= y 1)) =&gt; t</CODE></PRE>
+
+</BODY>
+</HTML>

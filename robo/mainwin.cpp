@@ -78,10 +78,20 @@ int main_window_t::OnCreate(LPCREATESTRUCT lpCreateStruct)
 BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	int idx = LOWORD(wParam);
-	if (idx == IDM_EXIT)
+	switch (idx)
 	{
+	case IDM_EXIT:
 		PostMessage(WM_CLOSE);
 		return TRUE;
+	case IDM_HELP:
+	{
+		auto ident = _lisp_window->get_current_ident();
+		if (ident.empty() || !isalpha(ident[0]))
+			display_help("robo.chm");
+		else
+			display_help("robo.chm", ident);
+		return TRUE;
+	}
 	}
 	if (_menu_funcs.size() == 0)
 		return FALSE;
@@ -222,7 +232,13 @@ void main_window_t::new_simulation()
 
 bool main_window_t::display_help(const string& str)
 {
-	return ::HtmlHelp(m_hWnd, str.c_str(), HH_DISPLAY_TOPIC, 0) ? true : false;
+	return ::HtmlHelp(::GetDesktopWindow(), str.c_str(), HH_DISPLAY_TOPIC, 0) ? true : false;
+}
+
+bool main_window_t::display_help(const std::string& file, const std::string& topic)
+{
+	string item = file + "::/html\\" + topic + ".htm";
+	return ::HtmlHelp(::GetDesktopWindow(), item.c_str(), HH_DISPLAY_TOPIC, 0) ? true : false;
 }
 
 void main_window_t::print()

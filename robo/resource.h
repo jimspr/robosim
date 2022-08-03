@@ -71,6 +71,7 @@
 #define IDC_GLOAMBLG                    429
 #define IDC_GLOAMBLB                    430
 #define IDM_EXIT                        1000
+#define IDM_HELP                        1001
 
 // Next default values for new objects
 // 

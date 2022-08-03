@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "ttywin.h"
+#include "lispenv.h"
 #define new DEBUG_NEW
 
 BEGIN_MESSAGE_MAP(tty_window_t, stdio_window_t)
@@ -143,8 +144,9 @@ bool tty_window_t::cursor_end()
 {
 	if (_num_left_char > 0)
 	{
-		move_right(_num_left_char);
-		_active_pos += _num_left_char;
+		int cnt = _num_left_char;
+		move_right(cnt);
+		_active_pos += cnt;
 		return true;
 	}
 	return false;
@@ -213,3 +215,15 @@ void tty_window_t::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	stdio_window_t::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
+std::string tty_window_t::get_current_ident()
+{
+	int beg = _active_pos;
+	int end = _active_pos;
+	/* Look backwards and forwards to find identifier. */
+	auto type = lisp_env._readtable._type;
+	while ((beg > 0) && (type[_active[beg - 1]] == CONSTITUENT))
+		--beg;
+	while (type[_active[end]] == CONSTITUENT)
+		++end;
+	return std::string{ &_active[beg], &_active[end] };
+}

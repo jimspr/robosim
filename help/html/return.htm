@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>return</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="return">
+</OBJECT>
+
+<P><A NAME="id_return"></A><B>(return [<I>result</I>])</B></P>
+
+<P>This is identical to <B>(<A HREF="return-from.htm">return-from</A> </B><A HREF="nil.htm">nil</A><B> <I>result</I>)</B>. It returns from a block named <A HREF="nil.htm">nil</A>. Blocks named <A HREF="nil.htm">nil</A> are created implicitly by <A HREF="loop.htm"><B>loop</B></A> and <A HREF="do.htm"><B>do</B></A>.</P>
+<PRE><CODE>(setq x 0)
+(setq y 0)
+(loop
+    (setq x (+ x 1))
+    (setq y (+ y x))
+    (if
+        (&gt; x 10)
+        (return y)
+    )
+) =&gt; 55</CODE></PRE>
+
+</BODY>
+</HTML>
