@@ -9,8 +9,8 @@
 #define IDX_TX 3
 #define IDX_TY 4
 #define IDX_TZ 5
-#define IDX_FOCAL 6
-#define IDX_TWIST 7
+#define IDX_NEAR 6
+#define IDX_FAR 7
 #define IDX_ZOOM 8
 #define IDX_ELEV 9
 #define IDX_ROT 10
@@ -43,31 +43,19 @@ protected:
 	virtual void OnCancel() override;
 
 	afx_msg void OnClose();
-	afx_msg void elevu() { procb_sync_minmax(IDX_ELEV, _cam.from.x, (float)5., 1.f, 180.f); }
-	afx_msg void rotu() { procb_sync_minmax(IDX_ROT, _cam.from.y, 5., -179.f, 179.f, true/*wrap*/); }
-	afx_msg void distu() { procb_sync_minmax(IDX_DIST, _cam.from.z, (float)5., 1.0f, 1.0e20f); }
-	afx_msg void fxu() {procb_sync(IDX_FX,_cam.from.x,(float)5.);}
-	afx_msg void fyu() {procb_sync(IDX_FY,_cam.from.y,(float)5.);}
-	afx_msg void fzu() {procb_sync(IDX_FZ,_cam.from.z,(float)5.);}
-	afx_msg void txu() {procb(IDX_TX,_cam.to.x,(float)5.);}
-	afx_msg void tyu() {procb(IDX_TY,_cam.to.y,(float)5.);}
-	afx_msg void tzu() {procb(IDX_TZ,_cam.to.z,(float)5.);}
-	afx_msg void twistu() {procb(IDX_TWIST,_far_plane,(float)5.);}
-	afx_msg void focalu() {procb(IDX_FOCAL,_near_plane,(float)5.);}
-	afx_msg void zoomu() {procb(IDX_ZOOM,_cam.zoom,(float)5.);}
 
-	afx_msg void elevd() { procb_sync_minmax(IDX_ELEV, _cam.from.x, -5.f, 1.f, 180.f); }
-	afx_msg void rotd() { procb_sync_minmax(IDX_ROT, _cam.from.y, -5., -179.f, 179.f, true/*wrap*/); }
-	afx_msg void distd() { procb_sync_minmax(IDX_DIST, _cam.from.z, -5.f, 1.0f, 1.0e20f); }
-	afx_msg void fxd() {procb_sync(IDX_FX,_cam.from.x,-(float)5.);}
-	afx_msg void fyd() {procb_sync(IDX_FY,_cam.from.y,-(float)5.);}
-	afx_msg void fzd() {procb_sync(IDX_FZ,_cam.from.z,-(float)5.);}
-	afx_msg void txd() {procb(IDX_TX,_cam.to.x,-(float)5.);}
-	afx_msg void tyd() {procb(IDX_TY,_cam.to.y,-(float)5.);}
-	afx_msg void tzd() {procb(IDX_TZ,_cam.to.z,-(float)5.);}
-	afx_msg void twistd() {procb(IDX_TWIST,_far_plane,-(float)5.);}
-	afx_msg void focald() {procb(IDX_FOCAL,_near_plane,-(float)5.);}
-	afx_msg void zoomd() {procb(IDX_ZOOM,_cam.zoom,-(float)5.);}
+	static constexpr float elev_incr = 5.0f;
+	static constexpr float rot_incr = 5.0f;
+	static constexpr float dist_incr = 5.0f;
+	static constexpr float fx_incr = 5.0f;
+	static constexpr float fy_incr = 5.0f;
+	static constexpr float fz_incr = 5.0f;
+	static constexpr float tx_incr = 5.0f;
+	static constexpr float ty_incr = 5.0f;
+	static constexpr float tz_incr = 5.0f;
+	static constexpr float far_incr = 5.0f;
+	static constexpr float near_incr = 5.0f;
+	static constexpr float zoom_incr = 5.0f;
 
 	afx_msg void elev_kill() { kill(IDX_FX, _cam.from.x); }
 	afx_msg void rot_kill() { kill(IDX_FY, _cam.from.y); }
@@ -78,8 +66,8 @@ protected:
 	afx_msg void txkill() {kill(IDX_TX,_cam.to.x);}
 	afx_msg void tykill() {kill(IDX_TY,_cam.to.y);}
 	afx_msg void tzkill() {kill(IDX_TZ,_cam.to.z);}
-	afx_msg void twistkill() {kill(IDX_TWIST,_far_plane);}
-	afx_msg void focalkill() {kill(IDX_FOCAL,_near_plane);}
+	afx_msg void farkill() {kill(IDX_FAR,_far_plane);}
+	afx_msg void nearkill() {kill(IDX_NEAR,_near_plane);}
 	afx_msg void zoomkill() {kill(IDX_ZOOM,_cam.zoom);}
 	DECLARE_MESSAGE_MAP()
 
@@ -92,5 +80,18 @@ protected:
 	camera_t _cam;
 	float _near_plane;
 	float _far_plane;
+public:
+	afx_msg void on_delta_elev(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_rot(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_dist(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_fx(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_fy(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_fz(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_tx(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_ty(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_tz(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_far(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_near(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void on_delta_zoom(NMHDR* pNMHDR, LRESULT* pResult);
 };
 #endif

@@ -7,37 +7,10 @@
 #include "grob.h"
 
 using namespace std;
-int view_dialog_t::id[NUM_EDIT] = {IDE_FX,IDE_FY,IDE_FZ,IDE_TX,IDE_TY,IDE_TZ,IDE_FOCAL,IDE_TWIST,IDE_ZOOM, IDE_ELEV, IDE_ROT, IDE_DIST};
+int view_dialog_t::id[NUM_EDIT] = {IDE_FX,IDE_FY,IDE_FZ,IDE_TX,IDE_TY,IDE_TZ,IDE_NEAR,IDE_FAR,IDE_ZOOM, IDE_ELEV, IDE_ROT, IDE_DIST};
 
 BEGIN_MESSAGE_MAP(view_dialog_t, CDialog)
 	ON_WM_CLOSE()
-	ON_BN_CLICKED(IDB_ELEV, elevu)
-	ON_BN_DOUBLECLICKED(IDB_ELEV, elevd)
-	ON_BN_CLICKED(IDB_ROT, rotu)
-	ON_BN_DOUBLECLICKED(IDB_ROT, rotd)
-	ON_BN_CLICKED(IDB_DIST, distu)
-	ON_BN_DOUBLECLICKED(IDB_DIST, distd)
-
-	ON_BN_CLICKED(IDB_FX,fxu)
-	ON_BN_DOUBLECLICKED(IDB_FX,fxd)
-	ON_BN_CLICKED(IDB_FY,fyu)
-	ON_BN_DOUBLECLICKED(IDB_FY,fyd)
-	ON_BN_CLICKED(IDB_FZ,fzu)
-	ON_BN_DOUBLECLICKED(IDB_FZ,fzd)
-
-	ON_BN_CLICKED(IDB_TX,txu)
-	ON_BN_DOUBLECLICKED(IDB_TX,txd)
-	ON_BN_CLICKED(IDB_TY,tyu)
-	ON_BN_DOUBLECLICKED(IDB_TY,tyd)
-	ON_BN_CLICKED(IDB_TZ,tzu)
-	ON_BN_DOUBLECLICKED(IDB_TZ,tzd)
-
-	ON_BN_CLICKED(IDB_TWIST,twistu)
-	ON_BN_DOUBLECLICKED(IDB_TWIST,twistd)
-	ON_BN_CLICKED(IDB_FOCAL,focalu)
-	ON_BN_DOUBLECLICKED(IDB_FOCAL,focald)
-	ON_BN_CLICKED(IDB_ZOOM,zoomu)
-	ON_BN_DOUBLECLICKED(IDB_ZOOM,zoomd)
 
 	ON_CONTROL(EN_KILLFOCUS, IDE_ELEV, elev_kill)
 	ON_CONTROL(EN_KILLFOCUS, IDE_ROT, rot_kill)
@@ -48,9 +21,25 @@ BEGIN_MESSAGE_MAP(view_dialog_t, CDialog)
 	ON_CONTROL(EN_KILLFOCUS,IDE_TX,txkill)
 	ON_CONTROL(EN_KILLFOCUS,IDE_TY,tykill)
 	ON_CONTROL(EN_KILLFOCUS,IDE_TZ,tzkill)
-	ON_CONTROL(EN_KILLFOCUS,IDE_TWIST,twistkill)
-	ON_CONTROL(EN_KILLFOCUS,IDE_FOCAL,focalkill)
+	ON_CONTROL(EN_KILLFOCUS,IDE_FAR,farkill)
+	ON_CONTROL(EN_KILLFOCUS,IDE_NEAR,nearkill)
 	ON_CONTROL(EN_KILLFOCUS,IDE_ZOOM,zoomkill)
+
+	ON_NOTIFY(UDN_DELTAPOS, IDB_ELEV, &view_dialog_t::on_delta_elev)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_ROT, &view_dialog_t::on_delta_rot)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_DIST, &view_dialog_t::on_delta_dist)
+
+	ON_NOTIFY(UDN_DELTAPOS, IDB_FX, &view_dialog_t::on_delta_fx)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_FY, &view_dialog_t::on_delta_fy)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_FZ, &view_dialog_t::on_delta_fz)
+
+	ON_NOTIFY(UDN_DELTAPOS, IDB_TX, &view_dialog_t::on_delta_tx)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_TY, &view_dialog_t::on_delta_ty)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_TZ, &view_dialog_t::on_delta_tz)
+
+	ON_NOTIFY(UDN_DELTAPOS, IDB_FAR, &view_dialog_t::on_delta_far)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_NEAR, &view_dialog_t::on_delta_near)
+	ON_NOTIFY(UDN_DELTAPOS, IDB_ZOOM, &view_dialog_t::on_delta_zoom)
 END_MESSAGE_MAP()
 
 view_dialog_t::view_dialog_t(view_wnd_t* pw)
@@ -249,8 +238,8 @@ void view_dialog_t::fill_dialog_edits()
 	set_dlg_item_float_to_int(IDE_TX, _cam.to.x);
 	set_dlg_item_float_to_int(IDE_TY, _cam.to.y);
 	set_dlg_item_float_to_int(IDE_TZ, _cam.to.z);
-	set_dlg_item_float_to_int(IDE_TWIST, _far_plane);
-	set_dlg_item_float_to_int(IDE_FOCAL, _near_plane);
+	set_dlg_item_float_to_int(IDE_FAR, _far_plane);
+	set_dlg_item_float_to_int(IDE_NEAR, _near_plane);
 	set_dlg_item_float_to_int(IDE_ZOOM, _cam.zoom);
 	update_spherical();
 	check_valid();
@@ -288,3 +277,98 @@ void view_dialog_t::set_dlg_item_float_to_int(int nID, float f)
 	SetDlgItemInt(nID, (int)round(f), TRUE);
 }
 
+void view_dialog_t::on_delta_elev(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync_minmax(IDX_ELEV, _cam.from.x, elev_incr * delta, 1.f, 180.f);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_rot(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync_minmax(IDX_ROT, _cam.from.y, rot_incr * delta, -179.f, 179.f, true/*wrap*/);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_dist(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync_minmax(IDX_DIST, _cam.from.z, dist_incr * delta, 1.0f, 1.0e20f);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_fx(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync(IDX_FX, _cam.from.x, fy_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_fy(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync(IDX_FY, _cam.from.y, fy_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_fz(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb_sync(IDX_FZ, _cam.from.z, fz_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_tx(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_TX, _cam.to.x, tx_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_ty(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_TY, _cam.to.y, ty_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_tz(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_TZ, _cam.to.z, tz_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_far(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_FAR, _far_plane, far_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_near(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_NEAR, _near_plane, near_incr * delta);
+	*pResult = 0;
+}
+
+void view_dialog_t::on_delta_zoom(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	float delta = (float)-pNMUpDown->iDelta;
+	procb(IDX_ZOOM, _cam.zoom, zoom_incr * delta);
+	*pResult = 0;
+}

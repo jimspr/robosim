@@ -11,30 +11,6 @@
 
 using namespace std;
 
-/**************************************************************
-***************************************************************
-*********************  Ask  ***********************************
-***************************************************************
-**************************************************************/
-
-/*
-
-class question
-{
-public:
-	char *question_text;
-	union
-	{
-		char *cresult;
-		long lresult;
-		float fresult;
-	};
-	question(void) {question_text = cresult = NULL;}
-	node_t *get_node(void);
-	int type; // 0 -> float ; 1 -> long ; 2 -> string ; 3 -> symbol
-};
-*/
-
 node_t *question::get_node(void)
 {
 	switch (type)
@@ -54,23 +30,15 @@ node_t *question::get_node(void)
 }
 
 BEGIN_MESSAGE_MAP(ask_dialog_t, CDialog)
-	//{{AFX_MSG_MAP(CAskDialog)
 	ON_WM_CREATE()
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG_MAP
-	ON_CONTROL_RANGE(EN_KILLFOCUS, 100, 199, OnEditKillFocus)
-	ON_CONTROL_RANGE(BN_CLICKED, 200, 299, OnButtonUpClicked)
-	ON_CONTROL_RANGE(BN_DOUBLECLICKED, 200, 299, OnButtonDownClicked)
+	ON_CONTROL_RANGE(EN_KILLFOCUS, 100, 199, on_edit_kill_focus)
+	ON_NOTIFY_RANGE(UDN_DELTAPOS, 200, 299, on_delta_pos)
 END_MESSAGE_MAP()
 
 
 ask_dialog_t::ask_dialog_t(CWnd *p,function *pfn, std::vector<question>& q,const char *t) :
 	CDialog(ask_dialog_t::IDD,p), _questions(q), _prompts(q.size()), _edits(q.size()), _spin_buttons(q.size()), _title(t), _func(pfn)
 {
-	//{{AFX_DATA_INIT(CAskDialog)
-		// NOTE: the ClassWizard will add member initialization here
-	//}}AFX_DATA_INIT
 }
 
 int ask_dialog_t::OnCreate(LPCREATESTRUCT lpcs)
@@ -78,7 +46,7 @@ int ask_dialog_t::OnCreate(LPCREATESTRUCT lpcs)
 	return CDialog::OnCreate(lpcs);
 }
 
-void ask_dialog_t::OnEditKillFocus(UINT nID)
+void ask_dialog_t::on_edit_kill_focus(UINT nID)
 {
 	int idx = nID-100;
 	if (idx >=0 && idx < (int)_questions.size())
@@ -86,24 +54,16 @@ void ask_dialog_t::OnEditKillFocus(UINT nID)
 			verify();
 }
 
-void ask_dialog_t::OnButtonUpClicked(UINT nID)
+void ask_dialog_t::on_delta_pos(UINT nID, NMHDR* pNMHDR, LRESULT* pResult)
 {
-	int idx = nID-200;
-	if (idx >=0 && idx < (int)_questions.size()) // spin button
+	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>(pNMHDR);
+	int idx = nID - 200;
+	if (idx >= 0 && idx < (int)_questions.size()) // spin button
 	{
-		do_spin(idx, true /*up*/);
+		do_spin(idx, pNMUpDown->iDelta < 0);
 		verify();
 	}
-}
-
-void ask_dialog_t::OnButtonDownClicked(UINT nID)
-{
-	int idx = nID-200;
-	if (idx >=0 && idx < (int)_questions.size()) // spin button
-	{
-		do_spin(idx, false /*down*/);
-		verify();
-	}
+	*pResult = 0;
 }
 
 void ask_dialog_t::do_spin(int idx, bool up)
@@ -202,7 +162,7 @@ BOOL ask_dialog_t::OnInitDialog(void)
 		case question_type_e::question_float:
 		case question_type_e::question_long:
 			rc = CRect(ptr+CSize(ewidth,(maxheight-eheight)/2),CSize(eheight,eheight));
-			_spin_buttons[i].Create(WS_CHILD|WS_VISIBLE|WS_BORDER,rc,this,200+i);
+			_spin_buttons[i].Create(WS_CHILD|WS_VISIBLE|WS_BORDER| UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,rc,this,200+i);
 			break;
 		}
 		

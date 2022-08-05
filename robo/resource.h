@@ -18,13 +18,13 @@
 #define IDD_VIEWMDIALOG                 200
 #define IDE_FY                          306
 #define IDE_ROT                         307
-#define IDE_TWIST                       308
+#define IDE_FAR                         308
 #define IDE_FX                          311
 #define IDE_FZ                          312
 #define IDE_ELEV                        313
 #define IDE_DIST                        314
 #define IDE_TX                          317
-#define IDE_FOCAL                       318
+#define IDE_NEAR                        318
 #define IDE_TY                          321
 #define IDE_TZ                          325
 #define IDT_MSG                         328
@@ -35,8 +35,8 @@
 #define IDB_TX                          336
 #define IDB_TY                          337
 #define IDB_TZ                          338
-#define IDB_FOCAL                       339
-#define IDB_TWIST                       340
+#define IDB_NEAR                        339
+#define IDB_FAR                         340
 #define IDB_ZOOM                        341
 #define IDB_ELEV                        342
 #define IDB_ROT                         343
@@ -77,9 +77,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        404
+#define _APS_NEXT_RESOURCE_VALUE        406
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         429
+#define _APS_NEXT_CONTROL_VALUE         430
 #define _APS_NEXT_SYMED_VALUE           400
 #endif
 #endif

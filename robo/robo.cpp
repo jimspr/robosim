@@ -43,33 +43,22 @@ node_list_t<sysfunction_t, 256> sysfunction_t::plist("sysfunction_t LIST");
 node_list_t<mat44, 128> mat44::plist("mat44 LIST");
 node_list_t<simob_t, 16> simob_t::plist("simob_t LIST");
 
-CRoboApp theApp;
+robo_app_t theApp;
+// Keep spLispWnd alive until the end.
 shared_ptr<lisp_window_t> spLispWnd;
 
-BEGIN_MESSAGE_MAP(CRoboApp, CWinApp)
-	//{{AFX_MSG_MAP(CRoboApp)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG_MAP
-	// Standard file based document commands
-	// Standard print setup command
+BEGIN_MESSAGE_MAP(robo_app_t, CWinApp)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
-// CRoboApp construction
+// robo_app_t construction
 
-CRoboApp::CRoboApp()
-{
-	hSpinLib = LoadLibrary("SPIN.DLL");
-}
-
-CRoboApp::~CRoboApp()
+robo_app_t::~robo_app_t()
 {
 	delete current_package;
-	FreeLibrary(hSpinLib);
 }
 
-int CRoboApp::Run(void)
+int robo_app_t::Run(void)
 {
 	try
 	{
@@ -89,7 +78,7 @@ int CRoboApp::Run(void)
 	return CWinApp::Run();
 }
 
-int CRoboApp::RunOne(void)
+bool robo_app_t::run_one(void)
 {
 	LONG lIdleCount = 0;
 	MSG* pMsg = AfxGetCurrentMessage();
@@ -98,13 +87,11 @@ int CRoboApp::RunOne(void)
 	{
 	}
 	if (!PumpMessage())
-	{
-		spLispWnd->stop();
-	}
-	return 1;
+		return false;
+	return true;
 }
 
-BOOL CRoboApp::InitInstance(void)
+BOOL robo_app_t::InitInstance(void)
 {
 	auto pMainWnd = new main_window_t();
 	m_pMainWnd = pMainWnd;

@@ -9,7 +9,7 @@ BEGIN_MESSAGE_MAP(lisp_window_t, tty_window_t)
 	ON_MESSAGE(WM_SIZEPARENT, OnSizeParent)
 END_MESSAGE_MAP()
 
-lisp_window_t::lisp_window_t(void) : tty_window_t(), std::streambuf()
+lisp_window_t::lisp_window_t() : tty_window_t(), std::streambuf()
 {
 	setg(_input, _input + KEYBUFSIZE, _input + KEYBUFSIZE);
 	setp(_output, _output + KEYBUFSIZE);
@@ -70,7 +70,7 @@ LRESULT lisp_window_t::OnSizeParent(WPARAM, LPARAM lParam)
 	return 0;
 }
 
-void lisp_window_t::process(void)
+void lisp_window_t::process()
 {
 	int len = get_buffer_len();
 	setg(eback(), egptr() - len, egptr());
@@ -111,11 +111,15 @@ int lisp_window_t::sync()
 	return 0;
 }
 
-void lisp_window_t::messageloop(void)
+void lisp_window_t::messageloop()
 {
 	_is_full = false;
+	/* Wait until there is a line to process. */
 	while (!_is_full)
-		((CRoboApp *)afxCurrentWinApp)->RunOne();
+	{
+		if (!((robo_app_t*)afxCurrentWinApp)->run_one())
+			stop();
+	}
 }
 
 void lisp_window_t::OnLButtonDown(UINT flags,CPoint pt)

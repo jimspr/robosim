@@ -14,7 +14,7 @@ public:
 	spin_button_wnd_t() {}
 	BOOL Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID)
 	{
-		return CWnd::Create("SpinButton", "", dwStyle, rect, pParentWnd, nID);
+		return CWnd::Create("msctls_updown32", "", dwStyle, rect, pParentWnd, nID);
 	}
 };
 
@@ -32,9 +32,8 @@ public:
 	void OnOK();
 	BOOL OnInitDialog();
 	node_t* get_list();
-	void OnButtonUpClicked(UINT);
-	void OnButtonDownClicked(UINT);
-	void OnEditKillFocus(UINT);
+	void on_edit_kill_focus(UINT);
+	void on_delta_pos(UINT id, NMHDR* pNMHDR, LRESULT* pResult);
 
 	//{{AFX_MSG(CAskDialog)
 	afx_msg int OnCreate(LPCREATESTRUCT lpcs);
