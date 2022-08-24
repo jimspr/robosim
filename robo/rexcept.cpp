@@ -17,22 +17,22 @@ void throw_done_exception()
 
 void throw_interrupt_exception()
 {
-	throw new interrupt_exception_t(TRUE);
+	throw new interrupt_exception_t();
 }
 
-void throw_read_exception(int err)
+void throw_read_exception(error_e err)
 {
 	read_exception_t *pReadException = new read_exception_t(err);
 	throw pReadException;
 }
 
-void throw_eval_exception(const node_t *n,int err)
+void throw_eval_exception(const node_t *n,error_e err)
 {
 	eval_exception_t *pEvalException = new eval_exception_t(n, err);
 	throw pEvalException;
 }
 
-void throw_eval_exception(int err)
+void throw_eval_exception(error_e err)
 {
 	eval_exception_t *pEvalException = new eval_exception_t(NULL, err);
 	throw pEvalException;

@@ -3,6 +3,7 @@
 #include "node.h"
 #include "argstack.h"
 #include "package.h"
+#include <chrono>
 
 using namespace std;
 
@@ -398,9 +399,9 @@ static node_t *form_block(cons_t *ths)
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == psym)
+		if (e->_block == psym)
 		{
-			result = e->retval;
+			result = e->_retval;
 			e->Delete();
 		}
 		else
@@ -644,9 +645,9 @@ static node_t *macro_prog(cons_t *ths)  // identical to let except implicit nil 
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == nil)
+		if (e->_block == nil)
 		{
-			retval = e->retval;
+			retval = e->_retval;
 			e->Delete();
 		}
 		else
@@ -687,9 +688,9 @@ static node_t *macro_prog_star(cons_t *ths)  // identical to let* except implici
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == nil)
+		if (e->_block == nil)
 		{
-			retval = e->retval;
+			retval = e->_retval;
 			e->Delete();
 		}
 		else
@@ -801,9 +802,9 @@ static node_t *macro_loop(cons_t *ths)
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == nil )
+		if (e->_block == nil )
 		{
-			return e->retval;
+			return e->_retval;
 			e->Delete();
 		}
 		else
@@ -870,9 +871,9 @@ static node_t *macro_do(cons_t *ths)
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == nil)
+		if (e->_block == nil)
 		{
-			retval = e->retval;
+			retval = e->_retval;
 			e->Delete();
 		}
 		else
@@ -893,8 +894,7 @@ static node_t *macro_do(cons_t *ths)
 
 static node_t *macro_do_star(cons_t *ths)
 {
-	node_t *test,
-		 *retval = nil;
+	node_t *retval = nil;
 	cons_t *clause,*body,*result,*bindings;
 	int numvars;
 	int i=0;
@@ -908,12 +908,11 @@ static node_t *macro_do_star(cons_t *ths)
 	clause = ths->CadrCONS(); // (test {result}*)
 	clause->check_arg_type(TYPE_CONS);
 
-	test = clause->Car();
+	node_t* test = clause->Car();
 	result = clause->CdrCONS();
 
 	body = ths->CddrCONS();
 //  body = (body->is_a(TYPE_CONS)) ? body->Car() : nil;
-
 
 	try
 	{
@@ -941,9 +940,9 @@ static node_t *macro_do_star(cons_t *ths)
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->block == nil)
+		if (e->_block == nil)
 		{
-			retval = e->retval;
+			retval = e->_retval;
 			e->Delete();
 		}
 		else
@@ -964,10 +963,13 @@ static node_t *macro_do_star(cons_t *ths)
 
 static node_t *macro_time(cons_t *ths)
 {
+	using namespace std::chrono;
 	ths->check_min_num_args(1);
-	cout << CTime::GetCurrentTime().Format("%c") << "\n";
+	auto start = high_resolution_clock::now();
 	node_t *result = ths->Car()->eval();
-	cout << CTime::GetCurrentTime().Format("%c") << "\n";
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	cout << duration.count() << " microseconds" << "\n";
 	return result;
 }
 
@@ -987,9 +989,9 @@ static node_t *form_catch(cons_t *ths)
 	}
 	catch(other_exception_t* e)
 	{
-		if (e->tag == tag)
+		if (e->_tag == tag)
 		{
-			res = e->retval;
+			res = e->_retval;
 			e->Delete();
 		}
 		else

@@ -348,17 +348,17 @@ bool ask_dialog_t::call_function(void)
 	catch(eval_exception_t* e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(NULL, *e);
+		str += get_rlerror_msg(*e);
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
 		e->Delete();
 	}
 	catch(block_return_exception_t* e)
 	{
-		robosim_exception_t re(NULL, UNKNOWN_BLOCK_NAME, lisp_env._readtable._line_cnt);
+		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_env._readtable._line_cnt);
 		ostrstream ostr;
 		ostr << "Error - \"";
-		e->block->print(ostr);
-		ostr << "\" " << get_rlerror_msg(NULL, re) << endl << '\0';;
+		e->_block->print(ostr);
+		ostr << "\" " << get_rlerror_msg(re) << endl << '\0';;
 		AfxMessageBox(ostr.str(), MB_OK|MB_ICONSTOP);
 		e->Delete();
 	}
@@ -369,7 +369,7 @@ bool ask_dialog_t::call_function(void)
 	catch(read_exception_t* e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(NULL, *e);
+		str += get_rlerror_msg(*e);
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
 		e->Delete();
 	}

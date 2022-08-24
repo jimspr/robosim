@@ -167,9 +167,9 @@
 		(null
 			(ask-dialog #'mbox "Enter box parameters" 
 				'("X" 10.0) '("Y" 10.0) '("Z" 10.0)
-				'("Ambient - Red" 1.0) '("Ambient - Green" 0.0) '("Ambient - Blue" 0.0)
-				'("Diffuse - Red" 1.0) '("Diffuse - Green" 0.0) '("Diffuse - Blue" 0.0)
-				'("Specular - Red" 0.0) '("Specular - Green" 0.0) '("Specular - Blue" 0.0)
+				'("Ambient - Red" 1.0 .1) '("Ambient - Green" 0.0 .1) '("Ambient - Blue" 0.0 .1)
+				'("Diffuse - Red" 1.0 .1) '("Diffuse - Green" 0.0 .1) '("Diffuse - Blue" 0.0 .1)
+				'("Specular - Red" 0.0 .1) '("Specular - Green" 0.0 .1) '("Specular - Blue" 0.0 .1)
 			)
 		)
 		(remove-objects tbox)

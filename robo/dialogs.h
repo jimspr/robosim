@@ -41,7 +41,7 @@ public:
 	DECLARE_MESSAGE_MAP()
 protected:
 	const char* _title;
-	char _buf[512];
+	char _buf[512]{};
 	std::vector<question>& _questions;
 	std::vector<CStatic> _prompts;
 	std::vector<CEdit> _edits;

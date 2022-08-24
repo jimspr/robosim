@@ -146,15 +146,15 @@ node_t* usrfunction_t::eval(int numargs, node_t** base)
 	}
 	catch (block_return_exception_t* e)
 	{
-		if (e->block == nil && (_form_name.size() == 0))
-			result = e->retval;
-		else if (_form_name != e->block->get_name())
+		if (e->_block == nil && (_form_name.size() == 0))
+			result = e->_retval;
+		else if (_form_name != e->_block->get_name())
 		{
 			g_bind_stack.unbind(num);
 			throw;
 		}
 		else
-			result = e->retval;
+			result = e->_retval;
 		e->Delete();
 	}
 	catch (CException*)

@@ -110,14 +110,14 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 	catch (read_exception_t* e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(NULL, *e);
+		str += get_rlerror_msg(*e);
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
 		e->Delete();
 	}
 	catch (eval_exception_t* e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(NULL, *e);
+		str += get_rlerror_msg(*e);
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
 		e->Delete();
 	}

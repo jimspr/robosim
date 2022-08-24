@@ -7,7 +7,7 @@
 
 enum node_type_e
 {
-	TYPE_NODE = 0,
+	//TYPE_NODE = 0,
 	TYPE_CONS = 2,
 	TYPE_SYMBOL = 3,
 	TYPE_STRING = 4,
@@ -96,8 +96,8 @@ protected:
 	std::vector<std::unique_ptr<block_t>> _blocks; // Each block is nodes_in_block*size chars.
 	size_t _current_node = 0;
 	size_t _current_block = 0;
-	int _nodes_total = 0;
-	int _nodes_alloc = 0;
+	size_t _nodes_total = 0;
+	size_t _nodes_alloc = 0;
 	const char *_name;
 
 public:
@@ -187,7 +187,7 @@ public:
 		}
 		/* Nothing available in any block. */
 		NodeListArray.garbage_collect();
-		if (_nodes_total - _nodes_alloc < nodes_in_block)
+		if (_nodes_total < nodes_in_block + _nodes_alloc)
 		{
 			add_entry();
 			return get_node_in_current_block();
@@ -255,7 +255,7 @@ public:
 class node_t
 {
 protected:
-	node_type_e _type{ TYPE_NODE };
+	node_type_e _type;
 	gc_flag_e _flags{ FLAG_NODE_JUST_CREATED };
 public:
 	node_t(node_type_e t) : _type(t)
@@ -509,8 +509,6 @@ public:
 
 	CC(Cdddr,CdrCONS()->CdrCONS()->Cdr())
 	CC(Caddr,CdrCONS()->CdrCONS()->Car())
-
-	CC(Cadddr,CdrCONS()->CdrCONS()->CdrCONS()->Car())
 
 	node_t *car() const { return Car();}
 	node_t *cdr() const { return Cdr();}

@@ -72,7 +72,7 @@ int lisp_env_t::eval(void)
 	}
 	catch(block_return_exception_t* e)
 	{
-		robosim_exception_t re(NULL, UNKNOWN_BLOCK_NAME, _readtable._line_cnt);
+		robosim_exception_t re(UNKNOWN_BLOCK_NAME, _readtable._line_cnt);
 		rlerror(_file_name, re);
 		res = NULL;
 		if (!_is_top)
@@ -90,7 +90,7 @@ int lisp_env_t::eval(void)
 	}
 	catch(other_exception_t* e)
 	{
-		robosim_exception_t re(e->tag, UNCAUGHT_EXCEPTION, _readtable._line_cnt);
+		robosim_exception_t re(e->_tag, UNCAUGHT_EXCEPTION, _readtable._line_cnt);
 		res = NULL;
 		rlerror(_file_name, re);
 		if (!_is_top)

@@ -335,6 +335,8 @@
     <ClInclude Include="argstack.h" />
     <ClInclude Include="constant.h" />
     <ClInclude Include="dialogs.h" />
+    <ClInclude Include="errordat.h" />
+    <ClInclude Include="errors.h" />
     <ClInclude Include="grob.h" />
     <ClInclude Include="ik.h" />
     <ClInclude Include="lightpage.h" />
