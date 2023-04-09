@@ -12,7 +12,6 @@ enum node_type_e
 	TYPE_SYMBOL = 3,
 	TYPE_STRING = 4,
 	//TYPE_NUM = 6,
-	TYPE_DOT = 7,
 	TYPE_LONG = 8,
 	TYPE_FLOAT = 9,
 	TYPE_VECTOR = 10,
@@ -146,6 +145,7 @@ public:
 				_nodes_alloc++;
 				ptr = cblock->node_of_block(_current_node);
 				_current_node++;
+				/* Constructor will be called, but init everything to zero. */
 				memset(ptr, 0, node_size);
 				((node_t*)ptr)->set_gc_flag(FLAG_NODE_JUST_CREATED);
 				return ptr;
@@ -212,8 +212,8 @@ public:
 	}
 
 
-	//delete_unused is called by garbage collection routines
-	// current_block and current_node are reset.
+	/* delete_unused is called by garbage collection routines
+	   current_block and current_node are reset. */
 	int delete_unused()
 	{
 		int cnt = 0;
@@ -227,6 +227,7 @@ public:
 				{
 					if (!ptr->is_in_use() && !ptr->is_just_created())
 					{
+						ASSERT(ptr->get_type() != 0);
 						ptr->~T();
 						map[j] = (char)0;
 						cnt++;
@@ -261,7 +262,7 @@ public:
 	node_t(node_type_e t) : _type(t)
 	{}
 	virtual ~node_t() {}
-//
+
 	virtual node_t *eval() { return this;}
 	virtual void mark_in_use() {set_gc_flag(FLAG_NODE_IN_USE);}
 	virtual void print(std::ostream &) const = 0;
@@ -310,18 +311,19 @@ protected:
 	symbol_flags_e _symbol_flags = SYMBOL_FLAGS_NONE;
 public:
 	static bool verify(node_t* p) { return p->get_type() == TYPE_SYMBOL; }
-	symbol_t();
-	symbol_t(const char* n);
-	symbol_t(const char* n, node_t* v);
-	symbol_t(const char* n, form_t* f);
 
-	node_t* eval();
-	void mark_in_use();
-	void print(std::ostream& ostr) const { ostr << _print_name; }
-	void princ(std::ostream& ostr) const;
+	symbol_t(const char* n) : node_t(TYPE_SYMBOL), _print_name(n)
+	{
+	}
+
+	node_t* eval() override;
+	void mark_in_use() override;
+	void print(std::ostream& ostr) const override { ostr << _print_name; }
+	void princ(std::ostream& ostr) const override;
 
 	const char* get_name() const { return _print_name.c_str(); }
 
+	void verify_can_set();
 	void set_value(node_t* v);
 	void set_constant_value(node_t* v);
 	node_t* get_value() const { return _value; }
@@ -349,16 +351,10 @@ public:
 class nil_t : public symbol_t
 {
 public:
-	nil_t() : symbol_t("NIL") {set_constant_value(this);}
+	nil_t() : symbol_t("NIL") { set_constant_value(this); }
 
-	node_t *car() const { return (node_t *)this;}
-	node_t *cdr() const { return (node_t *)this;}
-};
-
-class dot_t : public symbol_t
-{
-public:
-	dot_t() : symbol_t("DOT") {_type = TYPE_DOT;}
+	node_t* car() const override { return (node_t*)this; }
+	node_t* cdr() const override { return (node_t*)this; }
 };
 
 class number_node_t : public node_t
@@ -451,7 +447,7 @@ public:
 	int operator<=(long l) const;
 	int operator>=(long l) const;
 	int operator==(long l) const;
-//
+
 	DECLARE_NODE(number_node_t, 1024)
 };
 
@@ -472,6 +468,10 @@ public:
 	DECLARE_NODE(vector_t, 128)
 };
 
+/* Can't mark cons_t as final. This is because nil is used as the "cdr" for the last item.
+   We assume the cdr is a cons_t, but nil_t is a symbol, not a cons_t. Marking as final causes
+   various calls to not be through the virtual function, but instead calls the cons_t version
+   directly, which causes problems. */
 class cons_t : public node_t
 {
 protected:
@@ -485,6 +485,13 @@ public:
 	{
 	}
 
+	static cons_t* make_list();
+	template <typename T, typename... Types>
+	static cons_t* make_list(T var1, Types... var2)
+	{
+		return new cons_t{var1, make_list(var2...)};
+	}
+
 	node_t *eval();
 	void mark_in_use();
 	void print(std::ostream &) const;
@@ -495,26 +502,41 @@ public:
 	void check_min_num_args(int n) const;
 	int check_range_num_args(int l,int u) const;
 
-#define CC(fn,field) \
-	cons_t * fn##CONS() const{ return (cons_t *)(field);}\
-	node_t * fn() const { return field;}
+	node_t *car() const override { return _left;}
+	node_t *cdr() const override { return _right;}
+	void set_car(node_t* p) { _left = p; }
+	void set_cdr(node_t* p) { _right = p; }
+	/* Create a new cons and add to right. */
+	cons_t* append_cons(node_t* p);
 
-	CC(Car,_left)
-	CC(Cdr,_right)
+	// Non-virtual helper methods for traversing cons.
+	node_t* Car() const
+	{
+		ASSERT(_type == TYPE_CONS);
+		return _left;
+	}
+	cons_t* CarCONS() const
+	{
+		ASSERT(_type == TYPE_CONS);
+		return (cons_t*)_left;
+	}
 
-	CC(Caar,CarCONS()->Car())
-	CC(Cadr,CdrCONS()->Car())
-	CC(Cdar,CarCONS()->Cdr())
-	CC(Cddr,CdrCONS()->Cdr())
+	node_t* Cdr() const
+	{
+		ASSERT(_type == TYPE_CONS);
+		return _right;
+	}
+	cons_t* CdrCONS() const
+	{
+		ASSERT(_type == TYPE_CONS);
+		return (cons_t*)_right;
+	}
 
-	CC(Cdddr,CdrCONS()->CdrCONS()->Cdr())
-	CC(Caddr,CdrCONS()->CdrCONS()->Car())
+	node_t* Cadr() const { return CdrCONS()->Car(); }
+	cons_t* CadrCONS() const { return CdrCONS()->CarCONS(); }
 
-	node_t *car() const { return Car();}
-	node_t *cdr() const { return Cdr();}
-
-	void set_car(node_t *p) { _left = p; }
-	void set_cdr(node_t *p) { _right = p; }
+	node_t* Cddr() const { return CdrCONS()->Cdr(); }
+	cons_t* CddrCONS() const { return CdrCONS()->CdrCONS(); }
 
 	DECLARE_NODE(cons_t, 1024)
 };
@@ -671,7 +693,22 @@ public:
 
 extern nil_t* nil;
 extern symbol_t* pTrue;
-extern dot_t* dot_node;
+extern symbol_t* dot_node;
+
+inline bool is_dot(node_t* p)
+{
+	return p == dot_node;
+}
+
+inline node_t* node_true(bool p)
+{
+	return p ? (node_t*)pTrue : nil;
+}
+
+inline node_t* node_false(bool p)
+{
+	return p ? nil : (node_t*)pTrue;
+}
 
 extern symbol_t* pPLUS1;
 extern symbol_t* pPLUS2;

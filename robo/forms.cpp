@@ -340,8 +340,9 @@ static node_t *form_if(cons_t *ths)
 	ths->check_min_num_args(2);
 	if (ths->Car()->eval() == nil)
 	{
-		if (ths->Cddr()->is_a(TYPE_CONS))
-			return ths->Caddr()->eval();
+		auto condition = ths->CddrCONS();
+		if (condition->is_a(TYPE_CONS))
+			return condition->Car()->eval();
 		else
 			return nil;
 	}
@@ -802,7 +803,7 @@ static node_t *macro_loop(cons_t *ths)
 	}
 	catch(block_return_exception_t* e)
 	{
-		if (e->_block == nil )
+		if (e->_block == nil)
 		{
 			return e->_retval;
 			e->Delete();

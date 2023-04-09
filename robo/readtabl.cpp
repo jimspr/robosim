@@ -139,7 +139,7 @@ node_t *read_table_t::parse_vector(istream &istr)
 	{
 		while (t = read(istr,0))
 		{
-			if (t->is_a(TYPE_DOT))
+			if (is_dot(t))
 			{
 				consume(istr);
 				throw_read_exception(INVALID_DOTTED_PAIR);
@@ -281,7 +281,7 @@ node_t *read_table_t::parse_lparen(istream &istr)
 	t = read(istr,0);
 	if (!t)
 		return nil;
-	if (t->is_a(TYPE_DOT))
+	if (is_dot(t))
 	{
 		consume(istr);
 		throw_read_exception(INVALID_DOTTED_PAIR);
@@ -292,7 +292,7 @@ node_t *read_table_t::parse_lparen(istream &istr)
 		t = read(istr,0);
 		if (!t)
 			return top;
-		if (t->is_a(TYPE_DOT))
+		if (is_dot(t))
 		{
 			t = read(istr,0);
 			if (!t)
@@ -300,7 +300,7 @@ node_t *read_table_t::parse_lparen(istream &istr)
 				consume(istr);
 				throw_read_exception(INVALID_DOTTED_PAIR);
 			}
-			if (t->is_a(TYPE_DOT))
+			if (is_dot(t))
 			{
 				consume(istr);
 				throw_read_exception(INVALID_DOTTED_PAIR);
@@ -341,15 +341,12 @@ node_t *read_table_t::parse_quote(istream &istr)
 		consume(istr);
 		throw_read_exception(UNEXPECTED_RPAREN);
 	}
-	if (t->is_a(TYPE_DOT))
+	if (is_dot(t))
 	{
 		consume(istr);
 		throw_read_exception(INVALID_DOTTED_PAIR);
 	}
-	return new cons_t(
-		current_package->get_symbol("QUOTE"),
-		new cons_t(t,nil)
-		);
+	return cons_t::make_list(current_package->get_symbol("QUOTE"), t);
 }
 
 node_t *read_table_t::parse_function(istream &istr)
@@ -361,15 +358,12 @@ node_t *read_table_t::parse_function(istream &istr)
 		consume(istr);
 		throw_read_exception(UNEXPECTED_RPAREN);
 	}
-	if (t->is_a(TYPE_DOT))
+	if (is_dot(t))
 	{
 		consume(istr);
 		throw_read_exception(INVALID_DOTTED_PAIR);
 	}
-	return new cons_t(
-		current_package->get_symbol("FUNCTION"),
-		new cons_t(t,nil)
-		);
+	return cons_t::make_list(current_package->get_symbol("FUNCTION"), t);
 }
 
 node_t *read_table_t::parse_comment(istream &istr)

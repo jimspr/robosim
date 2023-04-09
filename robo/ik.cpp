@@ -119,7 +119,7 @@ int ik_lisp_t::inverse_kinematics(fmat44 mat)
 {
 	ASSERT(_parameters != NULL);
 	ASSERT(!_solutions.empty());
-	cons_t* args = new cons_t(_parameters, new cons_t(new mat44(mat), nil));
+	cons_t* args = cons_t::make_list(_parameters, new mat44(mat));
 	cons_t *pRet = (cons_t*)_fn_inverse_kinematics->evalnoargs(args);
 	if ((node_t*)pRet == (node_t*)nil)
 		return 0;
@@ -150,16 +150,16 @@ std::unique_ptr<ik_interface> ik_lisp_t::compute_parameters(jointdef* joints, in
 	cons_t* pArgs = (cons_t*)nil;
 	while (numjoints--)
 	{
-		cons_t *pJoint = 
-			new cons_t(new mat44(joints[numjoints].mat),
-			new cons_t(new number_node_t(joints[numjoints].mn),
-			new cons_t(new number_node_t(joints[numjoints].mx),
-			new cons_t(new number_node_t((long)joints[numjoints].type), nil))));
+		cons_t *pJoint = cons_t::make_list(
+			new mat44(joints[numjoints].mat),
+			new number_node_t(joints[numjoints].mn),
+			new number_node_t(joints[numjoints].mx),
+			new number_node_t((long)joints[numjoints].type));
 		pArgs = new cons_t(pJoint ,pArgs);
 	}
 	node_t *pRet = _fn_compute_parameters->evalnoargs(new cons_t(pArgs,nil));
 	if (pRet == nil)
-		return NULL;
+		return nullptr;
 	auto pIK = make_unique<ik_lisp_t>(_fn_inverse_kinematics, 
 		_fn_get_num_solutions, _fn_get_degrees_of_freedom, _fn_compute_parameters);
 	pIK->_parameters = pRet;

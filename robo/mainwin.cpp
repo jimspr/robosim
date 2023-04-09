@@ -42,11 +42,6 @@ main_window_t::main_window_t()
 	);
 	Create(className.c_str(), "ROBOSIM II", WS_OVERLAPPEDWINDOW, rectDefault, NULL, MAKEINTRESOURCE(IDR_MAINFRAME));
 	_lisp_window->Create(8, this);
-	CRect rc, lrc;
-	GetClientRect(rc);
-	_lisp_window->GetWindowRect(lrc);
-	//	rc.BottomRight().Offset(0,-lrc.Height());
-	//	FromHandle(m_hWndMDIClient)->MoveWindow(rc);
 	_lisp_window->ShowWindow(SW_SHOW);
 	_lisp_window->SetFocus();
 	ask_form = NULL;

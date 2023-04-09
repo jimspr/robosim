@@ -33,7 +33,7 @@ public:
 	void clear(void) { _args.clear(); }
 };
 
-/* RAII type for managing binding stack. Remembers the last known position in node_stack
+/* RAII type for managing frame stack. Remembers the last known position
    and resets to that when destroyed. */
 class frame_stack_state_t
 {

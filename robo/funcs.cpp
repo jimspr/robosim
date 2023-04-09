@@ -24,7 +24,7 @@ static node_t *func_gte(int numargs,number_node_t **args);
 static node_t *func_abs(int numargs,node_t **args);
 //static node_t *func_acons(int numargs,node_t **args);
 static node_t *func_acos(int numargs,node_t **args);
-//static node_t *func_acosh(int numargs,node_t **args);
+static node_t *func_acosh(int numargs,node_t **args);
 //static node_t *func_adjoin(int numargs,node_t **args);
 //static node_t *func_adjust__array(int numargs,node_t **args);
 //static node_t *func_adjustable__array__p(int numargs,node_t **args);
@@ -51,12 +51,12 @@ static node_t *func_aref(int numargs,node_t **args);
 static node_t *func_arrayp(int numargs,node_t **args);
 //static node_t *func_ash(int numargs,node_t **args);
 static node_t *func_asin(int numargs,node_t **args);
-////static node_t *func_asinh(int numargs,node_t **args);
+static node_t *func_asinh(int numargs,node_t **args);
 //static node_t *func_assoc(int numargs,node_t **args);
 //static node_t *func_assoc__if(int numargs,node_t **args);
 //static node_t *func_assoc__if__not(int numargs,node_t **args);
 static node_t *func_atan(int numargs,node_t **args);
-////static node_t *func_atanh(int numargs,node_t **args);
+static node_t *func_atanh(int numargs,node_t **args);
 static node_t *func_atom(int numargs,node_t **args);
 //static node_t *func_augment__environment(int numargs,node_t **args);
 //static node_t *func_bit(int numargs,node_t **args);
@@ -344,7 +344,7 @@ static node_t *func_last(int numargs,node_t **args);
 //static node_t *func_lisp__implementation__type(int numargs,node_t **args);
 //static node_t *func_lisp__implementation__version(int numargs,node_t **args);
 static node_t *func_list(int numargs,node_t **args);
-//static node_t *func_list_star(int numargs,node_t **args);
+static node_t *func_list_star(int numargs,node_t **args);
 //static node_t *func_list__all__packages(int numargs,node_t **args);
 //static node_t *func_list__length(int numargs,node_t **args);
 //static node_t *func_listen(int numargs,node_t **args);
@@ -717,12 +717,12 @@ void init_funcs()
 
 	func("ABS", func_abs,       1,1);
 	func("ACOS",    func_acos,      1,1);
-//  func("ACOSH",   func_acosh,     1,1);
+	func("ACOSH",   func_acosh,     1,1);
 	func("ASIN",    func_asin,      1,1);
-//  func("ASINH",   func_asinh,     1,1);
+	func("ASINH",   func_asinh,     1,1);
 	func("ATAN",    func_atan,      1,2);
-//  func("ATANH",   func_atanh,     1,1);
-	func("COS", func_cos,       1,1);
+	func("ATANH",   func_atanh,     1,1);
+	func("COS",		func_cos,       1,1);
 	func("COSH",    func_cosh,      1,1);
 	func("EXP", func_exp,       1,1);
 	func("LOG", func_log,       1,1);
@@ -757,7 +757,7 @@ void init_funcs()
 	func("EQUAL",   func_equal,     2,2);
 	func("EQUALP",  func_equalp,        2,2);
 
-	func("APPEND",  func_append,        2,2);
+	func("APPEND",  func_append,        0,-1);
 
 	func("CAR", func_car,       1,1);
 	func("CDR", func_cdr,       1,1);
@@ -792,8 +792,9 @@ void init_funcs()
 
 	func("CONS",    func_cons,      2,2);
 	func("EVAL",    func_eval,      1,1);
-	func("GC",  func_gc,        0,0);
-	func("LIST",    func_list,      1,-1);
+	func("GC",		func_gc,        0,0);
+	func("LIST",    func_list,      0,-1);
+	func("LIST*",	func_list_star, 1, -1);
 	func("LOAD",    func_load,      0,1);
 	func("NOT", func_not,       1,1);
 	func("NULL",    func_null,  1,1);
@@ -866,18 +867,21 @@ void init_funcs()
 		throw_eval_exception(MATH_ERROR);\
 	return new number_node_t((float)t)
 
-static node_t *func_abs(int,node_t **args){singlemath(fabs);}
-static node_t *func_acos(int,node_t **args){singlemath(acos);}
-static node_t *func_asin(int,node_t **args){singlemath(asin);}
-static node_t *func_cos(int,node_t **args){singlemath(cos);}
-static node_t *func_cosh(int,node_t **args){singlemath(cosh);}
-static node_t *func_exp(int,node_t **args){singlemath(exp);}
-static node_t *func_log(int,node_t **args){singlemath(log);}
-static node_t *func_sin(int,node_t **args){singlemath(sin);}
-static node_t *func_sinh(int,node_t **args){singlemath(sinh);}
-static node_t *func_sqrt(int,node_t **args){singlemath(sqrt);}
-static node_t *func_tan(int,node_t **args){singlemath(tan);}
-static node_t *func_tanh(int,node_t **args){singlemath(tanh);}
+static node_t* func_abs(int, node_t** args) { singlemath(fabs); }
+static node_t* func_acos(int, node_t** args) { singlemath(acos); }
+static node_t* func_asin(int, node_t** args) { singlemath(asin); }
+static node_t* func_asinh(int, node_t** args) { singlemath(asinh); }
+static node_t* func_cos(int, node_t** args) { singlemath(cos); }
+static node_t* func_cosh(int, node_t** args) { singlemath(cosh); }
+static node_t* func_acosh(int, node_t** args) { singlemath(acosh); }
+static node_t* func_exp(int, node_t** args) { singlemath(exp); }
+static node_t* func_log(int, node_t** args) { singlemath(log); }
+static node_t* func_sin(int, node_t** args) { singlemath(sin); }
+static node_t* func_sinh(int, node_t** args) { singlemath(sinh); }
+static node_t* func_sqrt(int, node_t** args) { singlemath(sqrt); }
+static node_t* func_tan(int, node_t** args) { singlemath(tan); }
+static node_t* func_tanh(int, node_t** args) { singlemath(tanh); }
+static node_t* func_atanh(int, node_t** args) { singlemath(atanh); }
 
 static node_t *func_atan(int numargs,node_t **args)
 {
@@ -1181,28 +1185,28 @@ static node_t *func_cons(int,node_t **args)
 
 static node_t *func_list(int numargs,node_t **args)
 {
-	if (!numargs)
-		return nil;
-	cons_t *top = new cons_t();
-	top->set_car(args[0]);
-	cons_t *cur = top;
-	for (int i=1;i<numargs;i++)
-	{
-		cur->set_cdr(new cons_t());
-		cur = (cons_t *)(cur->Cdr());
-		cur->set_car(args[i]);
-	}
-	cur->set_cdr(nil);
-	return top;
+	node_t* right = nil;
+	for (int i = numargs - 1; i >= 0; --i)
+		right = new cons_t{args[i], right};
+	return right;
+}
+
+static node_t* func_list_star(int numargs, node_t** args)
+{
+	ASSERT(numargs >= 1);
+	node_t* right = args[numargs - 1];
+	for (int i = numargs - 2; i >= 0; --i)
+		right = new cons_t{ args[i], right };
+	return right;
 }
 
 static node_t *func_append(int numargs,node_t **args)
 {
-	if (!numargs)
+	if (numargs == 0)
 		return nil;
 	if (numargs == 1)
 		return args[0];
-	cons_t *top = new cons_t();
+	cons_t *top = new cons_t(nil, nil);
 	cons_t *cur = top;
 	int i = 0;
 	for (i=0;i<numargs-1;i++)
@@ -1213,9 +1217,7 @@ static node_t *func_append(int numargs,node_t **args)
 		cons_t *p = (cons_t *)args[i];
 		while (p->is_a(TYPE_CONS))
 		{
-			cur->set_cdr(new cons_t());
-			cur = cur->CdrCONS();
-			cur->set_car(p->Car());
+			cur = cur->append_cons(p->Car());
 			p = p->CdrCONS();
 		}
 	}
@@ -1560,7 +1562,7 @@ static node_t *func_apply(int numargs,node_t **args)
 	{
 		auto last = g_frame_stack.top();
 		/* If the last one is a list, expand its items. */
-		if (last->is_a(TYPE_CONS) || last == nil) /* nil is empty list */
+		if (last->is_a(TYPE_CONS) || (last == nil)) /* nil is empty list */
 		{
 			int cnt = 0; /* Number of arguments in list. */
 			frame_stack_state_t state(g_frame_stack);
@@ -1603,7 +1605,7 @@ static node_t *func_consp(int numargs,node_t **args)
 
 static node_t *func_listp(int numargs,node_t **args)
 {
-	return (args[0]->is_a(TYPE_CONS) || args[0] == nil) ? pTrue : nil;
+	return (args[0]->is_a(TYPE_CONS) || (args[0] == nil)) ? pTrue : nil;
 }
 
 static node_t *func_numberp(int numargs,node_t **args)
@@ -1712,8 +1714,7 @@ static node_t *func_mapcar(int numargs,node_t **args)
 			if (!p[j]->is_a(TYPE_CONS))
 				return top;
 		}
-		res->set_cdr(new cons_t(nil,nil));
-		res = res->CdrCONS();
+		res = res->append_cons(nil);
 	}
 	return nil;
 }
