@@ -56,11 +56,14 @@ html\sym_oneplus.htm
 html\sym_oneminus.htm
 html\abs.htm
 html\acos.htm
+html\acosh.htm
 html\append.htm
 html\apply.htm
 html\aref.htm
 html\asin.htm
+html\asinh.htm
 html\atan.htm
+html\atanh.htm
 html\atom.htm
 html\bit-vector-p.htm
 html\car.htm

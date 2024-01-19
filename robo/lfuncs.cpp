@@ -836,10 +836,11 @@ static node_t *func_get__dh(int numargs,node_t **args)
 	auto pmat = args[0]->as<mat44>();
 	if (!pmat->get_dh(dh))
 		return nil;
-	return new cons_t(new number_node_t(RAD2DEG(dh.theta)),
-		new cons_t(new number_node_t(dh.dz),
-		new cons_t(new number_node_t(dh.da),
-		new cons_t(new number_node_t(RAD2DEG(dh.alpha)),nil))));
+	return cons_t::make_list(
+		new number_node_t(RAD2DEG(dh.theta)),
+		new number_node_t(dh.dz),
+		new number_node_t(dh.da),
+		new number_node_t(RAD2DEG(dh.alpha)));
 }
 
 static node_t *func_copy__object(int numargs,node_t **args)
@@ -1117,20 +1118,14 @@ static node_t* get_parmsub(simob_t *ps)
 	while (ps)
 	{
 		if (ps->is_joint())
-		{
-			cons->set_cdr(new cons_t(nil,nil));
-			cons = cons->CdrCONS();
-			cons->set_car(new number_node_t(ps->get_parameter()));
-		}
+			cons = cons->append_cons(new number_node_t(ps->get_parameter()));
 		size_t cnt = ps->GetNumChildren();
 		if (cnt > 1)
 		{
 			int idx=0;
 			while (ps->GetChild(idx))
 			{
-				cons->set_cdr(new cons_t(nil,nil));
-				cons = cons->CdrCONS();
-				cons->set_car(get_parmsub(ps->GetChild(idx)));
+				cons = cons->append_cons(get_parmsub(ps->GetChild(idx)));
 				idx++;
 			}
 			return base->Cdr();
@@ -1198,7 +1193,7 @@ static node_t *func_ask__dialog(int numargs,node_t **args)
 		node_t* inc;
 		if (count == 3)
 		{
-			inc = cons->Caddr();
+			inc = cons->CddrCONS()->Car();
 			inc->check_arg_type(TYPE_FLOAT);
 			q.incr = (float)*(number_node_t*)inc;
 		}
@@ -1230,7 +1225,7 @@ static node_t *func_check__stream(int numargs,node_t **args)
 	p2 = (state & ios::eofbit) ? pTrue : nil;
 	p3 = (state & ios::failbit) ? pTrue : nil;
 	p4 = (state & ios::badbit) ? pTrue : nil;
-	return new cons_t(p1,new cons_t(p2,new cons_t(p3,new cons_t(p4,nil))));
+	return cons_t::make_list(p1, p2, p3, p4);
 }
 
 static node_t *func_check__collision(int numargs,node_t **args)
@@ -1247,7 +1242,7 @@ static node_t *func_check__collision(int numargs,node_t **args)
 			for (j = i + 1; j < n; j++)
 			{
 				if (simob_t::check_collide(arr[i], arr[j]))
-					return new cons_t(arr[i], new cons_t(arr[j], nil));
+					return cons_t::make_list(arr[i], arr[j]);
 			}
 		}
 	}
@@ -1258,7 +1253,7 @@ static node_t *func_check__collision(int numargs,node_t **args)
 			for (j = i + 1; j < numargs; j++)
 			{
 				if (simob_t::check_collide((simob_t*)args[i], (simob_t*)args[j]))
-					return new cons_t(args[i], new cons_t(args[j], nil));
+					return cons_t::make_list(args[i], args[j]);
 			}
 		}
 	}
@@ -1350,9 +1345,10 @@ static node_t *func_get__look__from(int numargs,node_t **args)
 	point3d_t pt;
 	if (!get_sim().get_look_from(pt))
 		return nil;
-	return new cons_t(new number_node_t(pt.x),
-		new cons_t(new number_node_t(pt.y),
-		new cons_t(new number_node_t(pt.z),nil)));
+	return cons_t::make_list(
+		new number_node_t(pt.x),
+		new number_node_t(pt.y),
+		new number_node_t(pt.z));
 }
 
 static node_t *func_get__look__at(int numargs,node_t **args)
@@ -1360,9 +1356,10 @@ static node_t *func_get__look__at(int numargs,node_t **args)
 	point3d_t pt;
 	if (!get_sim().get_look_at(pt))
 		return nil;
-	return new cons_t(new number_node_t(pt.x),
-		new cons_t(new number_node_t(pt.y),
-			new cons_t(new number_node_t(pt.z), nil)));
+	return cons_t::make_list(
+		new number_node_t(pt.x),
+		new number_node_t(pt.y),
+		new number_node_t(pt.z));
 }
 
 static node_t *func_get__camera(int numargs,node_t **args)
@@ -1370,9 +1367,10 @@ static node_t *func_get__camera(int numargs,node_t **args)
 	float focal, twist, zoom;
 	if (!get_sim().get_camera(focal, twist, zoom))
 		return nil;
-	return new cons_t(new number_node_t(focal),
-		new cons_t(new number_node_t(twist),
-		new cons_t(new number_node_t(zoom),nil)));
+	return cons_t::make_list(
+		new number_node_t(focal),
+		new number_node_t(twist),
+		new number_node_t(zoom));
 }
 
 static node_t *func_object__in__use__p(int numargs,node_t **args)
@@ -1507,7 +1505,6 @@ static node_t *func_get__child(int numargs,node_t **args)
 
 static node_t *func_get__solution(int numargs,node_t **args)
 {
-	int i;
 	solution *pq;
 	node_t *pn = nil;
 	auto ps = args[0]->as<simob_t>();
@@ -1518,8 +1515,16 @@ static node_t *func_get__solution(int numargs,node_t **args)
 	args[2]->check_number();
 	pq = ps->get_solution((mat44 *)args[1],(long)*(number_node_t *)args[2]);
 	if (pq) // if !pq -> no solution
-		for (i=5;i>=0;i--)
-			pn = new cons_t(new number_node_t(pq[0][i]),pn);
+	{
+		pn = cons_t::make_list(
+			new number_node_t(pq[0][0]),
+			new number_node_t(pq[0][1]),
+			new number_node_t(pq[0][2]),
+			new number_node_t(pq[0][3]),
+			new number_node_t(pq[0][4]),
+			new number_node_t(pq[0][5])
+			);
+	}
 	return pn;
 }
 
@@ -1527,7 +1532,7 @@ static node_t *func_get__solutions(int numargs,node_t **args)
 {
 	int i,j;
 	solution *pq;
-	node_t *pn,*pl= nil;
+	node_t *pl= nil;
 	auto ps = args[0]->as<simob_t>();
 
 	if (!ps->is_serial_agent())
@@ -1535,19 +1540,26 @@ static node_t *func_get__solutions(int numargs,node_t **args)
 	args[1]->check_arg_type(TYPE_MAT44);
 	pq = ps->get_solution((mat44 *)args[1],-1);
 	if (pq) // if !pq -> no solutions
-		for (j=ps->get_num_solutions()-1;j>=0;j--)
+	{
+		for (j = ps->get_num_solutions() - 1; j >= 0; j--)
 		{
-			pn = nil;
-			for (i=5;i>=0;i--)
-				pn = new cons_t(new number_node_t(pq[j][i]),pn);
-			pl = new cons_t(pn,pl);
+			auto pn = cons_t::make_list(
+				new number_node_t(pq[j][0]),
+				new number_node_t(pq[j][1]),
+				new number_node_t(pq[j][2]),
+				new number_node_t(pq[j][3]),
+				new number_node_t(pq[j][4]),
+				new number_node_t(pq[j][5])
+			);
+			pl = new cons_t(pn, pl);
 		}
+	}
 	return pl;
 }
 
 static node_t *func_set__collision__check(int numargs,node_t **args)
 {
-	get_sim().set_collision_check( (args[0] == nil) ? FALSE : TRUE);
+	get_sim().set_collision_check((args[0] == nil) ? false : true);
 	return args[0];
 }
 

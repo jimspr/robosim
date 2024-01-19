@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "robosim", "robo\robo.vcxproj", "{73908789-FE0D-49EF-8FFA-93D7596B571D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -21,8 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4BB1
 		samples\ANDROID.LSP = samples\ANDROID.LSP
 		samples\BALLDEMO.LSP = samples\BALLDEMO.LSP
 		samples\bugcopy.lsp = samples\bugcopy.lsp
-		samples\CART_RBT.LSP = samples\CART_RBT.LSP
 		samples\CARTDEMO.LSP = samples\CARTDEMO.LSP
+		samples\CART_RBT.LSP = samples\CART_RBT.LSP
 		samples\DEMO-KTH.LSP = samples\DEMO-KTH.LSP
 		samples\DEMO-RLC.LSP = samples\DEMO-RLC.LSP
 		samples\DEMO.LSP = samples\DEMO.LSP
@@ -69,6 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "html", "html", "{58B3831A-3
 		help\html\about-dialog.htm = help\html\about-dialog.htm
 		help\html\abs.htm = help\html\abs.htm
 		help\html\acos.htm = help\html\acos.htm
+		help\html\acosh.htm = help\html\acosh.htm
 		help\html\add-objects.htm = help\html\add-objects.htm
 		help\html\adjust-lights.htm = help\html\adjust-lights.htm
 		help\html\and.htm = help\html\and.htm
@@ -78,8 +79,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "html", "html", "{58B3831A-3
 		help\html\aref.htm = help\html\aref.htm
 		help\html\arrange-icons.htm = help\html\arrange-icons.htm
 		help\html\asin.htm = help\html\asin.htm
+		help\html\asinh.htm = help\html\asinh.htm
 		help\html\ask-dialog.htm = help\html\ask-dialog.htm
 		help\html\atan.htm = help\html\atan.htm
+		help\html\atanh.htm = help\html\atanh.htm
 		help\html\atom.htm = help\html\atom.htm
 		help\html\background.htm = help\html\background.htm
 		help\html\bit-vector-p.htm = help\html\bit-vector-p.htm
@@ -277,6 +280,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "html", "html", "{58B3831A-3
 		help\html\sqrt.htm = help\html\sqrt.htm
 		help\html\streamp.htm = help\html\streamp.htm
 		help\html\stringp.htm = help\html\stringp.htm
+		help\html\symbolp.htm = help\html\symbolp.htm
 		help\html\sym_divide.htm = help\html\sym_divide.htm
 		help\html\sym_divide_equal.htm = help\html\sym_divide_equal.htm
 		help\html\sym_equal.htm = help\html\sym_equal.htm
@@ -289,7 +293,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "html", "html", "{58B3831A-3
 		help\html\sym_oneplus.htm = help\html\sym_oneplus.htm
 		help\html\sym_plus.htm = help\html\sym_plus.htm
 		help\html\sym_times.htm = help\html\sym_times.htm
-		help\html\symbolp.htm = help\html\symbolp.htm
 		help\html\t.htm = help\html\t.htm
 		help\html\tan.htm = help\html\tan.htm
 		help\html\tanh.htm = help\html\tanh.htm

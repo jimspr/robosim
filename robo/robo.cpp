@@ -107,13 +107,7 @@ BOOL robo_app_t::InitInstance(void)
 	init_constants();
 	init_variables();
 
-	node_t *l = new cons_t(
-			current_package->get_symbol("LOAD"),
-			new cons_t(
-				new string_node_t("startup.lsp"),
-				nil
-				)
-			);
+	node_t* l = cons_t::make_list(current_package->get_symbol("LOAD"), new string_node_t("startup.lsp"));
 	try
 	{
 		l->eval();

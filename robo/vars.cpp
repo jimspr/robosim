@@ -28,7 +28,7 @@ symbol_t* key_shininess;
 
 nil_t* nil;
 symbol_t* pTrue;
-dot_t* dot_node;
+symbol_t* dot_node;
 
 symbol_t* pPLUS1 = nullptr;
 symbol_t* pPLUS2 = nullptr;
@@ -187,15 +187,16 @@ void init_constants()
 	decconstant("SINGLE-FLOAT-NEGATIVE-EPSILON", new number_node_t(LC_SINGLE_FLOAT_NEGATIVE_EPSILON));
 
 	/* Add global nil symbol. */
-	nil = new nil_t();
-	current_package->add_symbol("NIL", (symbol_t*)nil);
+	nil = new nil_t{};
+	current_package->add_symbol("NIL", nil);
 
 	/* Add global "T" symbol for true. */
 	pTrue = new symbol_t("T");
 	pTrue->set_constant_value(pTrue);
 	current_package->add_symbol("T", pTrue);
 
-	dot_node = new dot_t();
+	/* Don't add dot_node to symbol table. It is special. */
+	dot_node = new symbol_t("DOT");
 
 	//  decconstant("LC-INTERNAL-TIME-UNITS-PER-SECOND
 	//  decconstant("LC-LAMBDA-LIST-KEYWORDS
@@ -223,14 +224,7 @@ void init_constants()
 	deckeyword(key_specular, ":SPECULAR");
 	deckeyword(key_shininess, ":SHININESS");
 
-	decconstant("LAMBDA-LIST-KEYWORDS", new cons_t(key_optional,
-		new cons_t(key_rest,
-			new cons_t(key_key,
-				new cons_t(key_allow_other_keys,
-					new cons_t(key_aux,
-						new cons_t(key_body,
-							new cons_t(key_whole,
-								new cons_t(key_environment,
-									nil)))))))));
+	decconstant("LAMBDA-LIST-KEYWORDS",
+		cons_t::make_list(key_optional, key_rest, key_key, key_allow_other_keys, key_aux, key_body, key_whole, key_environment));
 
 }

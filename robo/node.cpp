@@ -24,6 +24,7 @@ int node_list_array_t::garbage_collect()
 	size_t n = _data.size();
 
 //	MessageBeep(MB_ICONASTERISK);
+	/* Traverse all roots and mark as in use. */
 	g_frame_stack.mark_in_use();
 	g_bind_stack.mark_in_use();
 	dot_node->mark_in_use();
@@ -58,22 +59,6 @@ void node_list_array_t::add(node_list_base_t* node)
 ******************          *********************
 ************************************************/
 
-symbol_t::symbol_t() : node_t(TYPE_SYMBOL)
-{
-}
-
-symbol_t::symbol_t(const char *n) : node_t(TYPE_SYMBOL), _print_name(n)
-{
-}
-
-symbol_t::symbol_t(const char *n,node_t *v) : node_t(TYPE_SYMBOL), _print_name(n), _value(v)
-{
-}
-
-symbol_t::symbol_t(const char *n,form_t *f) : node_t(TYPE_SYMBOL), _print_name(n), _form(f)
-{
-}
-
 void symbol_t::princ(ostream &ostr) const
 {
 	if (_print_name[0] != '|')
@@ -101,25 +86,30 @@ void symbol_t::mark_in_use()
 		_form->mark_in_use();
 }
 
-void symbol_t::set_value(node_t *v)
+void symbol_t::verify_can_set()
 {
 	if (is_constant_value())
 		throw_eval_exception(REDEF_CONSTANT);
+	if (is_constant_form())
+		throw_eval_exception(REDEF_FORM);
+}
+
+void symbol_t::set_value(node_t *v)
+{
+	verify_can_set();
 	_value = v;
 }
 
 void symbol_t::set_constant_value(node_t *v)
 {
-	if (is_constant_value())
-		throw_eval_exception(REDEF_CONSTANT);
+	verify_can_set();
 	_value = v;
 	set_symbol_flag(SYMBOL_CONSTANT_VALUE);
 }
 
 void symbol_t::set_form(form_t *f)
 {
-	if (is_constant_form())
-		throw_eval_exception(REDEF_FORM);
+	verify_can_set();
 	_form = f;
 }
 
@@ -131,8 +121,7 @@ void symbol_t::set_constant_form(form_t *f)
 
 void symbol_t::declare_special_variable()
 {
-	if (is_constant_value())
-		throw_eval_exception(REDEF_CONSTANT);
+	verify_can_set();
 	set_symbol_flag(SYMBOL_SPECIAL_VALUE);
 }
 
@@ -360,8 +349,22 @@ public:
 ******************        ***********************
 ************************************************/
 
+cons_t* cons_t::make_list()
+{
+	return (cons_t*)nil;
+}
+
+cons_t* cons_t::append_cons(node_t* p)
+{
+	ASSERT(_right == nil);
+	auto cons = new cons_t{ p, nil };
+	_right = cons;
+	return cons;
+}
+
 node_t *cons_t::eval()
 {
+	ASSERT(is_a(TYPE_CONS));
 	static MSG keymsg;
 	static int cnt=0;
 	if (NodeListArray._garbage_collected)
@@ -390,6 +393,7 @@ node_t *cons_t::eval()
 
 void cons_t::mark_in_use()
 {
+	ASSERT(is_a(TYPE_CONS));
 	cons_t *ths=this;
 	while (ths->is_a(TYPE_CONS))
 	{
@@ -400,11 +404,12 @@ void cons_t::mark_in_use()
 		ths = ths->CdrCONS();
 	}
 	if (!ths->is_in_use())
-		ths->node_t::mark_in_use();
+		((node_t*)ths)->mark_in_use();
 }
 
 void cons_t::print(ostream &ostr) const
 {
+	ASSERT(is_a(TYPE_CONS));
 	const cons_t *ths = this;
 	ostr << '(';
 	while (ths->is_a(TYPE_CONS))
@@ -425,13 +430,14 @@ void cons_t::print(ostream &ostr) const
 	if ((const node_t *)ths != (const node_t *)nil)
 	{
 		ostr << " . ";
-		ths->print(ostr);
+		((node_t*)ths)->print(ostr);
 	}
 	ostr << ')';
 }
 
 void cons_t::princ(ostream &ostr) const
 {
+	ASSERT(is_a(TYPE_CONS));
 	const cons_t *ths = this;
 	ostr << '(';
 	while (ths->is_a(TYPE_CONS))
@@ -452,7 +458,7 @@ void cons_t::princ(ostream &ostr) const
 	if ((const node_t *)ths == (const node_t *)nil)
 	{
 		ostr << " . ";
-		ths->princ(ostr);
+		((node_t*)ths)->princ(ostr);
 	}
 	ostr << ')';
 }

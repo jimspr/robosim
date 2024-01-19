@@ -146,7 +146,7 @@ node_t* usrfunction_t::eval(int numargs, node_t** base)
 	}
 	catch (block_return_exception_t* e)
 	{
-		if (e->_block == nil && (_form_name.size() == 0))
+		if ((e->_block == nil) && (_form_name.size() == 0))
 			result = e->_retval;
 		else if (_form_name != e->_block->get_name())
 		{

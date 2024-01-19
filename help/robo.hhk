@@ -79,6 +79,11 @@
 		<param name="Local" value="html/acos.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="acosh">
+		<param name="Name" value="acosh">
+		<param name="Local" value="html/acosh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="add-objects">
 		<param name="Name" value="add-objects">
 		<param name="Local" value="html/add-objects.htm">
@@ -124,6 +129,11 @@
 		<param name="Local" value="html/asin.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="asinh">
+		<param name="Name" value="asinh">
+		<param name="Local" value="html/asinh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="ask-dialog">
 		<param name="Name" value="ask-dialog">
 		<param name="Local" value="html/ask-dialog.htm">
@@ -132,6 +142,11 @@
 		<param name="Keyword" value="atan">
 		<param name="Name" value="atan">
 		<param name="Local" value="html/atan.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="atanh">
+		<param name="Name" value="atanh">
+		<param name="Local" value="html/atanh.htm">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Keyword" value="atom">
