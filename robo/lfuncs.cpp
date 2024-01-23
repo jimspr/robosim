@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include <strstream>
+#include <sstream>
 #include <float.h>
 #include "resource.h"
 #include "mainwin.h"
@@ -9,6 +9,8 @@
 #include "grob.h"
 #include "mainwin.h"
 #include "node.h"
+#include "view.h"
+#include "lisp_engine.h"
 
 extern symbol_t* key_optional;
 extern symbol_t* key_rest;
@@ -40,7 +42,6 @@ static int deffac = 30;
 static node_t *func_check(int numargs,node_t **args);
 static node_t *func_make__primitive(int numargs,node_t **args);
 static node_t *func_set__window__menu(int numargs,node_t **args);
-static node_t *func_exit(int numargs,node_t **args);
 static node_t *func_clear__simulation(int,node_t **);
 static node_t *func_get__file__dialog(int,node_t **);
 static node_t *func_printer__dialog(int,node_t **);
@@ -153,7 +154,7 @@ static node_t* get_parmsub(simob_t *ps);
 static void CheckMakeArgs(int numargs,node_t **args);
 static void make_point_from_args(node_t **args,point3d_t &pt);
 
-#define func(n,f,min,max) current_package->get_symbol(n)->set_form(new sysfunction_t(n,f,min,max))
+#define func(n,f,min,max) lisp_engine._package.get_symbol(n)->set_form(new sysfunction_t(n,f,min,max))
 
 void init_lfuncs(void)
 {
@@ -181,7 +182,6 @@ void init_lfuncs(void)
 	func("TILE-WINDOWS-V",	func_tile__windows__vertical,0,0);
 	func("ARRANGE-ICONS",	func_arrange__icons,		0,0);
 	func("ABOUT-DIALOG",	func_about__dialog,		0,0);
-	func("EXIT",		func_exit,		0,0);
 	func("USE-OBJECTS",	func_use__objects,	1,-1);
 	func("REMOVE-OBJECTS",	func_remove__objects,	0,-1);
 	func("MATMULT",		func_matmult,		0,-1);
@@ -308,12 +308,6 @@ static void ParseFloatList(float* pf, cons_t *p)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-static node_t *func_exit(int,node_t **)
-{
-	AfxGetApp()->m_pMainWnd->PostMessage(WM_CLOSE);
-	return pTrue;
-}
 
 static node_t *func_check(int,node_t **)
 {
@@ -612,7 +606,7 @@ static node_t *func_make__extrude__surface(int numargs,node_t **args)
 {
 	args[0]->check_arg_type(TYPE_SIMOB);
 	args[1]->check_number();
-	if ( ((simob_t *)args[0])->GetNumPoly() != 1)
+	if ( ((simob_t *)args[0])->get_num_poly() != 1)
 		throw_eval_exception(BAD_ARG_TYPE);
 	simob_t *pg = new simob_t();
 	pg->make_extrusion((simob_t *)args[0],(float) *(number_node_t *)args[1]);
@@ -624,7 +618,7 @@ static node_t *func_make__revolve__surface(int numargs,node_t **args)
 	int n = deffac;
 	args[0]->check_arg_type(TYPE_SIMOB);
 	args[1]->check_number();
-	if ( ((simob_t *)args[0])->GetNumPoly() != 1)
+	if ( ((simob_t *)args[0])->get_num_poly() != 1)
 		throw_eval_exception(BAD_ARG_TYPE);
 	if (numargs == 2)
 		n = (long)(* (number_node_t *) args[1]);
@@ -638,19 +632,19 @@ static node_t *func_make__revolve__surface(int numargs,node_t **args)
 static node_t *func_rotatex(int numargs,node_t **args)
 {
 	auto pn = args[0]->as<number_node_t>();
-	return new mat44(mat44::ROTATEX(DEG2RAD(*pn)));
+	return new mat44(mat44::rotatex(DEG2RAD(*pn)));
 }
 
 static node_t *func_rotatey(int numargs,node_t **args)
 {
 	auto pn = args[0]->as<number_node_t>();
-	return new mat44(mat44::ROTATEY(DEG2RAD(*pn)));
+	return new mat44(mat44::rotatey(DEG2RAD(*pn)));
 }
 
 static node_t *func_rotatez(int numargs,node_t **args)
 {
 	auto pn = args[0]->as<number_node_t>();
-	return new mat44(mat44::ROTATEZ(DEG2RAD(*pn)));
+	return new mat44(mat44::rotatez(DEG2RAD(*pn)));
 }
 
 static node_t *func_translate(int numargs,node_t **args)
@@ -658,7 +652,7 @@ static node_t *func_translate(int numargs,node_t **args)
 	auto px = args[0]->as<number_node_t>();
 	auto py = args[1]->as<number_node_t>();
 	auto pz = args[2]->as<number_node_t>();
-	return new mat44(mat44::TRANS( (float)*px,(float)*py,(float)*pz));
+	return new mat44(mat44::trans( (float)*px,(float)*py,(float)*pz));
 }
 
 static node_t *func_scale(int numargs, node_t **args)
@@ -666,7 +660,7 @@ static node_t *func_scale(int numargs, node_t **args)
 	auto px = args[0]->as<number_node_t>();
 	auto py = args[1]->as<number_node_t>();
 	auto pz = args[2]->as<number_node_t>();
-	return new mat44(mat44::SCALE( (float)*px, (float)*py, (float)*pz));
+	return new mat44(mat44::scale( (float)*px, (float)*py, (float)*pz));
 }
 
 static COLORREF ParseColor(cons_t *p)
@@ -737,12 +731,12 @@ static node_t *func_get__position(int numargs,node_t **args)
 		throw_eval_exception(TOO_FEW_ARGS);
 	args[0]->check_arg_type(TYPE_SIMOB);
 	if (numargs == 1)
-		return new mat44( ((simob_t *)args[0])->GetPosition());
+		return new mat44( ((simob_t *)args[0])->get_position());
 	if (args[1] != key_relative_to)
 		throw_eval_exception(BAD_KEYWORD);
 	args[2]->check_arg_type(TYPE_SIMOB);
-	mat44 *pmat = new mat44( ((simob_t *)args[0])->GetPosition());
-	pmat->premultiply( ((simob_t *)args[2])->GetPosition().fastinverse() );
+	mat44 *pmat = new mat44( ((simob_t *)args[0])->get_position());
+	pmat->premultiply( ((simob_t *)args[2])->get_position().fastinverse() );
 	return pmat;
 }
 
@@ -762,9 +756,9 @@ static node_t *func_set__position(int numargs,node_t **args)
 		if (args[2] != key_relative_to)
 			throw_eval_exception(BAD_KEYWORD);
 		args[3]->check_arg_type(TYPE_SIMOB);
-		tmat.premultiply( ((simob_t *)args[3])->GetPosition());
+		tmat.premultiply( ((simob_t *)args[3])->get_position());
 	}
-	ps->SetPosition(tmat);
+	ps->set_position(tmat);
 	get_sim().redraw(true);
 	return args[0];
 }
@@ -785,11 +779,11 @@ static node_t *func_offset__position(int numargs,node_t **args)
 		if (args[2] != key_relative_to)
 			throw_eval_exception(BAD_KEYWORD);
 		args[3]->check_arg_type(TYPE_SIMOB);
-		tmat.premultiply( ((simob_t *)args[3])->GetPosition());
-		tmat.postmultiply( ((simob_t *)args[3])->GetPosition().fastinverse());
+		tmat.premultiply( ((simob_t *)args[3])->get_position());
+		tmat.postmultiply( ((simob_t *)args[3])->get_position().fastinverse());
 	}
-	tmat.postmultiply(ps->GetPosition());
-	ps->SetPosition(tmat);
+	tmat.postmultiply(ps->get_position());
+	ps->set_position(tmat);
 	get_sim().redraw(true);
 	return args[0];
 }
@@ -808,7 +802,7 @@ static node_t *func_euler(int numargs,node_t **args)
 	auto r2 = args[1]->as<number_node_t>();
 	auto r3 = args[2]->as<number_node_t>();
 	euler_zyz_t e{ DEG2RAD(*r1), DEG2RAD(*r2), DEG2RAD(*r3) };
-	return new mat44(mat44::EULER(e));
+	return new mat44(mat44::euler(e));
 }
 
 static node_t *func_rpy(int numargs,node_t **args)
@@ -817,7 +811,7 @@ static node_t *func_rpy(int numargs,node_t **args)
 	auto r2 = args[1]->as<number_node_t>();
 	auto r3 = args[2]->as<number_node_t>();
 	euler_rpy_t rpy{ DEG2RAD(*r1), DEG2RAD(*r2), DEG2RAD(*r3) };
-	return new mat44(mat44::RPY(rpy));
+	return new mat44(mat44::rpy(rpy));
 }
 
 static node_t *func_dh(int numargs,node_t **args)
@@ -826,7 +820,7 @@ static node_t *func_dh(int numargs,node_t **args)
 	auto dz = args[1]->as<number_node_t>();
 	auto da = args[2]->as<number_node_t>();
 	auto alpha = args[3]->as<number_node_t>();
-	return new mat44(mat44::DH(DEG2RAD(*theta),(float)*dz,(float)*da, DEG2RAD(*alpha)));
+	return new mat44(mat44::dh(DEG2RAD(*theta),(float)*dz,(float)*da, DEG2RAD(*alpha)));
 }
 
 /* Get Denavit - Hartenberg parameters */
@@ -885,7 +879,7 @@ static node_t *func_make__fixed__link(int numargs,node_t **args)
 	for (i=0;i<numargs;i+=2)
 	{
 		args[i]->check_arg_type(TYPE_SIMOB);
-		if (((simob_t *)args[i])->GetNumChildren())
+		if (((simob_t *)args[i])->get_num_children())
 			throw_eval_exception(NO_COMPLEX_IN_LINK);
 		if (args[i+1] != nil)
 			args[i+1]->check_arg_type(TYPE_MAT44);
@@ -896,10 +890,10 @@ static node_t *func_make__fixed__link(int numargs,node_t **args)
 		simob_t t(*(simob_t *)args[i]);
 		if (args[i+1] != nil)
 		{
-			tmat = t.GetPosition();
-			t.SetPosition( (*(mat44 *)args[i+1]) * tmat);
+			tmat = t.get_position();
+			t.set_position( (*(mat44 *)args[i+1]) * tmat);
 			ps->add_world(t);
-			t.SetPosition(tmat);
+			t.set_position(tmat);
 		}
 		else
 			ps->add_world(t);
@@ -928,7 +922,7 @@ static node_t *func_make__revolute__link(int numargs,node_t **args)
 	numargs -= 2;
 
 	simob_t *ps = (simob_t *)(func_make__fixed__link(numargs,args));
-	ps->set_joint_func(mat44::ROTATEZDEG);
+	ps->set_joint_func(mat44::rotatezdeg);
 	ps->set_min_max(fmin,fmax);
 	return ps;
 }
@@ -954,7 +948,7 @@ static node_t *func_make__prismatic__link(int numargs,node_t **args)
 	numargs -= 2;
 
 	simob_t *ps = (simob_t *)(func_make__fixed__link(numargs,args));
-	ps->set_joint_func(mat44::TRANSZ);
+	ps->set_joint_func(mat44::transz);
 	ps->set_min_max(fmin,fmax);
 	return ps;
 }
@@ -963,40 +957,40 @@ static void poshelp(simob_t *ps,node_t *pmat)
 {
 	if (pmat != nil)
 	{
-		mat44 posmat(ps->GetPosition());
+		mat44 posmat(ps->get_position());
 		posmat.postmultiply(*(mat44 *)pmat);
-		ps->SetPosition(posmat);
+		ps->set_position(posmat);
 	}
 }
 
-static node_t *func_make__serial__agent(int numargs,node_t **args)
+static node_t* func_make__serial__agent(int numargs, node_t** args)
 {
 	int i;
-	bool bClassic=false;
+	bool classic = false;
 	if (args[0] == key_classic)
 	{
-		bClassic = true;
+		classic = true;
 		args++;
 		numargs--;
 	}
-	if (!numargs || numargs%2)
+	if (!numargs || numargs % 2)
 		throw_eval_exception(TOO_FEW_ARGS);
-	for (i=0;i<numargs;i+=2)
+	for (i = 0; i < numargs; i += 2)
 	{
 		args[i]->check_arg_type(TYPE_SIMOB);
-		if (args[i+1] != nil)
-			args[i+1]->check_arg_type(TYPE_MAT44);
+		if (args[i + 1] != nil)
+			args[i + 1]->check_arg_type(TYPE_MAT44);
 	}
-	simob_t *ps = new simob_t();
-	simob_t *p = ps;
-	for (i=0;i<numargs;i+=2)
+	simob_t* ps = new simob_t();
+	simob_t* p = ps;
+	for (i = 0; i < numargs; i += 2)
 	{
-		p->set_classic(bClassic);
-		p->Attach( (simob_t *)args[i]);
-		p = (simob_t *)args[i];
-		poshelp(p,args[i+1]);
+		p->set_classic(classic);
+		p->attach((simob_t*)args[i]);
+		p = (simob_t*)args[i];
+		poshelp(p, args[i + 1]);
 	}
-	ps->make_agent(p,numargs/2);
+	ps->make_agent(p, numargs / 2);
 	return ps;
 }
 
@@ -1016,10 +1010,10 @@ static node_t *func_make__parallel__agent(int numargs,node_t **args)
 	simob_t *ps = new simob_t();
 	simob_t *p = (simob_t *)args[0];
 	poshelp(p,args[1]);
-	ps->Attach(p);
+	ps->attach(p);
 	for (i=2;i<numargs;i+=2)
 	{
-		p->Attach( (simob_t *)args[i]);
+		p->attach( (simob_t *)args[i]);
 		poshelp((simob_t *)args[i],args[i+1]);
 	}
 	return ps;
@@ -1082,24 +1076,24 @@ static void parmsub(simob_t *ps,cons_t *base)
 		}
 		if (!base->is_a(TYPE_CONS))
 			return;
-		size_t cnt = ps->GetNumChildren();
+		size_t cnt = ps->get_num_children();
 		if (cnt > 1)
 		{
 			int idx=0;
-			while (ps->GetChild(idx) && base->is_a(TYPE_CONS))
+			while (ps->get_child(idx) && base->is_a(TYPE_CONS))
 			{
 				node_t* parm = base->Car();
 				parm->check_arg_type(TYPE_CONS);
-				parmsub(ps->GetChild(idx),(cons_t *)parm);
+				parmsub(ps->get_child(idx),(cons_t *)parm);
 				idx++;
 				base = base->CdrCONS();
 			}
-			if (!ps->GetChild(idx) && base->is_a(TYPE_CONS))
+			if (!ps->get_child(idx) && base->is_a(TYPE_CONS))
 				throw_eval_exception(TOO_MANY_ARGS);
 			return;
 		}
 		else
-			ps = ps->GetChild();
+			ps = ps->get_child();
 	}
 	if (!ps && base->is_a(TYPE_CONS))
 		throw_eval_exception(TOO_MANY_ARGS);
@@ -1119,19 +1113,19 @@ static node_t* get_parmsub(simob_t *ps)
 	{
 		if (ps->is_joint())
 			cons = cons->append_cons(new number_node_t(ps->get_parameter()));
-		size_t cnt = ps->GetNumChildren();
+		size_t cnt = ps->get_num_children();
 		if (cnt > 1)
 		{
 			int idx=0;
-			while (ps->GetChild(idx))
+			while (ps->get_child(idx))
 			{
-				cons = cons->append_cons(get_parmsub(ps->GetChild(idx)));
+				cons = cons->append_cons(get_parmsub(ps->get_child(idx)));
 				idx++;
 			}
 			return base->Cdr();
 		}
 		else
-			ps = ps->GetChild();
+			ps = ps->get_child();
 	}
 	return base->Cdr();
 }
@@ -1139,12 +1133,12 @@ static node_t* get_parmsub(simob_t *ps)
 static node_t *func_ask__dialog(int numargs,node_t **args)
 {
 	int i;
-	function *pfn;
+	function_t* pfn;
 	if (args[0] == nil)
 		pfn = NULL;
 	else
 	{
-		pfn = (function *) args[0];
+		pfn = (function_t*) args[0];
 		pfn->check_arg_type(TYPE_FUNCTION);
 	}
 	args++;
@@ -1205,13 +1199,13 @@ static node_t *func_ask__dialog(int numargs,node_t **args)
 
 static node_t *func_message__box(int numargs,node_t **args)
 {
-	ostrstream ostr;
+	ostringstream ostr;
 	int i;
 	auto title = args[0]->as<string_node_t>();
 	for (i=1;i<numargs;i++)
 		args[i]->princ(ostr);
 	ostr << (char)0;
-	AfxGetMainWnd()->MessageBox(ostr.str(), title->data(), MB_OK);
+	AfxGetMainWnd()->MessageBox(ostr.str().c_str(), title->data(), MB_OK);
 	return args[numargs-1];
 }
 
@@ -1379,36 +1373,36 @@ static node_t *func_object__in__use__p(int numargs,node_t **args)
 	return ((simob_t *)args[0])->is_in_env() ? pTrue : nil;
 }
 
-class DriveStruct
+class drive_struct_t
 {
 public:
-	simob_t *ps;
-	float beg,end;
-	DriveStruct(simob_t *p,float e)
+	simob_t* ps;
+	float beg;
+	float end;
+	drive_struct_t(simob_t* p, float e)
 	{
 		ps = p;
 		beg = ps->get_parameter();
 		end = e;
 	}
-	DriveStruct(simob_t *p)
+	drive_struct_t(simob_t* p)
 	{
 		ps = p;
 		beg = ps->get_parameter();
 		end = 0.F;
 	}
-	void SetParm(float rat) {ps->set_parameter(beg + (end-beg)*rat);}
+	void set_param(float rat) { ps->set_parameter(beg + (end - beg) * rat); }
 };
 
-class DriveArray
+class drive_array_t
 {
 public:
-	std::vector<DriveStruct> vec;
-//	void AddDriveStruct(unique_ptr<DriveStruct>&& pds) { vec.push_back(std::move(pds)); }
+	std::vector<drive_struct_t> vec;
 	void dparmsub(simob_t *ps,cons_t *base);
 	void parmsub(simob_t *ps);
 };
 
-void DriveArray::dparmsub(simob_t *ps,cons_t *base)
+void drive_array_t::dparmsub(simob_t *ps,cons_t *base)
 {
 	node_t *parm;
 	while (ps && base->is_a(TYPE_CONS))
@@ -1425,42 +1419,42 @@ void DriveArray::dparmsub(simob_t *ps,cons_t *base)
 		}
 		if (!base->is_a(TYPE_CONS))
 			return;
-		if (ps->GetNumChildren() > 1)
+		if (ps->get_num_children() > 1)
 		{
 			int idx=0;
-			while (ps->GetChild(idx) && base->is_a(TYPE_CONS))
+			while (ps->get_child(idx) && base->is_a(TYPE_CONS))
 			{
 				parm = base->Car();
 				parm->check_arg_type(TYPE_CONS);
-				dparmsub(ps->GetChild(idx++),(cons_t *)parm);
+				dparmsub(ps->get_child(idx++),(cons_t *)parm);
 				base = base->CdrCONS();
 			}
-			if (!ps->GetChild(idx) && base->is_a(TYPE_CONS))
+			if (!ps->get_child(idx) && base->is_a(TYPE_CONS))
 				throw_eval_exception(TOO_MANY_ARGS);
 			return;
 		}
 		else
-			ps = ps->GetChild();
+			ps = ps->get_child();
 	}
 	if (!ps && base->is_a(TYPE_CONS))
 		throw_eval_exception(TOO_MANY_ARGS);
 }
 
-void DriveArray::parmsub(simob_t *ps)
+void drive_array_t::parmsub(simob_t *ps)
 {
 	while (ps)
 	{
 		if (ps->is_joint())
 			vec.emplace_back(ps);
-		if (ps->GetNumChildren() > 1)
+		if (ps->get_num_children() > 1)
 		{
 			int idx=0;
-			while (ps->GetChild(idx))
-				parmsub(ps->GetChild(idx++));
+			while (ps->get_child(idx))
+				parmsub(ps->get_child(idx++));
 			return;
 		}
 		else
-			ps = ps->GetChild();
+			ps = ps->get_child();
 	}
 }
 
@@ -1472,13 +1466,13 @@ static node_t *func_drive__agent(int numargs,node_t **args)
 	args[0]->check_arg_type(TYPE_SIMOB);
 	args[1]->check_arg_type(TYPE_CONS);
 	int steps = *args[2]->as<number_node_t>();
-	DriveArray da;
+	drive_array_t da;
 	da.dparmsub((simob_t *)args[0],(cons_t *)args[1]);
 	for (i=1;i<=steps;i++)
 	{
 		float rat = (float)i/(float)steps;
 		for (auto& ds : da.vec)
-			ds.SetParm(rat);
+			ds.set_param(rat);
 		get_sim().redraw(true);
 	}
 	return args[1];
@@ -1488,9 +1482,9 @@ static node_t *func_show__frames(int numargs,node_t **args)
 {
 	auto& sim = get_sim();
 	bool b = (args[0] == nil) ? false : true;
-	if ((b && !sim.show_frames) || (!b && sim.show_frames))
+	if (b != sim._show_frames)
 	{
-		sim.show_frames = b;
+		sim._show_frames = b;
 		sim.redraw(true);
 	}
 	return args[0];
@@ -1499,7 +1493,7 @@ static node_t *func_show__frames(int numargs,node_t **args)
 static node_t *func_get__child(int numargs,node_t **args)
 {
 	auto p = args[0]->as<simob_t>();
-	p = p->GetChild();
+	p = p->get_child();
 	return (p) ? (node_t *)p : (node_t *)nil;
 }
 
@@ -1530,7 +1524,7 @@ static node_t *func_get__solution(int numargs,node_t **args)
 
 static node_t *func_get__solutions(int numargs,node_t **args)
 {
-	int i,j;
+	int j;
 	solution *pq;
 	node_t *pl= nil;
 	auto ps = args[0]->as<simob_t>();
@@ -1589,8 +1583,8 @@ static node_t *func_move__inter__to(int numargs,node_t **args)
 
 	pqe = ps->get_solution(pmat,solidx);
 	if (!pqe)
-		throw_other_exception(current_package->get_symbol("REACH"),nil); // out of reach exception
-	DriveArray da;
+		throw_other_exception(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
+	drive_array_t da;
 	da.parmsub(ps);
 	for (size_t j = 0; j < da.vec.size(); ++j)
 		da.vec[j].end = pqe[0][j];
@@ -1598,7 +1592,7 @@ static node_t *func_move__inter__to(int numargs,node_t **args)
 	{
 		float rat = (float)i/(float)steps;
 		for (auto& ds : da.vec)
-			ds.SetParm(rat);
+			ds.set_param(rat);
 		get_sim().redraw(true);
 	}
 	return pTrue;
@@ -1627,10 +1621,10 @@ static node_t *func_move__straight__to(int numargs,node_t **args)
 	point3d_t beg(cmat.m[0][3],cmat.m[1][3],cmat.m[2][3]);
 	point3d_t end(pmat->m[0][3],pmat->m[1][3],pmat->m[2][3]);
 	point3d_t res;
-	euler_zyz_t euler = cmat.GetEulerZYZ();
-	euler_zyz_t peuler = pmat->GetEulerZYZ();
+	euler_zyz_t euler = cmat.get_euler_zyz();
+	euler_zyz_t peuler = pmat->get_euler_zyz();
 	euler_zyz_t eres;
-	DriveArray da;
+	drive_array_t da;
 
 	da.parmsub(ps);
 	for (i=1;i<=steps;i++)
@@ -1639,14 +1633,14 @@ static node_t *func_move__straight__to(int numargs,node_t **args)
 		res = beg + (end-beg)*rat;
 		eres = euler + (peuler-euler)*rat;
 
-		cmat = cmat.EULER(eres);
+		cmat = cmat.euler(eres);
 		cmat.m[0][3] = res.x;
 		cmat.m[1][3] = res.y;
 		cmat.m[2][3] = res.z;
 
 		pqe = ps->get_solution(&cmat,solidx);
 		if (!pqe)
-			throw_other_exception(current_package->get_symbol("REACH"),nil); // out of reach exception
+			throw_other_exception(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
 		for (size_t j=0;j<da.vec.size();j++)
 			da.vec[j].ps->set_parameter(pqe[0][j]);
 		get_sim().redraw(true);
@@ -1689,7 +1683,7 @@ static node_t *func_use__kinematics(int numargs,node_t **args)
 		auto str = args[i]->as<string_node_t>();
 		auto pik = make_unique<ik_dll_t>(str->data());
 		if (pik->is_ok())
-			invkin.push_back(std::move(pik));
+			lisp_engine._invkin.push_back(std::move(pik));
 		else
 		{
 			throw_eval_exception(IKLIB_NOT_VALID);
@@ -1700,13 +1694,13 @@ static node_t *func_use__kinematics(int numargs,node_t **args)
 
 static node_t *func_use__kinematics__lisp(int numargs,node_t **args)
 {
-	auto f1 = args[0]->as<function>();
-	auto f2 = args[1]->as<function>();
-	auto f3 = args[2]->as<function>();
-	auto f4 = args[3]->as<function>();
+	auto f1 = args[0]->as<function_t>();
+	auto f2 = args[1]->as<function_t>();
+	auto f3 = args[2]->as<function_t>();
+	auto f4 = args[3]->as<function_t>();
 	auto pik = make_unique<ik_lisp_t>(f1, f2, f3, f4);
 	if (pik->is_ok())
-		invkin.push_back(std::move(pik));
+		lisp_engine._invkin.push_back(std::move(pik));
 	else
 	{
 		throw_eval_exception(IKLIB_NOT_VALID);
@@ -1725,12 +1719,11 @@ static node_t *func_winexec(int numargs, node_t** args)
 	if (args[0] == nil)
 		return nil;
 	args[0]->check_arg_type(TYPE_STRING);
-	ostrstream ostr;
+	ostringstream ostr;
 	for (int i=0; i< numargs;i++)
 		args[i]->princ(ostr);
 	ostr << (char)0;
-	UINT uRes = WinExec(ostr.str(), SW_SHOWNORMAL);
-	ostr.rdbuf()->freeze(0);
+	UINT uRes = WinExec(ostr.str().c_str(), SW_SHOWNORMAL);
 	return (uRes > 31) ? pTrue : nil;
 }
 

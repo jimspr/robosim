@@ -1,8 +1,9 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "parsen.h"
 #include "readtabl.h"
 #include "node.h"
 #include "package.h"
+#include "lisp_engine.h"
 
 using namespace std;
 
@@ -12,25 +13,25 @@ int read_table_t::_paren_level = 0;
 
 void process_type(int type[256], const char* s, int cat)
 {
-	int len = lstrlen(s);
-	for (int i = 0; i < len; i++)
+	auto len = strlen(s);
+	for (size_t i = 0; i < len; i++)
 	{
-		ASSERT(type[s[i]] == 0);
+		assert(type[s[i]] == 0);
 		type[s[i]] = cat;
 	}
 }
 
 read_table_t::read_table_t() : _line_cnt(1)
 {
-	static char* WS = " \t\r\n";
-	static char* C1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	static char* C2 = "0123456789!$%&*+-/<=>?@[]^_{}~";
-	static char* SE = "\\";
-	static char* ME = "|";
-	static char* NTM = "#";
-	static char* TM = "\"'(),;`";
-	static char* PM = ":";
-	static char* CD = ".";
+	static const char* WS = " \t\r\n";
+	static const char* C1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static const char* C2 = "0123456789!$%&*+-/<=>?@[]^_{}~";
+	static const char* SE = "\\";
+	static const char* ME = "|";
+	static const char* NTM = "#";
+	static const char* TM = "\"'(),;`";
+	static const char* PM = ":";
+	static const char* CD = ".";
 
 	process_type(_type, WS, WHITESPACE);
 	process_type(_type, C1, CONSTITUENT);
@@ -147,7 +148,7 @@ node_t *read_table_t::parse_vector(istream &istr)
 			vec.push_back(t);
 		}
 	}
-	catch(CException*)
+	catch (base_exception_t*)
 	{
 		_paren_level--;
 		throw;
@@ -346,7 +347,7 @@ node_t *read_table_t::parse_quote(istream &istr)
 		consume(istr);
 		throw_read_exception(INVALID_DOTTED_PAIR);
 	}
-	return cons_t::make_list(current_package->get_symbol("QUOTE"), t);
+	return cons_t::make_list(lisp_engine._package.get_symbol("QUOTE"), t);
 }
 
 node_t *read_table_t::parse_function(istream &istr)
@@ -363,7 +364,7 @@ node_t *read_table_t::parse_function(istream &istr)
 		consume(istr);
 		throw_read_exception(INVALID_DOTTED_PAIR);
 	}
-	return cons_t::make_list(current_package->get_symbol("FUNCTION"), t);
+	return cons_t::make_list(lisp_engine._package.get_symbol("FUNCTION"), t);
 }
 
 node_t *read_table_t::parse_comment(istream &istr)
@@ -415,7 +416,7 @@ node_t *read_table_t::makecell(const char *buf)
 	parse_number_t oNum(buf);
 	oNum.parse();
 	if (_in_escape || !oNum._node)
-		return current_package->get_symbol(buf);
+		return lisp_engine._package.get_symbol(buf);
 	else
 		return oNum._node;
 }

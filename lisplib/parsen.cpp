@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "parsen.h"
 #include "node.h"
 #include "readtabl.h"
@@ -10,19 +10,18 @@ int parse_number_t::numtype[256];
 
 void parse_number_t::initialize()
 {
-	int i;
-	for (i = 0; i < 256; i++)
+	for (int i = 0; i < 256; i++)
 	{
 		parse_number_t::numtype[i] = ILLEGAL;
 	}
 
-	static char* DIG = "0123456789";
-	static char* EXPMARK = "esfdlESFDL";
-	int nLen = lstrlen(DIG);
-	for (i = 0; i < nLen; i++)
+	static const char* DIG = "0123456789";
+	static const char* EXPMARK = "esfdlESFDL";
+	auto nLen = strlen(DIG);
+	for (size_t i = 0; i < nLen; i++)
 		parse_number_t::numtype[DIG[i]] = DIGIT;
-	nLen = lstrlen(EXPMARK);
-	for (i = 0; i < nLen; i++)
+	nLen = strlen(EXPMARK);
+	for (size_t i = 0; i < nLen; i++)
 		parse_number_t::numtype[EXPMARK[i]] = EXPONENT_MARKER;
 }
 

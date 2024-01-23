@@ -34,7 +34,7 @@ public:
 	void set_lisp_menu(cons_t* cons) override;
 	void set_console_height(int lines) override;
 	void maximize_window(bool max) override;
-	node_t* ask(function* pfn, std::vector<question>& pq, const char* title) override;
+	node_t* ask(function_t* pfn, std::vector<question>& pq, const char* title) override;
 
 	BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	void RecalcLayout(BOOL bNotify = TRUE) override

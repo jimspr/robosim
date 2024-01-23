@@ -10,43 +10,20 @@
 #include "grob.h"
 #include "package.h"
 #include "simula.h"
+#include "lisp_engine.h"
 
 using namespace std;
 
 simob_t::simob_t() : node_t(TYPE_SIMOB)
 {
-	_numpoly = 0;
-	_numvec = 0;
-	_parameter = 0.F;
-	_pjointfunc = nullptr;
-	_ambient[0] = _ambient[1] = _ambient[2] = .5f;
-	_diffuse[0] = _diffuse[1] = _diffuse[2] = .5f;
-	_specular[0] = _specular[1] = _specular[2] = .4f;
-	_ambient[3] = _diffuse[3] = _specular[3] = 1.f;
-	_shininess[0] = 0;// default shinniness
-	pmatparent=nullptr;
-	_invalidate_model = _invalidate_world = true;
-	_is_in_env = _is_graspee = false;
-	_end = nullptr;
-	_num_solns = 0;
 }
 
 simob_t::simob_t(simob_t &rs) : node_t(TYPE_SIMOB)
 {
-	_numpoly = 0;
-	_numvec = 0;
-	_parameter = 0.F;
-	_pjointfunc = nullptr;
-	pmatparent=nullptr;
-	Add(rs);
+	add(rs);
 	memcpy(_ambient, rs._ambient, 4*sizeof(GLfloat));
 	memcpy(_diffuse, rs._diffuse, 4*sizeof(GLfloat));
 	memcpy(_specular, rs._specular, 4*sizeof(GLfloat));
-
-	_invalidate_model = _invalidate_world = true;
-	_is_in_env = _is_graspee = false;
-	_end = nullptr;
-	_num_solns = 0;
 }
 
 void simob_t::init(int numv,int nump)
@@ -59,7 +36,7 @@ void simob_t::init(int numv,int nump)
 	_invalidate_world = true;
 }
 
-void simob_t::UpdatePos()
+void simob_t::update_pos()
 {
 	if (_invalidate_position)
 	{
@@ -75,14 +52,14 @@ void simob_t::UpdatePos()
 	}
 }
 
-void simob_t::UpdateWorld()
+void simob_t::update_world()
 {
-	UpdatePos();
+	update_pos();
 	_matpos.transform(_gworld.data(),_gmodel.data(),_numvec);
 	_invalidate_world = false;
 }
 
-void simob_t::UpdateModel()
+void simob_t::update_model()
 {
 	make_polys();
 	calc_bounding_box();
@@ -90,23 +67,23 @@ void simob_t::UpdateModel()
 	_invalidate_world = true;
 }
 
-void simob_t::UpdateObject()
+void simob_t::update_object()
 {
 	if (_invalidate_model)
-		UpdateModel();
+		update_model();
 	if (_invalidate_position)
-		UpdatePos();
+		update_pos();
 	if (_invalidate_world)
-		UpdateWorld();
+		update_world();
 }
 
-void simob_t::Attach(simob_t *ps)
+void simob_t::attach(simob_t *ps)
 {
 	_children.push_back(ps);
 	ps->set_parent_mat(&_matpos);
 }
 
-bool simob_t::Detach(simob_t *ps)
+bool simob_t::detach(simob_t *ps)
 {
 	ps->set_parent_mat(nullptr);
 	for (auto iter = _children.begin(); iter != _children.end(); ++iter)
@@ -132,44 +109,44 @@ void simob_t::mark_in_use()
 void simob_t::set_parent_mat(mat44 *pm)
 {
 	pmatparent = pm;
-	PosChanged();
+	pos_changed();
 }
 
-void simob_t::SetPosition(const mat44 &mat)
+void simob_t::set_position(const mat44 &mat)
 {
 	_matrel = mat;
-	PosChanged();
+	pos_changed();
 }
 
 void simob_t::set_joint_func(PMAT44FUNC p)
 {
 	_pjointfunc = p;
-	PosChanged();
+	pos_changed();
 }
 
 void simob_t::set_parameter(float f)
 {
 	if (f<_minparm || f>_maxparm)
-		throw_other_exception(current_package->get_symbol("JOINTLIMIT"),nil); // out of reach exception
+		throw_other_exception(lisp_engine._package.get_symbol("JOINTLIMIT"),nil); // out of reach exception
 	_parameter=f;
-	PosChanged();
+	pos_changed();
 }
 
-simob_t *simob_t::GetChild(int idx)
+simob_t *simob_t::get_child(int idx)
 {
 	return (idx >= (int)_children.size()) ? nullptr : _children[idx];
 }
 
-simob_t* simob_t::GetChild(size_t idx)
+simob_t* simob_t::get_child(size_t idx)
 {
 	return (idx >= _children.size()) ? nullptr : _children[idx];
 }
 
-void simob_t::PosChanged()
+void simob_t::pos_changed()
 {
 	_invalidate_position = true;
 	for (auto& child: _children)
-		child->PosChanged();
+		child->pos_changed();
 }
 
 void simob_t::set_ambient(GLfloat *p)
@@ -200,10 +177,10 @@ void simob_t::set_specular(GLfloat *p)
 		child->set_specular(p);
 }
 
-void simob_t::Draw()
+void simob_t::draw()
 {
 	int i;
-	UpdateObject();
+	update_object();
 
 	int *pc = _polycnts.data();
 	vertex3d_t* pPt = _gworld.data();
@@ -236,9 +213,9 @@ void simob_t::Draw()
 		glEnd();
 	}
 	for (auto& child : _children)
-		child->Draw();
+		child->draw();
 
-	if (get_sim().show_frames)
+	if (get_sim()._show_frames)
 	{
 		point3d_t axis[4]= {
 			point3d_t{0.F,0.F,0.F},
@@ -302,7 +279,7 @@ void append(std::vector<T>& t1, const std::vector<T>& t2)
 	t1.insert(t1.end(), t2.begin(), t2.end());
 }
 
-void simob_t::Add(simob_t &g)
+void simob_t::add(simob_t &g)
 {
 	verify_simob();
 	g.verify_simob();
@@ -324,8 +301,8 @@ void simob_t::add_world(simob_t &g)
 
 	_gmodel.resize(_numvec + g._numvec);
 	_gworld.resize(_numvec + g._numvec);
-	UpdatePos();
-	g.UpdateWorld();
+	update_pos();
+	g.update_world();
 	mat44 mrel = _matpos.fastinverse() * g._matpos;
 	mrel.transform(&_gmodel[_numvec], &g._gmodel[0], g._numvec);
 	append(_polycnts, g._polycnts);
@@ -388,7 +365,7 @@ void simob_t::make_box(float x,float y,float z)
 	_numvec = 30;
 	_numpoly = 6;
 	memcpy(_polycnts.data(), boxcnts, _numpoly*sizeof(int));
-	mat44 mat = mat44::TRANS(-x/2.F,-y/2.F,0.F)*mat44::SCALE(x,y,z);
+	mat44 mat = mat44::trans(-x/2.f,-y/2.f,0.f)*mat44::scale(x,y,z);
 	mat.transform(_gmodel.data(), unitbox, _numvec);
 	_invalidate_model = true;
 }
@@ -431,14 +408,14 @@ void simob_t::make_truncated_opencone(float rl,float ru,float height, int facets
 		normal.normalize();
 		face[1] = vertex3d_t{ point3d_t{ rl, 0.F, 0.F }, normal };
 	}
-	mat44 mat = mat44::ROTATEZ(angle);
+	mat44 mat = mat44::rotatez(angle);
 	mat.transform(face[2], face[1]);
 	mat.transform(face[3], face[0]);
 	for (i=0;i<facets;i++)
 	{
 		_polycnts[_numpoly++] = 5;
 		angle = (float)(2.*RPI)*(float)(facets-i)/(float)facets;
-		mat44::ROTATEZ(angle).transform(tface,face,4);
+		mat44::rotatez(angle).transform(tface,face,4);
 		_gmodel[_numvec++] = tface[0];
 		_gmodel[_numvec++] = tface[1];
 		_gmodel[_numvec++] = tface[2];
@@ -456,10 +433,10 @@ void simob_t::make_truncated_closedcone(float rl,float ru,float height, int face
 	tc.make_truncated_opencone(rl,ru,height,facets);
 	ct.make_circle(ru,facets);
 	cb.make_circle(rl,facets);
-	Add(ct);
-	(mat44::TRANS(0.F,0.F,height)*mat44::ROTATEX((float)RPI)).transform(_gmodel.data(),_numvec);
-	Add(tc);
-	Add(cb);
+	add(ct);
+	(mat44::trans(0.F,0.F,height)*mat44::rotatex((float)RPI)).transform(_gmodel.data(),_numvec);
+	add(tc);
+	add(cb);
 	_invalidate_model = true;
 	verify_simob();
 }
@@ -484,7 +461,7 @@ void simob_t::make_opencone(float radius,float height, int facets, point3d_t* pn
 	vertex3d_t tface[3];
 
 	float angle = (float)(2.*RPI/(double)facets);
-	mat44 mat = mat44::ROTATEZ(angle/2);
+	mat44 mat = mat44::rotatez(angle/2);
 	init(4*facets,facets);
 	if (pnormu != nullptr)
 		face[0] = vertex3d_t(0.F,0.F,height, pnormu->x, pnormu->y, pnormu->z);
@@ -496,13 +473,13 @@ void simob_t::make_opencone(float radius,float height, int facets, point3d_t* pn
 		face[1] = vertex3d_t(radius, 0.F, 0.F, pnorml->x, pnorml->y, pnorml->z);
 	else
 		face[1] = vertex3d_t(radius, 0.F, 0.F, height, 0.F,radius);
-	mat = mat44::ROTATEZ(angle);
+	mat = mat44::rotatez(angle);
 	mat.transform(face[2], face[1]);
 	for (i=0;i<facets;i++)
 	{
 		_polycnts[_numpoly++] = 4;
 		angle = (float)(2.*RPI)*(float)(facets-i)/(float)facets;
-		mat44::ROTATEZ(angle).transform(tface,face,3);
+		mat44::rotatez(angle).transform(tface,face,3);
 		_gmodel[_numvec++] = tface[0];
 		_gmodel[_numvec++] = tface[1];
 		_gmodel[_numvec++] = tface[2];
@@ -517,7 +494,7 @@ void simob_t::make_closedcone(float radius,float height, int facets)
 	simob_t cb;
 	make_opencone(radius,height,facets);
 	cb.make_circle(radius,facets);
-	Add(cb);
+	add(cb);
 	_invalidate_model = true;
 	verify_simob();
 }
@@ -539,7 +516,7 @@ void simob_t::make_opendome(float r,int facets)
 		norml.z = (float)sin(rat2);
 		normu.y = norml.y = 0.f;
 		h = r*(float)(sin(rat1) - sin(rat2) );
-		mat44::TRANS(0.F,0.F,h).transform(_gmodel.data(),_numvec);
+		mat44::trans(0.F,0.F,h).transform(_gmodel.data(),_numvec);
 		ru = r*(float)cos(rat1);
 		rl = r*(float)cos(rat2);
 		if (i==nd)
@@ -549,7 +526,7 @@ void simob_t::make_opendome(float r,int facets)
 		}
 		else
 			t.make_truncated_opencone(rl,ru,h,facets, &normu, &norml);
-		Add(t);
+		add(t);
 	}
 	_invalidate_model = true;
 	verify_simob();
@@ -560,7 +537,7 @@ void simob_t::make_closeddome(float r,int facets)
 	make_opendome(r,facets);
 	simob_t t;
 	t.make_circle(r,facets);
-	Add(t);
+	add(t);
 	_invalidate_model = true;
 	verify_simob();
 }
@@ -569,25 +546,25 @@ void simob_t::make_sphere(float r,int facets)
 {
 	simob_t t;
 	make_opendome(r,facets);
-	mat44::ROTATEX((float)RPI).transform(_gmodel.data(),_numvec);
+	mat44::rotatex((float)RPI).transform(_gmodel.data(),_numvec);
 	t.make_opendome(r,facets);
-	Add(t);
+	add(t);
 	_invalidate_model = true;
 	verify_simob();
 }
 
 void simob_t::make_extrusion(simob_t *ps,float h)
 {
-	int i,np = ps->GetNumVec()-1;
+	int i,np = ps->get_num_vec()-1;
 	init(np*5+2*(np+1),np+2);
-	ps->UpdateObject();
+	ps->update_object();
 	for (i=0;i<=np;i++)
 	{
 		_gmodel[_numvec] = ps->_gworld[i];
 		_gmodel[_numvec].normal = point3d_t{};
 		_numvec++;
 	}
-	mat44::TRANS(0.F,0.F,h).transform(_gmodel.data(),_numvec);
+	mat44::trans(0.F,0.F,h).transform(_gmodel.data(),_numvec);
 	_polycnts[_numpoly++] = np+1;
 	for (i=0;i<=np;i++)
 	{
@@ -613,9 +590,9 @@ void simob_t::make_extrusion(simob_t *ps,float h)
 
 void simob_t::make_revolution(simob_t *ps, long facets)
 {
-	int i,j,np = ps->GetNumVec()-1;
+	int i,j,np = ps->get_num_vec()-1;
 	init(np*facets*5,np*facets);
-	ps->UpdateObject();
+	ps->update_object();
 	std::vector<vertex3d_t> pt1(np + 1);
 	std::vector<vertex3d_t> pt2(np + 1);
 
@@ -630,8 +607,8 @@ void simob_t::make_revolution(simob_t *ps, long facets)
 			pt1[j] = ps->_gworld[j];
 			pt2[j] = ps->_gworld[j];
 		}
-		mat44::ROTATEZ(ang1).transform(pt1.data(), np+1);
-		mat44::ROTATEZ(ang2).transform(pt2.data(), np+1);
+		mat44::rotatez(ang1).transform(pt1.data(), np+1);
+		mat44::rotatez(ang2).transform(pt2.data(), np+1);
 		for (j=0;j<np;j++)
 		{
 			int nCnt = 0;
@@ -660,13 +637,12 @@ void simob_t::make_revolution(simob_t *ps, long facets)
 
 void simob_t::calc_bounding_box()
 {
-	float mnx,mxx,mny,mxy,mnz,mxz;
-	int i;
-	if (_numvec)
+	if (_numvec != 0)
 	{
+		float mnx, mxx, mny, mxy, mnz, mxz;
 		mnx = mny = mnz = FLT_MAX;
 		mxx = mxy = mxz = -FLT_MAX;
-		for (i=0;i<_numvec;i++)
+		for (int i = 0; i < _numvec; i++)
 		{
 			if (_gmodel[i].pt.x < mnx) mnx = _gmodel[i].pt.x;
 			if (_gmodel[i].pt.x > mxx) mxx = _gmodel[i].pt.x;
@@ -675,14 +651,14 @@ void simob_t::calc_bounding_box()
 			if (_gmodel[i].pt.z < mnz) mnz = _gmodel[i].pt.z;
 			if (_gmodel[i].pt.z > mxz) mxz = _gmodel[i].pt.z;
 		}
+		_boxmodel.set_center((mnx + mxx) / 2.F, (mny + mxy) / 2.F, (mnz + mxz) / 2.F);
+		_boxmodel.set_diagonal((mxx - mnx) / 2.F, (mxy - mny) / 2.F, (mxz - mnz) / 2.F);
 	}
 	else
 	{
-		mnx = mny = mnz = 0.F;
-		mxx = mxy = mxz = 0.F;
+		_boxmodel.set_center(0.f, 0.f, 0.f);
+		_boxmodel.set_diagonal(0.f, 0.f, 0.f);
 	}
-	_boxmodel.set_center((mnx+mxx)/2.F,(mny+mxy)/2.F,(mnz+mxz)/2.F);
-	_boxmodel.set_diagonal((mxx-mnx)/2.F,(mxy-mny)/2.F,(mxz-mnz)/2.F);
 }
 
 /**************************************************************
@@ -693,9 +669,8 @@ void simob_t::calc_bounding_box()
 
 void simob_t::make_polys()
 {
-	int i;
 	int cnt = 0;
-	for (i=0;i<_numpoly;i++)
+	for (int i=0;i<_numpoly;i++)
 	{
 		_polygons[i].make_poly(&_gmodel[cnt],_polycnts[i]-1);
 		cnt += _polycnts[i];
@@ -763,27 +738,27 @@ int simob_t::check_collide(simob_t *X1,simob_t *X2)
 			if (two_collide(X1,X2))
 				return TRUE;
 
-			if (X2->GetNumChildren() > 1)
+			if (X2->get_num_children() > 1)
 			{
-				size_t n = X2->GetNumChildren();
+				size_t n = X2->get_num_children();
 				for (size_t i = 0; i < n; i++)
-					if (check_collide(X1,X2->GetChild(i)))
+					if (check_collide(X1,X2->get_child(i)))
 						return TRUE;
 				return FALSE;
 			}
-			X2 = X2->GetChild(0);
+			X2 = X2->get_child(0);
 		}
-		if (X1->GetNumChildren() > 1)
+		if (X1->get_num_children() > 1)
 		{
-			size_t n = X1->GetNumChildren();
+			size_t n = X1->get_num_children();
 			for (size_t i = 0; i < n; i++)
 			{
-				if (check_collide(X1->GetChild(i), X2B))
+				if (check_collide(X1->get_child(i), X2B))
 					return TRUE;
 			}
 			return FALSE;
 		}
-		X1 = X1->GetChild(0);
+		X1 = X1->get_child(0);
 	}
 	return FALSE;
 }
@@ -793,14 +768,14 @@ int simob_t::two_collide(simob_t *X1,simob_t *X2)
 	mat44 mat;
 	bounding_box_t bt;
 
-	mat = X2->GetPosition().fastinverse()*X1->GetPosition();
+	mat = X2->get_position().fastinverse()*X1->get_position();
 	mat.transform(bt,X1->_boxmodel); // transform b1 to T2 system
 	if(!bt.box_collide(X2->_boxmodel))
 		return(0); /* boxes did not collide */
 
 	/* boxes collided so check in other frame */
 
-	mat = X1->GetPosition().fastinverse()*X2->GetPosition();
+	mat = X1->get_position().fastinverse()*X2->get_position();
 	mat.transform(bt,X2->_boxmodel);
 	if(!bt.box_collide(X1->_boxmodel))
 		return(0); /* boxes did not collide */
@@ -829,7 +804,7 @@ int simob_t::low_collision(simob_t *X1,simob_t *X2)
 	}
 
 //
-	mat = X2->GetPosition().fastinverse()*X1->GetPosition();
+	mat = X2->get_position().fastinverse()*X1->get_position();
 	mat.transform(tr.data(),X1->_gmodel.data(),n1);
 	/* tr holds vector list #1 in coordinate system #2 */
 
@@ -847,7 +822,7 @@ int simob_t::low_collision(simob_t *X1,simob_t *X2)
 
 /////////////////
 
-	mat = X1->GetPosition().fastinverse()*X2->GetPosition();
+	mat = X1->get_position().fastinverse()*X2->get_position();
 	mat.transform(tr.data(),X2->_gmodel.data(),n2);
 
 	/* cycle through points and create reduced edge array -- re */
@@ -888,13 +863,13 @@ bool simob_t::grasp(simob_t *ps)
 {
 	if (!_end)
 		return false;
-	if (ps->_is_graspee || _end->GetNumChildren())
+	if (ps->_is_graspee || _end->get_num_children())
 		return false;
-	mat44 tmat(_end->GetPosition().fastinverse()*ps->GetPosition());
+	mat44 tmat(_end->get_position().fastinverse()*ps->get_position());
 	ps->_is_graspee = true;
 	_end->_children.push_back(ps);
 	ps->set_parent_mat(&(_end->_matpos));
-	ps->SetPosition(tmat);
+	ps->set_position(tmat);
 	return true;
 }
 
@@ -902,14 +877,14 @@ simob_t *simob_t::release_grasp()
 {
 	if (!_end)
 		return nullptr;
-	if (!_end->GetNumChildren())
+	if (!_end->get_num_children())
 		return nullptr;
-	simob_t *ps = _end->GetChild();
-	mat44 mat = ps->GetPosition();
+	simob_t *ps = _end->get_child();
+	mat44 mat = ps->get_position();
 	ps->_is_graspee = false;
 	ps->set_parent_mat(nullptr);
 	_end->_children.erase(_end->_children.begin());
-	ps->SetPosition(mat);
+	ps->set_position(mat);
 	return ps;
 }
 
@@ -920,7 +895,7 @@ bool simob_t::make_agent(simob_t *plast,int numlinks)
 {
 	_end = plast;
 	std::vector<jointdef> joints(numlinks);
-	simob_t *ps = GetChild(0);
+	simob_t *ps = get_child(0);
 	int i=0;
 	while (ps)
 	{
@@ -928,11 +903,11 @@ bool simob_t::make_agent(simob_t *plast,int numlinks)
 		joints[i].mn = ps->_minparm;
 		joints[i].mx = ps->_maxparm;
 		joints[i].type = (ps->_pjointfunc==nullptr) ? 0 :
-				(ps->_pjointfunc==mat44::TRANSZ) ? 1 : 2;
-		ps = ps->GetChild(0);
+				(ps->_pjointfunc==mat44::transz) ? 1 : 2;
+		ps = ps->get_child(0);
 		i++;
 	}
-	for (auto& ik : invkin)
+	for (auto& ik : lisp_engine._invkin)
 	{
 		_inverse_kinematics = ik->compute_parameters(joints.data(), numlinks);
 		if (_inverse_kinematics != nullptr)

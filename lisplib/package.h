@@ -4,11 +4,12 @@
 
 #include <string>
 #include <unordered_map>
-#include "node.h"
+
+class symbol_t;
 
 class package_t
 {
-	std::unordered_map<std::string, symbol_t*> _map;
+	std::unordered_map<std::string, symbol_t*> _symbols;
 	std::string _name;
 	std::string _nickname;
 public:
@@ -20,7 +21,5 @@ public:
 	symbol_t *get_symbol(const char *name);
 	void add_symbol(const char *name,symbol_t *psym);
 };
-
-extern package_t* current_package;
 
 #endif

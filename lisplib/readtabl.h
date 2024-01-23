@@ -3,7 +3,6 @@
 #define __READTABL_H
 #include <string>
 #include <iostream>
-#include "node.h"
 
 #define ILLEGAL 0
 #define WHITESPACE 1
@@ -17,6 +16,8 @@
 
 #define MAX_STRING_LENGTH 1000
 #define MAX_CONSTITUENT_LENGTH 1000
+
+class node_t;
 
 class read_table_t
 {

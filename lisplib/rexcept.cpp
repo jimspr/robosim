@@ -1,17 +1,12 @@
-#include "stdafx.h"
+#include "pch.h"
+
 #include "rexcept.h"
 
-IMPLEMENT_DYNAMIC(robosim_exception_t, CException)
-IMPLEMENT_DYNAMIC(done_exception_t, robosim_exception_t)
-IMPLEMENT_DYNAMIC(read_exception_t, robosim_exception_t)
-IMPLEMENT_DYNAMIC(eval_exception_t, robosim_exception_t)
-IMPLEMENT_DYNAMIC(block_return_exception_t, robosim_exception_t)
-IMPLEMENT_DYNAMIC(interrupt_exception_t, robosim_exception_t)
-IMPLEMENT_DYNAMIC(other_exception_t,robosim_exception_t)
+int base_exception_t::_count = 0;
 
 void throw_done_exception()
 {
-	static done_exception_t simpleDoneException(FALSE);
+	static done_exception_t simpleDoneException(false);
 	throw &simpleDoneException;
 }
 

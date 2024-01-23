@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ttywin.h"
 #include "lispenv.h"
+#include "node.h"
+#include "lisp_engine.h"
 #define new DEBUG_NEW
 
 BEGIN_MESSAGE_MAP(tty_window_t, stdio_window_t)
@@ -220,7 +222,7 @@ std::string tty_window_t::get_current_ident()
 	int beg = _active_pos;
 	int end = _active_pos;
 	/* Look backwards and forwards to find identifier. */
-	auto type = lisp_env._readtable._type;
+	auto type = lisp_engine._env._readtable._type;
 	while ((beg > 0) && (type[_active[beg - 1]] == CONSTITUENT))
 		--beg;
 	while (type[_active[end]] == CONSTITUENT)

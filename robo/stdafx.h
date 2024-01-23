@@ -13,7 +13,7 @@
 #include <memory>
 #include <algorithm>
 #include <unordered_map>
-#include <strstream>
+#include <sstream>
 #include <streambuf>
 
 //#define new DEBUG_NEW

@@ -4,6 +4,10 @@ spin/Win32/**
 spin/x64/**
 robo/Win32/**
 robo/x64/**
+lisplib/Win32/**
+lisplib/x64/**
+lisp/Win32/**
+lisp/x64/**
 x64/**
 Win32/**
 .vs/**

@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "robosim", "robo\robo.vcxproj", "{73908789-FE0D-49EF-8FFA-93D7596B571D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{099B3C38-0F3E-47D6-A97C-04527AE0CE30} = {099B3C38-0F3E-47D6-A97C-04527AE0CE30}
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0} = {7D1FD517-B58E-4AFF-B1B2-EECE171120D0}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pumainv", "pumainv\pumainv.vcxproj", "{099B3C38-0F3E-47D6-A97C-04527AE0CE30}"
@@ -318,6 +319,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "html", "html", "{58B3831A-3
 		help\html\zerop.htm = help\html\zerop.htm
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lisplib", "lisplib\lisplib.vcxproj", "{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lisp", "lisp\lisp.vcxproj", "{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0} = {7D1FD517-B58E-4AFF-B1B2-EECE171120D0}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -332,7 +340,8 @@ Global
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x64.Build.0 = Debug|x64
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x86.ActiveCfg = Debug|Win32
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Debug|x86.Build.0 = Debug|Win32
-		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x64.ActiveCfg = Release|Win32
+		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x64.ActiveCfg = Release|x64
+		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x64.Build.0 = Release|x64
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x86.ActiveCfg = Release|Win32
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Release|x86.Build.0 = Release|Win32
 		{73908789-FE0D-49EF-8FFA-93D7596B571D}.Template|x64.ActiveCfg = Template|Win32
@@ -350,6 +359,30 @@ Global
 		{099B3C38-0F3E-47D6-A97C-04527AE0CE30}.Template|x64.Build.0 = Debug|x64
 		{099B3C38-0F3E-47D6-A97C-04527AE0CE30}.Template|x86.ActiveCfg = Debug|Win32
 		{099B3C38-0F3E-47D6-A97C-04527AE0CE30}.Template|x86.Build.0 = Debug|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Debug|x64.ActiveCfg = Debug|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Debug|x64.Build.0 = Debug|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Debug|x86.ActiveCfg = Debug|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Debug|x86.Build.0 = Debug|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Release|x64.ActiveCfg = Release|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Release|x64.Build.0 = Release|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Release|x86.ActiveCfg = Release|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Release|x86.Build.0 = Release|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Template|x64.ActiveCfg = Debug|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Template|x64.Build.0 = Debug|x64
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Template|x86.ActiveCfg = Debug|Win32
+		{7D1FD517-B58E-4AFF-B1B2-EECE171120D0}.Template|x86.Build.0 = Debug|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Debug|x64.ActiveCfg = Debug|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Debug|x64.Build.0 = Debug|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Debug|x86.ActiveCfg = Debug|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Debug|x86.Build.0 = Debug|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Release|x64.ActiveCfg = Release|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Release|x64.Build.0 = Release|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Release|x86.ActiveCfg = Release|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Release|x86.Build.0 = Release|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Template|x64.ActiveCfg = Debug|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Template|x64.Build.0 = Debug|x64
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Template|x86.ActiveCfg = Debug|Win32
+		{05AEA928-4EBA-4A94-94DE-AAD2C0B214D9}.Template|x86.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

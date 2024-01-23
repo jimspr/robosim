@@ -1,6 +1,8 @@
 #pragma once
 #include "simula.h"
 
+class view_wnd_t;
+
 class light_page_t : public CPropertyPage
 {
 public:

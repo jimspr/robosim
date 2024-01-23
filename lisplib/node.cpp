@@ -1,39 +1,27 @@
-#include "stdafx.h"
+#include "pch.h"
+#include <fstream>
+
 #include <errno.h>
 #include "node.h"
 #include "argstack.h"
 #include "package.h"
 #include "ik.h"
+#include "host.h"
+#include "lisp_engine.h"
 
 using namespace std;
 
-extern void main_win_mark_in_use();
-
-void node_list_array_t::clear_flags()
+void node_list_array_t::clear_all_gc_flags()
 {
 	size_t n = _data.size();
 	for (size_t i = 0; i < n; i++)
-		_data[i]->clear_gc_flag();
-	_garbage_collected = false;
+		_data[i]->clear_all_gc_flags();
 }
 
-int node_list_array_t::garbage_collect()
+int node_list_array_t::delete_unused()
 {
 	int cnt=0;
-	_garbage_collected = true;
 	size_t n = _data.size();
-
-//	MessageBeep(MB_ICONASTERISK);
-	/* Traverse all roots and mark as in use. */
-	g_frame_stack.mark_in_use();
-	g_bind_stack.mark_in_use();
-	dot_node->mark_in_use();
-	nil->mark_in_use();
-	pTrue->mark_in_use();
-	current_package->mark_in_use();
-	main_win_mark_in_use();
-	for (auto& ik : invkin)
-		ik->mark_in_use();
 
 	for (size_t i = 0; i < n; i++)
 		cnt += _data[i]->delete_unused();
@@ -42,16 +30,19 @@ int node_list_array_t::garbage_collect()
 
 void node_list_array_t::status(ostream &ostr)
 {
-	size_t n = _data.size();
-	for (size_t i = 0; i < n; i++)
-		_data[i]->status(ostr);
+	static const int width = 13;
+	ostr << std::setw(15) << "" << setw(width) << "nodes/block" << setw(width) << "node_size" << setw(width) << "#blocks" << setw(width) << "_nodes_total" << setw(width) << "_nodes_alloc" << setw(width) << "Cur block" << setw(width) << "Cur node" << endl;
+
+	for (auto& d : _data)
+		d->status(ostr);
 }
 
 void node_list_array_t::add(node_list_base_t* node)
 {
+	// Catch issue with stuff getting added before this is constructed.
+	assert(_magic_value == 1234678);
 	_data.push_back(node);
 }
-
 
 /************************************************
 ******************          *********************
@@ -356,7 +347,7 @@ cons_t* cons_t::make_list()
 
 cons_t* cons_t::append_cons(node_t* p)
 {
-	ASSERT(_right == nil);
+	assert(_right == nil);
 	auto cons = new cons_t{ p, nil };
 	_right = cons;
 	return cons;
@@ -364,18 +355,11 @@ cons_t* cons_t::append_cons(node_t* p)
 
 node_t *cons_t::eval()
 {
-	ASSERT(is_a(TYPE_CONS));
-	static MSG keymsg;
-	static int cnt=0;
-	if (NodeListArray._garbage_collected)
-		NodeListArray.clear_flags();
-	if (! (cnt++%100))
-	{
-		if (PeekMessage(&keymsg,NULL,WM_KEYDOWN,WM_KEYDOWN,PM_NOREMOVE))
-			if (AfxMessageBox("Do you want to stop?", MB_YESNO|MB_APPLMODAL|MB_ICONQUESTION)==IDYES)
-				throw_interrupt_exception();
-		AfxGetApp()->OnIdle(0); // this makes sure cleanup occurs during long processing
-	}
+	assert(is_a(TYPE_CONS));
+	// This is a good place to do post garbage collect processing if needed.
+	// This function is called frequently and no allocations should be happening during eval.
+	lisp_engine.post_garbage_collect();
+	lisp_engine._host->notify_eval();
 	if (!Car()->is_a(TYPE_SYMBOL))
 		throw_eval_exception(Car(),BAD_FUNCTION);
 	try
@@ -393,12 +377,13 @@ node_t *cons_t::eval()
 
 void cons_t::mark_in_use()
 {
-	ASSERT(is_a(TYPE_CONS));
+	assert(is_a(TYPE_CONS));
 	cons_t *ths=this;
 	while (ths->is_a(TYPE_CONS))
 	{
 		if (ths->is_in_use())
 			return;
+		// Call base class mark_in_use
 		ths->node_t::mark_in_use();
 		ths->Car()->mark_in_use();
 		ths = ths->CdrCONS();
@@ -409,7 +394,7 @@ void cons_t::mark_in_use()
 
 void cons_t::print(ostream &ostr) const
 {
-	ASSERT(is_a(TYPE_CONS));
+	assert(is_a(TYPE_CONS));
 	const cons_t *ths = this;
 	ostr << '(';
 	while (ths->is_a(TYPE_CONS))
@@ -437,7 +422,7 @@ void cons_t::print(ostream &ostr) const
 
 void cons_t::princ(ostream &ostr) const
 {
-	ASSERT(is_a(TYPE_CONS));
+	assert(is_a(TYPE_CONS));
 	const cons_t *ths = this;
 	ostr << '(';
 	while (ths->is_a(TYPE_CONS))
@@ -561,29 +546,3 @@ void bound_symbol_t::print(ostream &ostr) const
 	ostr << _value << ' ';
 	ostr << _child << " >";
 }
-
-HCURSOR hour_glass_t::hHourGlass = LoadCursor(NULL,IDC_WAIT);
-int hour_glass_t::count = 0;
-
-hour_glass_t::hour_glass_t()
-{
-	if (!count)
-	{
-		hCursor = SetCursor(hHourGlass);
-		ShowCursor(TRUE);
-	}
-	SetCursor(hHourGlass);
-	count++;
-}   
-
-hour_glass_t::~hour_glass_t()
-{
-	count--;
-	if (!count)
-	{
-		ShowCursor(FALSE);
-		SetCursor(hCursor);
-		hCursor = NULL;
-	}
-}
-

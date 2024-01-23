@@ -50,8 +50,6 @@ public:
 	void make_poly(const vertex3d_t* p, int nv);
 };
 
-class Agent;
-
 /* Represents a 3D simulation object. */
 class simob_t : public node_t
 {
@@ -64,29 +62,29 @@ class simob_t : public node_t
 protected:
 	mat44 _matpos;
 	mat44 _matrel;
-	mat44* pmatparent; // matparent * _matrel = _matpos
+	mat44* pmatparent = nullptr; // matparent * _matrel = _matpos
 	std::vector<vertex3d_t> _gmodel;
 	std::vector<vertex3d_t> _gworld;
-	int _numvec;
-	int _numpoly;
+	int _numvec = 0;
+	int _numpoly = 0;
 	std::vector<int> _polycnts;
 	bounding_box_t _boxmodel;
-	bool _invalidate_model{ false };
-	bool _invalidate_world{ false };
+	bool _invalidate_model{ true };
+	bool _invalidate_world{ true };
 	bool _invalidate_position{ false };
 	bool _is_in_env{ false };
 	bool _is_graspee{ false };
 	std::vector<simob_t*> _children;
-	GLfloat _ambient[4];
-	GLfloat _diffuse[4];
-	GLfloat _specular[4];
-	GLfloat _shininess[1];
+	GLfloat _ambient[4] = { .5f, .5f, .5f, 1.0f };
+	GLfloat _diffuse[4] = { .5f, .5f, .5f, 1.0f };;
+	GLfloat _specular[4] = { .4f, .4f, .4f, 1.0f };;
+	GLfloat _shininess[1] = { 0.f };
 	std::vector<polygon_t>    _polygons; // array of polygon structures used in collision detection
 // These Parameters used for movable links
-	float _parameter;
+	float _parameter = 0.f;
 	float _minparm;
 	float _maxparm;
-	PMAT44FUNC _pjointfunc;
+	PMAT44FUNC _pjointfunc = nullptr;
 	bool _classic{ false };
 	// _classic is true when the axis of motion of a link is specified by the frame of the previous link
 	// _classic is true -> T6 = Rot1(z,theta)*A1*Rot2(z,theta)*A2* ... *A6
@@ -96,11 +94,11 @@ protected:
 	// _classic is false -> T6 = A1*Rot1(z,theta)*A2*Rot2(z,theta)* ... *A6*Rot6(z,theta)
 
 	/* _end used for serial agents. Points to last link. */
-	simob_t* _end;
+	simob_t* _end = nullptr;
 	//	char *invparms;
 	std::unique_ptr<ik_interface> _inverse_kinematics;
 	//	solution *psols;
-	int _num_solns;
+	int _num_solns = 0;
 
 public:
 	static bool verify(node_t* p) { return p->get_type() == TYPE_SIMOB; }
@@ -110,10 +108,10 @@ public:
 	void mark_in_use();
 	void print(std::ostream& ostr) const { ostr << "<simob_t " << (uintptr_t)this << ">"; }
 	void init(int numv, int nump);
-	void UpdateObject();
-	void UpdateModel();
-	void UpdatePos();
-	void UpdateWorld();
+	void update_object();
+	void update_model();
+	void update_pos();
+	void update_world();
 
 	// These functions used for movable links
 	void set_min_max(float mn, float mx) { _minparm = mn; _maxparm = mx; }
@@ -123,7 +121,7 @@ public:
 	bool is_joint() const { return (_pjointfunc) ? true : false; }
 	//
 	// These functions used for serial agents
-	simob_t* get_graspee() const { return _end->GetChild(); }
+	simob_t* get_graspee() const { return _end->get_child(); }
 	simob_t* release_grasp();
 	bool grasp(simob_t* ps);
 	bool is_serial_agent() const { return _end ? true : false; }
@@ -131,33 +129,31 @@ public:
 	bool make_agent(simob_t* plast, int numlinks);
 	int get_num_solutions() { return _num_solns; }
 	solution* get_solution(mat44* pmat, int idx);
-	mat44& get_end_position() { return _end->GetPosition(); }
+	mat44& get_end_position() { return _end->get_position(); }
 	//
 	bool is_attached() const { return (pmatparent) ? true : false; }
 	bool is_in_env() const { return _is_in_env; }
 	void check_in_env() const { if (!_is_in_env) throw_eval_exception(OBJECT_NOT_IN_ENV); }
 	void set_in_env(bool b) { _is_in_env = b; }
-	simob_t* GetChild(int idx = 0);
-	simob_t* GetChild(size_t idx);
-	size_t GetNumChildren() { return _children.size(); }
-	void SetPosition(const mat44& mat);
+	simob_t* get_child(int idx = 0);
+	simob_t* get_child(size_t idx);
+	size_t get_num_children() { return _children.size(); }
+	void set_position(const mat44& mat);
 	void set_parent_mat(mat44* pm);
-	void PosChanged();
+	void pos_changed();
 	void set_ambient(GLfloat* p);
 	void set_shininess(GLfloat* p);
 	void set_diffuse(GLfloat* p);
 	void set_specular(GLfloat* p);
-	void Attach(simob_t* ps);
-	bool Detach(simob_t* ps);
-	void Draw();
-	int GetNumVec() const { return _numvec; }
-	int GetNumPoly() const { return _numpoly; }
-	void Add(simob_t& g);
+	void attach(simob_t* ps);
+	bool detach(simob_t* ps);
+	void draw();
+	int get_num_vec() const { return _numvec; }
+	int get_num_poly() const { return _numpoly; }
+	void add(simob_t& g);
 	void add_world(simob_t& g);
-	void intersect(simob_t& g);
-	void union_with(simob_t& g);
 	void calc_bounding_box();
-	mat44& GetPosition() { UpdatePos(); return _matpos; }
+	mat44& get_position() { update_pos(); return _matpos; }
 	void add_vector(vector_t& v);
 	void new_poly(int n) { _polycnts[_numpoly++] = n; }
 	void make_box(float x, float y, float z);
@@ -181,7 +177,7 @@ public:
 	static int low_collision(simob_t* X1, simob_t* X2);
 	int poly_edge(edge_t* re, int ne, bounding_box_t& bbox);
 	//
-	DECLARE_NODE(simob_t, 16)
+	DECLARE_NODE(simob_t, 256)
 };
 
 #endif

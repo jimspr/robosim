@@ -1,18 +1,19 @@
-#include "stdafx.h"
-#include <strstream>
+#include "pch.h"
+
+#include <sstream>
 #include "rlerror.h"
 #include "node.h"
 
 using namespace std;
 
 #define DAT(x, y) y,
-static char* errors[] = {
+static const char* errors[] = {
 	"",
 #include "errordat.h"
 };
 #undef DAT
 
-char* get_rlerror_msg(error_e type)
+const char* get_rlerror_msg(error_e type)
 {
 	if (type && (type < NUM_ERRMSGS))
 		return errors[type];
@@ -20,9 +21,9 @@ char* get_rlerror_msg(error_e type)
 		return errors[NUM_ERRMSGS];
 }
 
-std::string get_rlerror_msg(LPCSTR pszFileName, robosim_exception_t& e)
+std::string get_rlerror_msg(const char* pszFileName, robosim_exception_t& e)
 {
-	ostrstream ostr;
+	ostringstream ostr;
 	int i = 0, j;
 	for (auto& name : e._function_names)
 	{
@@ -52,7 +53,7 @@ std::string get_rlerror_msg(robosim_exception_t& e)
 	return get_rlerror_msg(nullptr, e);
 }
 
-void rlerror(LPCSTR fname, robosim_exception_t& e)
+void rlerror(const char* fname, robosim_exception_t& e)
 {
 	cerr << get_rlerror_msg(fname, e) << '\n';
 	cerr.flush();

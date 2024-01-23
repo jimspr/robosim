@@ -17,6 +17,8 @@
 #define IDX_DIST 11
 #define NUM_EDIT 12
 
+class view_wnd_t;
+
 class view_dialog_t : public CDialog
 {
 public:
@@ -94,4 +96,49 @@ public:
 	afx_msg void on_delta_near(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void on_delta_zoom(NMHDR* pNMHDR, LRESULT* pResult);
 };
+
+class view_wnd_t : public CWnd, public view_options_t
+{
+public:
+	std::unique_ptr<view_dialog_t> _view_dialog;
+
+protected:
+	static std::string _class_name;
+	static COLORREF _colorref_back;
+
+	CPalette _palette;
+	simulation_t& _sim;
+
+public:
+	view_wnd_t(simulation_t& rs);
+	virtual ~view_wnd_t();
+	virtual int paint_printer(CDC& dc, int page);
+	virtual void paint_window(CRect& rect);
+
+	void invalidate(bool erase = true) override;
+	void update_window() override;
+	void update_data() override;
+
+	bool setup_pixel_format(HDC hDC);
+	bool setup_pixel_format_for_bitmap(HDC hDC);
+	unsigned char component_for_index(int i, UINT nbits, UINT shift);
+	void create_rgb_palette(HDC hDC);
+	void redraw(bool bErase);
+	static void set_background_color(COLORREF cr);
+	void adjust_lights();
+	void copy_to_clipboard();
+
+	virtual BOOL Create(CFrameWnd* p);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+
+	//{{AFX_MSG(CViewWnd)
+	afx_msg void OnPaint();
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	afx_msg int  OnCreate(LPCREATESTRUCT lpcs);
+	afx_msg void OnDestroy();
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
+};
+
 #endif

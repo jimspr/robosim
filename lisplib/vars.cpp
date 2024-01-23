@@ -1,7 +1,9 @@
-#include "stdafx.h"
+#include "pch.h"
+
 #include "node.h"
 #include "package.h"
 #include "constant.h"
+#include "lisp_engine.h"
 
 symbol_t* key_optional;
 symbol_t* key_rest;
@@ -41,7 +43,7 @@ symbol_t* pDIV2 = nullptr;
 symbol_t* pDIV3 = nullptr;
 symbol_t* pMINUS = nullptr;
 
-#define decvariable(n,v) current_package->get_symbol(n)->set_value(v);
+#define decvariable(n,v) lisp_engine._package.get_symbol(n)->set_value(v);
 
 void init_variables()
 {
@@ -104,25 +106,25 @@ void init_variables()
 	decvariable("//",   nil);
 	decvariable("///",  nil);
 
-	pPLUS1 = current_package->get_symbol("+");
-	pPLUS2 = current_package->get_symbol("++");
-	pPLUS3 = current_package->get_symbol("+++");
-	pSTAR1 = current_package->get_symbol("*");
-	pSTAR2 = current_package->get_symbol("**");
-	pSTAR3 = current_package->get_symbol("***");
-	pDIV1 = current_package->get_symbol("/");
-	pDIV2 = current_package->get_symbol("//");
-	pDIV3 = current_package->get_symbol("///");
-	pMINUS = current_package->get_symbol("-");
+	pPLUS1 = lisp_engine._package.get_symbol("+");
+	pPLUS2 = lisp_engine._package.get_symbol("++");
+	pPLUS3 = lisp_engine._package.get_symbol("+++");
+	pSTAR1 = lisp_engine._package.get_symbol("*");
+	pSTAR2 = lisp_engine._package.get_symbol("**");
+	pSTAR3 = lisp_engine._package.get_symbol("***");
+	pDIV1 = lisp_engine._package.get_symbol("/");
+	pDIV2 = lisp_engine._package.get_symbol("//");
+	pDIV3 = lisp_engine._package.get_symbol("///");
+	pMINUS = lisp_engine._package.get_symbol("-");
 }
 
 
-#define decconstant(n,v) current_package->get_symbol(n)->set_constant_value((node_t *)v);
+#define decconstant(n,v) lisp_engine._package.get_symbol(n)->set_constant_value((node_t *)v);
 #define deckeyword(var,n)\
 {\
 	var = new symbol_t(n);\
 	var->set_constant_value(var);\
-	current_package->add_symbol(n,var);\
+	lisp_engine._package.add_symbol(n,var);\
 }
 
 void init_constants()
@@ -188,12 +190,12 @@ void init_constants()
 
 	/* Add global nil symbol. */
 	nil = new nil_t{};
-	current_package->add_symbol("NIL", nil);
+	lisp_engine._package.add_symbol("NIL", nil);
 
 	/* Add global "T" symbol for true. */
 	pTrue = new symbol_t("T");
 	pTrue->set_constant_value(pTrue);
-	current_package->add_symbol("T", pTrue);
+	lisp_engine._package.add_symbol("T", pTrue);
 
 	/* Don't add dot_node to symbol table. It is special. */
 	dot_node = new symbol_t("DOT");
