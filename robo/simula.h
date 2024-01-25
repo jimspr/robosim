@@ -5,7 +5,6 @@
 #include "matrix.h"
 #include "question.h"
 
-class simulation_t;
 class simob_t;
 
 struct camera_t
@@ -44,68 +43,7 @@ public:
 	void set_pos(GLenum id) { glLightfv(id, GL_POSITION, _position); }
 };
 
-
-
-class view_dialog_t;
-class view_wnd_t : public CWnd
-{
-public:
-	ambient_light_t _ambient_light;
-	std::vector<light_t> _lights;
-	float _near_plane;
-	float _far_plane;
-	camera_t _main_camera_view;
-	std::unique_ptr<view_dialog_t> _view_dialog;
-
-protected:
-	static std::string _class_name;
-	static COLORREF _colorref_back;
-
-	CPalette _palette;
-	simulation_t& sim;
-	bool _wire_frame;
-	bool _lighting;
-	bool _cull;
-	bool _smooth_shading;
-
-public:
-	view_wnd_t(simulation_t& rs);
-	virtual ~view_wnd_t();
-	virtual void set_camera(camera_t& cam);
-	virtual int paint_printer(CDC& dc,int page);
-	virtual void paint_window(CRect& rect);
-
-	bool setup_pixel_format(HDC hDC);
-	bool setup_pixel_format_for_bitmap(HDC hDC);
-	unsigned char component_for_index(int i, UINT nbits, UINT shift);
-	void create_rgb_palette(HDC hDC);
-	void set_look_from(const point3d_t& pt);
-	void set_look_at(const point3d_t& pt);
-	void SetCam(float f,float t,float z);
-	void set_clip_plane(float near_plane, float far_plane);
-	camera_t& get_camera();
-	void redraw(bool bErase);
-	void set_double_buffer(bool b);
-	void set_wire_frame(bool b) {_wire_frame = b;}
-	void set_lighting(bool b) {_lighting = b;}
-	void set_cull(bool b) { _cull = b;}
-	void set_smooth_shading(bool b) {_smooth_shading = b;}
-	static void set_background_color(COLORREF cr);
-	void adjust_lights();
-	void copy_to_clipboard();
-
-	virtual BOOL Create(CFrameWnd* p);
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-
-	//{{AFX_MSG(CViewWnd)
-	afx_msg void OnPaint();
-	afx_msg void OnSize(UINT nType,int cx,int cy);
-	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
-	afx_msg int  OnCreate(LPCREATESTRUCT lpcs);
-	afx_msg void OnDestroy();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
-};
+class view_options_t;
 
 /* Base class for a simulation. */
 class simulation_t
@@ -119,9 +57,9 @@ protected:
 	bool _is_collision_on = false;
 	bool _update = true;
 public:
-	bool show_frames = false;
+	bool _show_frames = false;
 	std::vector<simob_t*> _objects;
-	view_wnd_t* _view_wnd = nullptr;
+	view_options_t* _view_wnd = nullptr;
 
 	void redraw(bool erase);
 	bool add_object(simob_t *psobj);
@@ -161,9 +99,79 @@ public:
 	virtual void set_lisp_menu(cons_t* cons) = 0;
 	virtual void set_console_height(int lines) = 0;
 	virtual void maximize_window(bool max) = 0;
-	virtual node_t* ask(function* pfn, std::vector<question>& pq, const char* title) = 0;
+	virtual node_t* ask(function_t* pfn, std::vector<question>& pq, const char* title) = 0;
 };
 
 extern simulation_t& get_sim();
+
+class view_options_t
+{
+public:
+	ambient_light_t _ambient_light;
+	std::vector<light_t> _lights;
+	float _near_plane = 50.f;
+	float _far_plane = 4000.f;
+	camera_t _main_camera_view;
+
+	bool _wire_frame = true;
+	bool _lighting = false;
+	bool _cull = false;
+	bool _smooth_shading = false;
+
+	virtual ~view_options_t()
+	{
+	}
+
+	virtual void invalidate(bool erase = true) = 0;
+	virtual void update_window() = 0;
+	virtual void adjust_lights() = 0;
+	virtual void update_data() = 0;
+
+	void set_clip_plane(float near_plane, float far_plane)
+	{
+		_near_plane = near_plane;
+		_far_plane = far_plane;
+		update_data();
+		invalidate();
+	}
+	void set_cam(float f, float t, float z)
+	{
+		_main_camera_view.focal_length = f;
+		_main_camera_view.twist = t;
+		_main_camera_view.zoom = z;
+		set_camera(_main_camera_view);
+		update_data();
+	}
+
+	void redraw(bool erase = true)
+	{
+		invalidate(erase);
+		update_window();
+	}
+
+	void set_camera(camera_t& cam)
+	{
+		_main_camera_view = cam;
+		invalidate();
+	}
+
+	camera_t& get_camera()
+	{
+		return _main_camera_view;
+	}
+
+	void set_look_from(const point3d_t& pt)
+	{
+		_main_camera_view.from = pt;
+		set_camera(_main_camera_view);
+		update_data();
+	}
+	void set_look_at(const point3d_t& pt)
+	{
+		_main_camera_view.to = pt;
+		set_camera(_main_camera_view);
+		update_data();
+	}
+};
 
 #endif

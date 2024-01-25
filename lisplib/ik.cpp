@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "pch.h"
+
 #include <memory>
 
 #include "ik.h"
@@ -18,7 +19,7 @@ void ik_interface::alloc_solutions()
 
 ik_dll_t::ik_dll_t(const std::string& libname) : _lib_name(libname)
 {
-	if (_handle_dll = LoadLibrary(_lib_name.c_str()))
+	if (_handle_dll = LoadLibraryA(_lib_name.c_str()))
 	{
 		_fn_inverse_kinematics = (PFINVKIN) GetProcAddress(_handle_dll,"InverseKinematics");
 		_fn_get_buffer_size = (PFG) GetProcAddress(_handle_dll,"GetBufferSize");
@@ -55,8 +56,8 @@ int ik_dll_t::get_degrees_of_freedom()
 
 int ik_dll_t::inverse_kinematics(fmat44 mat)
 {
-	ASSERT(!_parameters.empty());
-	ASSERT(!_solutions.empty());
+	assert(!_parameters.empty());
+	assert(!_solutions.empty());
 	return _fn_inverse_kinematics(&_parameters[0], mat, &_solutions[0]);
 }
 
@@ -69,7 +70,7 @@ std::unique_ptr<ik_interface> ik_dll_t::compute_parameters(jointdef* joints, int
 		return nullptr;
 	}
 	auto pIK = make_unique<ik_dll_t>(_lib_name);
-	ASSERT(pIK->is_ok());
+	assert(pIK->is_ok());
 	pIK->_parameters = std::move(buf);
 	pIK->alloc_solutions();
 	return pIK;
@@ -79,7 +80,7 @@ void ik_dll_t::mark_in_use()
 {
 }
 
-ik_lisp_t::ik_lisp_t(function* pIK, function* pGNS, function* pGD, function* pCP)
+ik_lisp_t::ik_lisp_t(function_t* pIK, function_t* pGNS, function_t* pGD, function_t* pCP)
 {
 	_fn_inverse_kinematics = pIK;
 	_fn_get_num_solutions = pGNS;
@@ -117,24 +118,24 @@ int ik_lisp_t::get_degrees_of_freedom()
 
 int ik_lisp_t::inverse_kinematics(fmat44 mat)
 {
-	ASSERT(_parameters != NULL);
-	ASSERT(!_solutions.empty());
+	assert(_parameters != NULL);
+	assert(!_solutions.empty());
 	cons_t* args = cons_t::make_list(_parameters, new mat44(mat));
 	cons_t *pRet = (cons_t*)_fn_inverse_kinematics->evalnoargs(args);
 	if ((node_t*)pRet == (node_t*)nil)
 		return 0;
-	ASSERT(pRet->is_a(TYPE_CONS));
-	ASSERT(pRet->get_num_items() == get_num_solutions());
+	assert(pRet->is_a(TYPE_CONS));
+	assert(pRet->get_num_items() == get_num_solutions());
 	int nSol = 0;
 	int nVar = 0;
 	while (pRet->is_a(TYPE_CONS))
 	{
 		cons_t* pSol = pRet->CarCONS();
-		ASSERT(pSol->is_a(TYPE_CONS));
+		assert(pSol->is_a(TYPE_CONS));
 		nVar = 0;
 		while (pSol->is_a(TYPE_CONS))
 		{
-			ASSERT(pSol->Car()->is_a_number());
+			assert(pSol->Car()->is_a_number());
 			_solutions[nSol][nVar] = (float)*(number_node_t*)(pSol->Car());
 			nVar++;
 			pSol = pSol->CdrCONS();

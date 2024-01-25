@@ -1,11 +1,14 @@
 #include "stdafx.h"
+#include <sstream>
+
 #include "resource.h"
 #include "dialogs.h"
-#include <strstream>
 #include "argstack.h"
 #include "package.h"
 #include "lispenv.h"
 #include "rexcept.h"
+#include "node.h"
+#include "lisp_engine.h"
 
 #define new DEBUG_NEW
 
@@ -23,7 +26,7 @@ node_t *question::get_node(void)
 	case question_type_e::question_string:
 		return new string_node_t(cresult.c_str());
 	case question_type_e::question_symbol:
-		return current_package->get_symbol(cresult.c_str());
+		return lisp_engine._package.get_symbol(cresult.c_str());
 	}
 	ASSERT(false);
 	return nullptr;
@@ -36,7 +39,7 @@ BEGIN_MESSAGE_MAP(ask_dialog_t, CDialog)
 END_MESSAGE_MAP()
 
 
-ask_dialog_t::ask_dialog_t(CWnd *p,function *pfn, std::vector<question>& q,const char *t) :
+ask_dialog_t::ask_dialog_t(CWnd *p, function_t* pfn, std::vector<question>& q,const char *t) :
 	CDialog(ask_dialog_t::IDD,p), _questions(q), _prompts(q.size()), _edits(q.size()), _spin_buttons(q.size()), _title(t), _func(pfn)
 {
 }
@@ -337,13 +340,13 @@ bool ask_dialog_t::call_function(void)
 {
 // push args and call function
 	node_t *res = nil;
-	frame_stack_state_t state(g_frame_stack); /* Restore g_frame_stack at end. */
+	frame_stack_state_t state(lisp_engine._frame_stack); /* Restore _frame_stack at end. */
 	try
 	{
 		for (auto& q: _questions)
-			g_frame_stack.push(q.get_node());
+			lisp_engine._frame_stack.push(q.get_node());
 		int numq = (int)_questions.size();
-		res = _func->eval(numq,g_frame_stack.get_base(numq));
+		res = _func->eval(numq, lisp_engine._frame_stack.get_base(numq));
 	}
 	catch(eval_exception_t* e)
 	{
@@ -354,12 +357,12 @@ bool ask_dialog_t::call_function(void)
 	}
 	catch(block_return_exception_t* e)
 	{
-		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_env._readtable._line_cnt);
-		ostrstream ostr;
+		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_engine._env._readtable._line_cnt);
+		ostringstream ostr;
 		ostr << "Error - \"";
 		e->_block->print(ostr);
 		ostr << "\" " << get_rlerror_msg(re) << endl << '\0';;
-		AfxMessageBox(ostr.str(), MB_OK|MB_ICONSTOP);
+		AfxMessageBox(ostr.str().c_str(), MB_OK | MB_ICONSTOP);
 		e->Delete();
 	}
 	catch(interrupt_exception_t* e)
@@ -383,9 +386,14 @@ bool ask_dialog_t::call_function(void)
 		AfxMessageBox("Error - robosim_exception_t", MB_OK|MB_ICONINFORMATION);
 		e->Delete();
 	}
+	catch (base_exception_t* e)
+	{
+		AfxMessageBox("Error - base_exception_t Caught", MB_OK | MB_ICONINFORMATION);
+		e->Delete();
+	}
 	catch(CException* e)
 	{
-		AfxMessageBox("Error - Other Exception Caught", MB_OK|MB_ICONINFORMATION);
+		AfxMessageBox("Error - MFC Exception Caught", MB_OK|MB_ICONINFORMATION);
 		e->Delete();
 	}
 

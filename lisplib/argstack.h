@@ -3,7 +3,13 @@
 #define __ARGSTACK_H
 
 #include <vector>
-#include "node.h"
+#include <assert.h>
+#include <ostream>
+
+class node_t;
+class bound_symbol_t;
+class cons_t;
+class symbol_t;
 
 /* frame_stack_t holds all arguments to functions that are currently running.
    Its primary use is so that the GC can mark all of the arguments as in use. */
@@ -47,7 +53,7 @@ public:
 	~frame_stack_state_t()
 	{
 		/* Should only remove items. */
-		ASSERT(_position <= _stack._args.size());
+		assert(_position <= _stack._args.size());
 		_stack._args.resize(_position);
 	}
 };
@@ -89,6 +95,4 @@ public:
 	}
 };
 
-extern frame_stack_t g_frame_stack;
-extern binding_stack_t g_bind_stack;
 #endif

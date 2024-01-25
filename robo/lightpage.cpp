@@ -5,6 +5,7 @@
 #include "robo.h"
 #include "resource.h"
 #include "LightPage.h"
+#include "view.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

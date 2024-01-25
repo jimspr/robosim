@@ -1,9 +1,10 @@
-#include "stdafx.h"
+#include "pch.h"
 #include <errno.h>
 #include "node.h"
 #include "argstack.h"
 #include "package.h"
 #include <chrono>
+#include "lisp_engine.h"
 
 using namespace std;
 
@@ -147,8 +148,8 @@ static node_t *macro_when(cons_t *ths);
 //static node_t *macro_with__standard__io__syntax(cons_t *ths);
 
 
-#define specform(n,f) current_package->get_symbol(n)->set_constant_form(new special_form_t(n,f))
-#define macro(n,f) current_package->get_symbol(n)->set_form(new macro_t(n,f))
+#define specform(n,f) lisp_engine._package.get_symbol(n)->set_constant_form(new special_form_t(n,f))
+#define macro(n,f) lisp_engine._package.get_symbol(n)->set_form(new macro_t(n,f))
 
 void init_forms()
 {
@@ -244,15 +245,15 @@ void vardecl::set(cons_t *var,int bStep)
 	}
 	else
 		throw_eval_exception(BAD_ARG_TYPE);
-	g_frame_stack.push(init);
-	g_frame_stack.push(step);
+	lisp_engine._frame_stack.push(init);
+	lisp_engine._frame_stack.push(step);
 	_pop = true;
 }
 
 vardecl::~vardecl()
 {
 	if (_pop)
-		g_frame_stack.pop(2);
+		lisp_engine._frame_stack.pop(2);
 }
 
 static int dobindings(vector<vardecl> &varlist,cons_t *b,int bStep)
@@ -265,14 +266,16 @@ static int dobindings(vector<vardecl> &varlist,cons_t *b,int bStep)
 		varlist.resize(numvars);
 	for (i=0;b->is_a(TYPE_CONS);b=b->CdrCONS(),i++)
 		varlist[i].set(b->CarCONS(),bStep);
+
 	try
 	{
 		for (shadowi=i=0;i<numvars;shadowi = ++i)
-			g_bind_stack.bind(varlist[i].psymbol,varlist[i].init);
+			lisp_engine._bind_stack.bind(varlist[i].psymbol,varlist[i].init);
 	}
-	catch(CException*)
+	catch (base_exception_t*)
 	{
-		g_bind_stack.unbind(shadowi);
+		// If exception occurs while binding, unbind.
+		lisp_engine._bind_stack.unbind(shadowi);
 		throw;
 	}
 	return numvars;
@@ -291,12 +294,13 @@ static int dostarbindings(vector<vardecl> &varlist,cons_t *b,int bStep)
 		for (shadowi=i=0;b->is_a(TYPE_CONS);b=b->CdrCONS(),shadowi=++i)
 		{
 			varlist[i].set(b->CarCONS(),bStep);
-			g_bind_stack.bind(varlist[i].psymbol,varlist[i].init);
+			lisp_engine._bind_stack.bind(varlist[i].psymbol,varlist[i].init);
 		}
 	}
-	catch(CException*)
+	catch (base_exception_t*)
 	{
-		g_bind_stack.unbind(shadowi);
+		// If exception occurs while binding, unbind.
+		lisp_engine._bind_stack.unbind(shadowi);
 		throw;
 	}
 	return numvars;
@@ -370,7 +374,7 @@ static node_t *form_unwind__protect(cons_t *ths)
 	{
 		res = ths->Car()->eval();
 	}
-	catch(CException*)
+	catch (base_exception_t*)
 	{
 		ths = ths->CdrCONS();
 		while (ths->is_a(TYPE_CONS))
@@ -423,13 +427,13 @@ static node_t *form_function(cons_t *ths)
 	ths = ths->CarCONS();
 	ths->check_min_num_args(2); // at least lambda and nil or a list of parms
 	symbol_t *lambda = ths->Car()->as<symbol_t>();
-	if (lambda != current_package->get_symbol("LAMBDA"))
+	if (lambda != lisp_engine._package.get_symbol("LAMBDA"))
 		throw_eval_exception(BAD_ARG_TYPE);
 	cons_t *varlist = ths->CadrCONS();
 	if (varlist != (cons_t *)nil && !varlist->is_a(TYPE_CONS))
 		throw_eval_exception(BAD_ARG_TYPE);
 	int num = varlist->get_num_items();
-	return new usrfunction_t("",num,num,varlist,ths->CddrCONS(),g_bind_stack.get_env());
+	return new usrfunction_t("",num,num,varlist,ths->CddrCONS(), lisp_engine._bind_stack.get_env());
 }
 
 static node_t *form_return__from(cons_t *ths)
@@ -458,21 +462,14 @@ static node_t *form_let(cons_t *ths)
 	numvars = dobindings(varlist,bindings,0);
 	varlist.clear();
 
-	try
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
+
+	while (body->is_a(TYPE_CONS))
 	{
-		while (body->is_a(TYPE_CONS))
-		{
-			retval = body->Car()->eval();
-			body = body->CdrCONS();
-		}
-	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
+		retval = body->Car()->eval();
+		body = body->CdrCONS();
 	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 
@@ -490,22 +487,14 @@ static node_t *form_let_star(cons_t *ths)
 	body = ths->CdrCONS();
 
 	numvars = dostarbindings(varlist,bindings,0);
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
 
-	try
+	while (body->is_a(TYPE_CONS))
 	{
-		while (body->is_a(TYPE_CONS))
-		{
-			retval = body->Car()->eval();
-			body = body->CdrCONS();
-		}
-	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
+		retval = body->Car()->eval();
+		body = body->CdrCONS();
 	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 /*******************************************************************
@@ -616,7 +605,7 @@ static node_t *macro_defun(cons_t *ths)
 	int num = varlist->get_num_items();
 	name->set_form(
 		new usrfunction_t(name->get_name(),
-			num,num,varlist,ths->CddrCONS(),g_bind_stack.get_env())
+			num,num,varlist,ths->CddrCONS(), lisp_engine._bind_stack.get_env())
 		);
 	return name;
 }
@@ -635,6 +624,7 @@ static node_t *macro_prog(cons_t *ths)  // identical to let except implicit nil 
 	body = ths->CdrCONS();
 
 	numvars = dobindings(varlist,bindings,0);
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
 
 	try
 	{
@@ -654,13 +644,7 @@ static node_t *macro_prog(cons_t *ths)  // identical to let except implicit nil 
 		else
 			throw;
 	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
-	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 
@@ -678,6 +662,7 @@ static node_t *macro_prog_star(cons_t *ths)  // identical to let* except implici
 	body = ths->CdrCONS();
 
 	numvars = dobindings(varlist,bindings,0);
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
 
 	try
 	{
@@ -697,13 +682,7 @@ static node_t *macro_prog_star(cons_t *ths)  // identical to let* except implici
 		else
 			throw;
 	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
-	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 
@@ -835,6 +814,7 @@ static node_t *macro_do(cons_t *ths)
 
 	bindings = ths->CarCONS();
 	numvars = dobindings(varlist,bindings,1);
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
 
 	clause = ths->CadrCONS(); // (test {result}*)
 	clause->check_arg_type(TYPE_CONS);
@@ -878,18 +858,9 @@ static node_t *macro_do(cons_t *ths)
 			e->Delete();
 		}
 		else
-		{
-			g_bind_stack.unbind(numvars);
 			throw;
-		}
-	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
 	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 
@@ -905,6 +876,7 @@ static node_t *macro_do_star(cons_t *ths)
 	bindings = ths->CarCONS();
 	bindings->check_arg_type(TYPE_CONS);
 	numvars = dostarbindings(varlist,bindings,1);
+	unbinder_t u{ lisp_engine._bind_stack, numvars };
 
 	clause = ths->CadrCONS(); // (test {result}*)
 	clause->check_arg_type(TYPE_CONS);
@@ -947,18 +919,9 @@ static node_t *macro_do_star(cons_t *ths)
 			e->Delete();
 		}
 		else
-		{
-			g_bind_stack.unbind(numvars);
 			throw;
-		}
-	}
-	catch(CException*)
-	{
-		g_bind_stack.unbind(numvars);
-		throw;
 	}
 
-	g_bind_stack.unbind(numvars);
 	return retval;
 }
 

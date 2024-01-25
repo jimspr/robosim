@@ -1,11 +1,16 @@
-#include "stdafx.h"
+#include "pch.h"
+#include <assert.h>
+#include <fstream>
+#include <thread>
+#include <chrono>
+
 #include <errno.h>
 #include "node.h"
-#include "package.h"
-#include "argstack.h"
-#include "lispenv.h"
+#include "lisp_engine.h"
 
 using namespace std;
+
+static node_t* func_exit(int numargs, node_t** args);
 
 static node_t *func_multiply(int numargs,number_node_t **args);
 static node_t *func_add(int numargs,number_node_t **args);
@@ -710,7 +715,7 @@ static node_t *func_(int numargs,node_t **args);
 */
 
 
-#define func(n,f,min,max) current_package->get_symbol(n)->set_form(new sysfunction_t(n,f,min,max))
+#define func(n,f,min,max) lisp_engine._package.get_symbol(n)->set_form(new sysfunction_t(n,f,min,max))
 
 void init_funcs()
 {
@@ -756,6 +761,8 @@ void init_funcs()
 	func("EQL", func_eql,       2,2);
 	func("EQUAL",   func_equal,     2,2);
 	func("EQUALP",  func_equalp,        2,2);
+
+	func("EXIT", func_exit, 0, 0);
 
 	func("APPEND",  func_append,        0,-1);
 
@@ -1174,7 +1181,7 @@ static node_t *func_cddddr(int numargs,node_t **args)
 
 static node_t *func_gc(int,node_t **)
 {
-	int i = NodeListArray.garbage_collect();
+	int i = lisp_engine.garbage_collect();
 	return new number_node_t((long)i);
 }
 
@@ -1193,7 +1200,7 @@ static node_t *func_list(int numargs,node_t **args)
 
 static node_t* func_list_star(int numargs, node_t** args)
 {
-	ASSERT(numargs >= 1);
+	assert(numargs >= 1);
 	node_t* right = args[numargs - 1];
 	for (int i = numargs - 2; i >= 0; --i)
 		right = new cons_t{ args[i], right };
@@ -1227,7 +1234,7 @@ static node_t *func_append(int numargs,node_t **args)
 
 static node_t *func_set(int,node_t **args)
 {
-	binding_stack_state_t(g_bind_stack, nullptr); /* Cleans up on destruction. */
+	binding_stack_state_t(lisp_engine._bind_stack, nullptr); /* Cleans up on destruction. */
 	args[0]->check_arg_type(TYPE_SYMBOL);
 	((symbol_t *)args[0])->set_value(args[1]);
 	return args[1];
@@ -1294,12 +1301,12 @@ static node_t *func_princ(int numargs,node_t **args)
 
 static node_t *func_room(int,node_t **)
 {
-	cout << "g_frame_stack\n";
-	g_frame_stack.print(cout);
-	cout << "g_bind_stack\n";
-	g_bind_stack.print(cout);
+	cout << "_frame_stack\n";
+	lisp_engine._frame_stack.print(cout);
+	cout << "_bind_stack\n";
+	lisp_engine._bind_stack.print(cout);
 	cout << "\n";
-	NodeListArray.status(cout);
+	lisp_engine._node_lists.status(cout);
 
 	cout.flush();
 	return nil;
@@ -1418,7 +1425,7 @@ static node_t *helper_equal(node_t *n1,node_t *n2)
 			return (n1 == n2) ? pTrue : nil;
 			break;
 		case TYPE_STRING:
-			return (lstrcmp(((string_node_t*)n1)->data(),((string_node_t*)n2)->data())) ? nil : pTrue;
+			return (strcmp(((string_node_t*)n1)->data(),((string_node_t*)n2)->data())) ? nil : pTrue;
 			break;
 		case TYPE_CONS:
 			return (helper_equal(((cons_t *)n1)->Car(),((cons_t *)n2)->Car()) && helper_equal(((cons_t *)n1)->Cdr(),((cons_t *)n2)->Cdr())) ? pTrue : nil;
@@ -1451,7 +1458,7 @@ static node_t *helper_equalp(node_t *n1,node_t *n2)
 			return (n1 == n2) ? pTrue : nil;
 			break;
 		case TYPE_STRING:
-			return (lstrcmpi(((string_node_t*)n1)->data(),((string_node_t*)n2)->data())) ? nil : pTrue;
+			return (_stricmp(((string_node_t*)n1)->data(),((string_node_t*)n2)->data())) ? nil : pTrue;
 			break;
 		case TYPE_CONS:
 			return (helper_equalp(((cons_t *)n1)->Car(),((cons_t *)n2)->Car()) && helper_equal(((cons_t *)n1)->Cdr(),((cons_t *)n2)->Cdr())) ? pTrue : nil;
@@ -1529,13 +1536,13 @@ static node_t *func_aref(int numargs,node_t **args)
 
 static node_t *func_funcall(int numargs,node_t **args)
 {
-	function *pf;
+	function_t*pf;
 	if (args[0]->is_a(TYPE_FUNCTION))
-		pf =  (function *)args[0];
+		pf =  (function_t*)args[0];
 	else
 	{
 		args[0]->check_arg_type(TYPE_SYMBOL);
-		pf = (function *)(((symbol_t *)args[0])->check_form());
+		pf = (function_t*)(((symbol_t *)args[0])->check_form());
 		if (!pf->is_a(TYPE_FUNCTION))
 			throw_eval_exception(NOT_A_FUNCTION);
 	}
@@ -1546,40 +1553,40 @@ static node_t *func_apply(int numargs,node_t **args)
 {
 	cons_t *p=NULL;
 	volatile cons_t *shadowp=NULL;
-	function *pf;
-	node_t *res;
+	function_t* pf;
+	node_t *res = nullptr;
 	if (args[0]->is_a(TYPE_FUNCTION))
-		pf =  (function *)args[0];
+		pf =  (function_t*)args[0];
 	else
 	{
 		args[0]->check_arg_type(TYPE_SYMBOL);
-		pf = (function *)(((symbol_t *)args[0])->check_form());
+		pf = (function_t*)(((symbol_t *)args[0])->check_form());
 		if (!pf->is_a(TYPE_FUNCTION))
 			throw_eval_exception(NOT_A_FUNCTION);
 	}
 	/* There are zero or more arguments on the stack. */
 	if (numargs > 0)
 	{
-		auto last = g_frame_stack.top();
+		auto last = lisp_engine._frame_stack.top();
 		/* If the last one is a list, expand its items. */
 		if (last->is_a(TYPE_CONS) || (last == nil)) /* nil is empty list */
 		{
 			int cnt = 0; /* Number of arguments in list. */
-			frame_stack_state_t state(g_frame_stack);
+			frame_stack_state_t state(lisp_engine._frame_stack);
 			/* Copy numargs items on the stack. */
-			g_frame_stack.duplicate(numargs);
-			ASSERT(last == g_frame_stack.top());
-			g_frame_stack.pop(); /* Remove cons/nil. */
+			lisp_engine._frame_stack.duplicate(numargs);
+			assert(last == lisp_engine._frame_stack.top());
+			lisp_engine._frame_stack.pop(); /* Remove cons/nil. */
 			/* Iterate through list pushing arguments in last cons. */
 			while (last->is_a(TYPE_CONS))
 			{
 				cons_t* cons = (cons_t *)last;
-				g_frame_stack.push(cons->car());
+				lisp_engine._frame_stack.push(cons->car());
 				last = cons->cdr();
 				++cnt;
 			}
 			auto actual_args = numargs - 2 + cnt;
-			res = pf->eval(actual_args, g_frame_stack.get_base(actual_args));
+			res = pf->eval(actual_args, lisp_engine._frame_stack.get_base(actual_args));
 		}
 		else
 			res = pf->eval(numargs - 1, &args[1]);
@@ -1693,7 +1700,7 @@ static node_t *func_mapcar(int numargs,node_t **args)
 	volatile int i;
 	int j;
 	args[0]->check_arg_type(TYPE_FUNCTION);
-	function *pf = (function *)args[0];
+	function_t* pf = (function_t*)args[0];
 	for (i=1;i<numargs;i++)
 		args[i]->check_arg_type(TYPE_CONS);
 	std::vector<cons_t*> p(numargs - 1);
@@ -1704,10 +1711,10 @@ static node_t *func_mapcar(int numargs,node_t **args)
 	numargs--;
 	while (1)
 	{
-		frame_stack_state_t state(g_frame_stack); // Resets g_frame_stack when destroyed.
+		frame_stack_state_t state(lisp_engine._frame_stack); // Resets _frame_stack when destroyed.
 		for (i=0;i<numargs;i++)
-			g_frame_stack.push(p[i]->Car());
-		res->set_car(pf->eval(numargs,g_frame_stack.get_base(numargs)));
+			lisp_engine._frame_stack.push(p[i]->Car());
+		res->set_car(pf->eval(numargs, lisp_engine._frame_stack.get_base(numargs)));
 		for (j=0;j<numargs;j++)
 		{
 			p[j] = p[j]->CdrCONS();
@@ -1806,9 +1813,13 @@ static node_t *func_nthcdr(int numargs,node_t **args)
 static node_t *func_sleep(int numargs,node_t **args)
 {
 	float t = *args[0]->as<number_node_t>();
-	DWORD dw = GetTickCount() + (DWORD)(int)(t*1000.F);
-	while (GetTickCount() < dw)
-		;
+	std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long>(t)));
 	return nil;
 }
 
+static node_t* func_exit(int, node_t**)
+{
+	lisp_engine._env._exit_status = pTrue;
+	lisp_engine._host->exit();
+	return pTrue;
+}

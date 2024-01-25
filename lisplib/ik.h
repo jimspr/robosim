@@ -3,6 +3,7 @@
 #define __IK_H
 
 #include "node.h"
+#include <windows.h>
 
 struct jointdef
 {
@@ -17,7 +18,7 @@ struct solution
 	float values[16]{};
 	void init(int n)
 	{
-		ASSERT(n < 16);
+		assert(n < 16);
 		degrees = n;
 	}
 	float& operator [] (size_t i) { return values[i]; }
@@ -28,7 +29,7 @@ typedef int (*PFINVKIN)(char* pbuf, fmat44 mat, solution* q);
 typedef int (*PFG)();
 typedef int (*PFCP)(char* buf, jointdef* joints, int numjoints);
 
-class function;
+class function_t;
 
 class ik_interface
 {
@@ -70,7 +71,7 @@ protected:
 class ik_lisp_t : public ik_interface
 {
 public:
-	ik_lisp_t(function* pIK, function* pGNS, function* pGD, function* pCP);
+	ik_lisp_t(function_t* pIK, function_t* pGNS, function_t* pGD, function_t* pCP);
 	virtual bool is_ok();
 	virtual int get_num_solutions();
 	virtual int get_degrees_of_freedom();
@@ -80,12 +81,10 @@ public:
 
 protected:
 	node_t* _parameters;
-	function* _fn_inverse_kinematics;
-	function* _fn_get_num_solutions;
-	function* _fn_get_degrees_of_freedom;
-	function* _fn_compute_parameters;
+	function_t* _fn_inverse_kinematics;
+	function_t* _fn_get_num_solutions;
+	function_t* _fn_get_degrees_of_freedom;
+	function_t* _fn_compute_parameters;
 };
-
-extern std::vector<std::unique_ptr<ik_interface>> invkin;
 
 #endif

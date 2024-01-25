@@ -7,41 +7,19 @@
 #include "package.h"
 #include "ik.h"
 #include "grob.h"
+#include "lisp_engine.h"
 
 using namespace std;
 
-// TODO - Make these globals be members of appropriate classes.
-lisp_env_t lisp_env{ cin, cout };
-node_list_array_t NodeListArray;
-binding_stack_t g_bind_stack;
+lisp_engine_t lisp_engine;
 
-/* g_frame_stack is just a centralized place to put arguments to functions so that when the GC
-   runs, it can mark these nodes as in use. */
-frame_stack_t g_frame_stack;
-
-package_t* current_package;
-
-std::vector<std::unique_ptr<ik_interface>> invkin;
+simob_t::node_list_type simob_t::list("simob_t");
 
 extern void init_forms(void);
 extern void init_funcs(void);
 extern void init_lfuncs(void);
 extern void init_constants(void);
 extern void init_variables(void);
-
-node_list_t<symbol_t, 1024> symbol_t::plist("symbol_t LIST");
-node_list_t<cons_t, 1024> cons_t::plist("cons_t LIST");
-node_list_t<number_node_t, 1024> number_node_t::plist("number_node_t LIST");
-node_list_t<vector_t, 128> vector_t::plist("vector_t LIST");
-node_list_t<string_node_t, 512> string_node_t::plist("string_node_t LIST");
-node_list_t<stream_node_t, 8> stream_node_t::plist("stream_node_t LIST");
-node_list_t<bound_symbol_t, 1024> bound_symbol_t::plist("bound_symbol_t LIST");
-node_list_t<special_form_t, 32> special_form_t::plist("special_form_t LIST");
-node_list_t<macro_t, 32> macro_t::plist("macro_t LIST");
-node_list_t<usrfunction_t, 32> usrfunction_t::plist("usrfunction_t LIST");
-node_list_t<sysfunction_t, 256> sysfunction_t::plist("sysfunction_t LIST");
-node_list_t<mat44, 128> mat44::plist("mat44 LIST");
-node_list_t<simob_t, 16> simob_t::plist("simob_t LIST");
 
 robo_app_t theApp;
 // Keep spLispWnd alive until the end.
@@ -55,14 +33,13 @@ END_MESSAGE_MAP()
 
 robo_app_t::~robo_app_t()
 {
-	delete current_package;
 }
 
 int robo_app_t::Run(void)
 {
 	try
 	{
-		lisp_env.reploop();
+		lisp_engine._env.reploop();
 	}
 	catch(done_exception_t* e)
 	{
@@ -97,7 +74,6 @@ BOOL robo_app_t::InitInstance(void)
 	m_pMainWnd = pMainWnd;
 	m_pMainWnd->ShowWindow(m_nCmdShow);
 	m_pMainWnd->UpdateWindow();
-	current_package = new package_t("COMMON-LISP","CL");
 
 	spLispWnd = pMainWnd->_lisp_window;
 
@@ -107,14 +83,14 @@ BOOL robo_app_t::InitInstance(void)
 	init_constants();
 	init_variables();
 
-	node_t* l = cons_t::make_list(current_package->get_symbol("LOAD"), new string_node_t("startup.lsp"));
+	node_t* l = cons_t::make_list(lisp_engine._package.get_symbol("LOAD"), new string_node_t("startup.lsp"));
 	try
 	{
 		l->eval();
 	}
 	catch(eval_exception_t* e)
 	{
-		e->_line_number = lisp_env._readtable._line_cnt;
+		e->_line_number = lisp_engine._env._readtable._line_cnt;
 		AfxMessageBox(get_rlerror_msg("STARTUP.LSP", *e).c_str(), MB_OK|MB_ICONSTOP);
 		e->Delete();
 	}

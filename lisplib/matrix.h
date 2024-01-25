@@ -156,90 +156,99 @@ public:
 
 class mat44 final : public node_t
 {
-protected:
-	static float ident[4][4];
 public:
-	static bool verify(node_t* p) { return p->get_type() == TYPE_MAT44; }
-	void CheckZero();
-	BOOL GetDH(float pt[4]);
-	float m[4][4];
-	mat44(float t[4][4] = ident) : node_t(TYPE_MAT44)
+	float m[4][4] = {
+		{1.f,0.f,0.f,0.f},
+		{0.f,1.f,0.f,0.f},
+		{0.f,0.f,1.f,0.f},
+		{0.f,0.f,0.f,1.f}
+	};
+
+	mat44() : node_t(TYPE_MAT44)
+	{
+	}
+
+	mat44(const float t[4][4]) : node_t(TYPE_MAT44)
 	{
 		memcpy(m, t, 16 * sizeof(float));
 	}
-	void print(std::ostream &) const;
-	void identity() {memcpy(m,ident,16*sizeof(float));}
-	void zero() {memset(m,0,16*sizeof(float));}
-// Statics
-	static mat44 ROTATEX(float x);
-	static mat44 ROTATEY(float y);
-	static mat44 ROTATEZ(float z);
-	static mat44 ROTATEZDEG(float z);
-//	static mat44 ROTATE(float x,float y,float z);
-	static mat44 TRANSX(float x);
-	static mat44 TRANSY(float y);
-	static mat44 TRANSZ(float z);
-	static mat44 TRANS(float x,float y,float z);
-	static mat44 TRANS(const point3d_t &pt);
-	static mat44 SCALE(float x,float y,float z);
-	static mat44 FLIPX();
-	static mat44 FLIPY();
-	static mat44 FLIPZ();
-	static mat44 PERSPECTIVE(float f);
-	static mat44 EULER(const euler_zyz_t& e);
-	static mat44 RPY(const euler_rpy_t& e);
-	static mat44 CYL(float z,float alpha, float r);
-	static mat44 SPH(float alpha,float beta, float r);
-	static mat44 DH(float theta,float d,float a,float alpha);
-	static mat44 viewpoint(const point3d_t &f,const point3d_t &t,float twist,float zoom,float focal_length,int winw,int winh);
-	static mat44 viewpoint(const point3d_t &f,const point3d_t &t,float twist,float zoom,float focal_length,int winw,int winh,float eyeoff);
 
-	euler_zyz_t GetEulerZYZ();
-	void get_rpy(point3d_t &pt) const;
-	void get_cyl(point3d_t &pt) const;
-	void get_sph(point3d_t &pt) const;
-	void get_rect(point3d_t &pt) const;
+	static bool verify(node_t* p) { return p->get_type() == TYPE_MAT44; }
+	void check_zero();
+	bool get_dh(float pt[4]);
+
+	void print(std::ostream&) const;
+	void zero() { memset(m, 0, 16 * sizeof(float)); }
+	// Statics
+	static mat44 rotatex(float x);
+	static mat44 rotatey(float y);
+	static mat44 rotatez(float z);
+	static mat44 rotatezdeg(float z);
+	//	static mat44 rotate(float x,float y,float z);
+	static mat44 transx(float x);
+	static mat44 transy(float y);
+	static mat44 transz(float z);
+	static mat44 trans(float x, float y, float z);
+	static mat44 trans(const point3d_t& pt);
+	static mat44 scale(float x, float y, float z);
+	static mat44 flipx();
+	static mat44 flipy();
+	static mat44 flipz();
+	static mat44 perspective(float f);
+	static mat44 euler(const euler_zyz_t& e);
+	static mat44 rpy(const euler_rpy_t& e);
+	static mat44 cyl(float z, float alpha, float r);
+	static mat44 sph(float alpha, float beta, float r);
+	static mat44 dh(float theta, float d, float a, float alpha);
+	static mat44 viewpoint(const point3d_t& f, const point3d_t& t, float twist, float zoom, float focal_length, int winw, int winh);
+	static mat44 viewpoint(const point3d_t& f, const point3d_t& t, float twist, float zoom, float focal_length, int winw, int winh, float eyeoff);
+
+	euler_zyz_t get_euler_zyz();
+	void get_rpy(point3d_t& pt) const;
+	void get_cyl(point3d_t& pt) const;
+	void get_sph(point3d_t& pt) const;
+	void get_rect(point3d_t& pt) const;
 	bool get_dh(dh_t& dh) const;
 
-	mat44 operator*(const mat44 &mat) const;
-	void premultiply(const mat44 &mat);
-	void postmultiply(const mat44 &mat);
+	mat44 operator*(const mat44& mat) const;
+	void premultiply(const mat44& mat);
+	void postmultiply(const mat44& mat);
 
-	void rotatex_ref(float x) {premultiply(ROTATEX(x));}
-	void rotatey_ref(float y) {premultiply(ROTATEY(y));}
-	void rotatez_ref(float z) {premultiply(ROTATEZ(z));}
-	void trans_ref(float x,float y,float z) {premultiply(TRANS(x,y,z));}
-	void scale_ref(float x,float y,float z) {premultiply(SCALE(x,y,z));}
-	void flipx_ref() {premultiply(FLIPX());}
-	void flipy_ref() {premultiply(FLIPY());}
-	void flipz_ref() {premultiply(FLIPZ());}
+	void rotatex_ref(float x) { premultiply(rotatex(x)); }
+	void rotatey_ref(float y) { premultiply(rotatey(y)); }
+	void rotatez_ref(float z) { premultiply(rotatez(z)); }
+	void trans_ref(float x, float y, float z) { premultiply(trans(x, y, z)); }
+	void scale_ref(float x, float y, float z) { premultiply(scale(x, y, z)); }
+	void flipx_ref() { premultiply(flipx()); }
+	void flipy_ref() { premultiply(flipy()); }
+	void flipz_ref() { premultiply(flipz()); }
 
-	void rotatex_loc(float x) {postmultiply(ROTATEX(x));}
-	void rotatey_loc(float y) {postmultiply(ROTATEY(y));}
-	void rotatez_loc(float z) {postmultiply(ROTATEZ(z));}
-	void trans_loc(float x,float y,float z) {postmultiply(TRANS(x,y,z));}
-	void scale_loc(float x,float y,float z) {postmultiply(SCALE(x,y,z));}
-	void flipx_loc() {postmultiply(FLIPX());}
-	void flipy_loc() {postmultiply(FLIPY());}
-	void flipz_loc() {postmultiply(FLIPZ());}
+	void rotatex_loc(float x) { postmultiply(rotatex(x)); }
+	void rotatey_loc(float y) { postmultiply(rotatey(y)); }
+	void rotatez_loc(float z) { postmultiply(rotatez(z)); }
+	void trans_loc(float x, float y, float z) { postmultiply(trans(x, y, z)); }
+	void scale_loc(float x, float y, float z) { postmultiply(scale(x, y, z)); }
+	void flipx_loc() { postmultiply(flipx()); }
+	void flipy_loc() { postmultiply(flipy()); }
+	void flipz_loc() { postmultiply(flipz()); }
 
 	void transform(point3d_t* dv, point3d_t* sv, int nv) const;
 	void transform(point3d_t* sv, int nv) const;
 	void transform(point3d_t& dest, const point3d_t& src) const;
 	void transform(point3d_t& src) const;
-	void transform(CPoint* dv, point3d_t* sv, int numv) const;
+	//	void transform(CPoint* dv, point3d_t* sv, int numv) const;
 	void transform(vertex3d_t* dv, vertex3d_t* sv, int nv) const;
 	void transform(vertex3d_t* sv, int nv) const;
 	void transform(vertex3d_t& dest, const vertex3d_t& src) const;
 	void transform(vertex3d_t& src) const;
 
-	void transform(point3d_t *dv,vertex3d_t *sv,int nv) const;
-	void transform(point3d_t &dest, const vertex3d_t &src) const;
+	void transform(point3d_t* dv, vertex3d_t* sv, int nv) const;
+	void transform(point3d_t& dest, const vertex3d_t& src) const;
 
-	void transform(bounding_box_t &db,bounding_box_t &sb) const;
-	void dilate(point3d_t &pt,point3d_t &p) const;
+	void transform(bounding_box_t& db, bounding_box_t& sb) const;
+	void dilate(point3d_t& pt, point3d_t& p) const;
 	mat44 fastinverse() const;
-//
+	//
 	DECLARE_NODE(mat44, 128)
 };
 

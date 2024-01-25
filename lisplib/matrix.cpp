@@ -1,18 +1,13 @@
-#include "stdafx.h"
+#include "pch.h"
+
 #include <memory>
 #include "matrix.h"
-#include "grob.h"
+//#include "grob.h"
+#include "radhelper.h"
 
 using namespace std;
 
 #define RPI 3.14159265359
-
-float mat44::ident[4][4] = {
-	{1.F,0.F,0.F,0.F},
-	{0.F,1.F,0.F,0.F},
-	{0.F,0.F,1.F,0.F},
-	{0.F,0.F,0.F,1.F}
-};
 
 void mat44::print(ostream& ostr) const
 {
@@ -77,7 +72,7 @@ void mat44::transform(vertex3d_t& v1, const vertex3d_t& v2) const
 	// Adjust the normal to be unit length if needed.
 	if (n2 != point3d_t{})
 	{
-		ASSERT(fabs(n2.length() - 1.0) < EPS);
+		assert(fabs(n2.length() - 1.0) < EPS);
 		v1.normal.x = m[0][0] * n2.x + m[0][1] * n2.y + m[0][2] * n2.z;
 		v1.normal.y = m[1][0] * n2.x + m[1][1] * n2.y + m[1][2] * n2.z;
 		v1.normal.z = m[2][0] * n2.x + m[2][1] * n2.y + m[2][2] * n2.z;
@@ -112,50 +107,31 @@ void mat44::dilate(point3d_t& pt, point3d_t& p) const
 	pt.z = (float)(fabs(m[2][0] * p.x) + fabs(m[2][1] * p.y) + fabs(m[2][2] * p.z));
 }
 
-void mat44::transform(CPoint* dv, point3d_t* sv, int numv) const
-{
-	int i;
-	float z, h;
-	for (i = 0; i < numv; i++, sv++, dv++)
-	{
-		z = sv->x * m[2][0] + sv->y * m[2][1] + sv->z * m[2][2] + m[2][3];
-		if (z < 0.)
-		{
-			h = sv->x * m[3][0] + sv->y * m[3][1] + sv->z * m[3][2] + m[3][3];
-			dv->x = (int)((sv->x * m[0][0] + sv->y * m[0][1] + sv->z * m[0][2] + m[0][3]) / h);
-			dv->y = (int)((sv->x * m[1][0] + sv->y * m[1][1] + sv->z * m[1][2] + m[1][3]) / h);
-		}
-		else
-			dv->x = dv->y = 0;
-	}
-}
-
 void mat44::premultiply(const mat44& mat)
 {
-	mat44 res;
+	float temp[4][4];
 	int i, j;
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++)
-			res.m[i][j] = mat.m[i][0] * m[0][j] +
+			temp[i][j] = mat.m[i][0] * m[0][j] +
 			mat.m[i][1] * m[1][j] +
 			mat.m[i][2] * m[2][j] +
 			mat.m[i][3] * m[3][j];
-	memcpy(m, res.m, sizeof(float) * 16);
+	memcpy(m, temp, sizeof(float) * 16);
 }
 
 void mat44::postmultiply(const mat44& mat)
 {
-	mat44 res;
+	float temp[4][4];
 	int i, j;
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++)
-			res.m[i][j] = m[i][0] * mat.m[0][j] +
+			temp[i][j] = m[i][0] * mat.m[0][j] +
 			m[i][1] * mat.m[1][j] +
 			m[i][2] * mat.m[2][j] +
 			m[i][3] * mat.m[3][j];
-	memcpy(m, res.m, sizeof(float) * 16);
+	memcpy(m, temp, sizeof(float) * 16);
 }
-
 
 mat44 mat44::operator*(const mat44& mat) const
 {
@@ -170,7 +146,7 @@ mat44 mat44::operator*(const mat44& mat) const
 	return res;
 }
 
-mat44 mat44::ROTATEX(float x)
+mat44 mat44::rotatex(float x)
 {
 	mat44 mat;
 	mat.m[1][1] = mat.m[2][2] = (float)cos(x);
@@ -180,7 +156,7 @@ mat44 mat44::ROTATEX(float x)
 	return mat;
 }
 
-mat44 mat44::ROTATEY(float y)
+mat44 mat44::rotatey(float y)
 {
 	mat44 mat;
 	mat.m[0][0] = mat.m[2][2] = (float)cos(y);
@@ -189,7 +165,7 @@ mat44 mat44::ROTATEY(float y)
 	return mat;
 }
 
-mat44 mat44::ROTATEZ(float z)
+mat44 mat44::rotatez(float z)
 {
 	mat44 mat;
 	mat.m[0][0] = mat.m[1][1] = (float)cos(z);
@@ -198,7 +174,7 @@ mat44 mat44::ROTATEZ(float z)
 	return mat;
 }
 
-mat44 mat44::ROTATEZDEG(float z)
+mat44 mat44::rotatezdeg(float z)
 {
 	mat44 mat;
 	float rad = DEG2RAD(z);
@@ -208,7 +184,7 @@ mat44 mat44::ROTATEZDEG(float z)
 	return mat;
 }
 
-mat44 mat44::TRANS(float x, float y, float z)
+mat44 mat44::trans(float x, float y, float z)
 {
 	mat44 mat;
 	mat.m[0][3] = x;
@@ -217,28 +193,28 @@ mat44 mat44::TRANS(float x, float y, float z)
 	return mat;
 }
 
-mat44 mat44::TRANSX(float x)
+mat44 mat44::transx(float x)
 {
 	mat44 mat;
 	mat.m[0][3] = x;
 	return mat;
 }
 
-mat44 mat44::TRANSY(float y)
+mat44 mat44::transy(float y)
 {
 	mat44 mat;
 	mat.m[1][3] = y;
 	return mat;
 }
 
-mat44 mat44::TRANSZ(float z)
+mat44 mat44::transz(float z)
 {
 	mat44 mat;
 	mat.m[2][3] = z;
 	return mat;
 }
 
-mat44 mat44::TRANS(const point3d_t& pt)
+mat44 mat44::trans(const point3d_t& pt)
 {
 	mat44 mat;
 	mat.m[0][3] = pt.x;
@@ -247,72 +223,72 @@ mat44 mat44::TRANS(const point3d_t& pt)
 	return mat;
 }
 
-mat44 mat44::FLIPX(void)
+mat44 mat44::flipx(void)
 {
 	mat44 mat;
-	mat.m[0][0] = -1.F;
+	mat.m[0][0] = -1.f;
 	return mat;
 }
 
-mat44 mat44::FLIPY(void)
+mat44 mat44::flipy(void)
 {
 	mat44 mat;
-	mat.m[1][1] = -1.F;
+	mat.m[1][1] = -1.f;
 	return mat;
 }
 
-mat44 mat44::FLIPZ(void)
+mat44 mat44::flipz(void)
 {
 	mat44 mat;
-	mat.m[2][2] = -1.F;
+	mat.m[2][2] = -1.f;
 	return mat;
 }
 
-mat44 mat44::SCALE(float x, float y, float z)
+mat44 mat44::scale(float x, float y, float z)
 {
 	mat44 mat;
 	mat.m[0][0] = x;
 	mat.m[1][1] = y;
 	mat.m[2][2] = z;
-	mat.m[3][3] = 1.F;
+	mat.m[3][3] = 1.f;
 	return mat;
 }
 
-mat44 mat44::PERSPECTIVE(float f)
+mat44 mat44::perspective(float f)
 {
 	mat44 mat;
 	mat.m[3][2] = -1.F / f;
 	return mat;
 }
 
-mat44 mat44::EULER(const euler_zyz_t& e)
+mat44 mat44::euler(const euler_zyz_t& e)
 {
-	return ROTATEZ(e.phi) * ROTATEY(e.theta) * ROTATEZ(e.psi);
+	return rotatez(e.phi) * rotatey(e.theta) * rotatez(e.psi);
 }
 
-mat44 mat44::RPY(const euler_rpy_t& e)
+mat44 mat44::rpy(const euler_rpy_t& e)
 {
-	return ROTATEZ(e.roll) * ROTATEY(e.pitch) * ROTATEX(e.yaw);
+	return rotatez(e.roll) * rotatey(e.pitch) * rotatex(e.yaw);
 }
 
-mat44 mat44::CYL(float z, float alpha, float r)
+mat44 mat44::cyl(float z, float alpha, float r)
 {
-	return TRANS(r * (float)cos(alpha), r * (float)sin(alpha), z);
+	return trans(r * (float)cos(alpha), r * (float)sin(alpha), z);
 }
 
-mat44 mat44::SPH(float alpha, float beta, float r)
+mat44 mat44::sph(float alpha, float beta, float r)
 {
-	return TRANS(r * (float)cos(alpha) * (float)sin(beta), r * (float)sin(alpha) * (float)sin(beta), r * (float)cos(beta));
+	return trans(r * (float)cos(alpha) * (float)sin(beta), r * (float)sin(alpha) * (float)sin(beta), r * (float)cos(beta));
 }
 
-mat44 mat44::DH(float theta, float d, float a, float alpha)
+mat44 mat44::dh(float theta, float d, float a, float alpha)
 {
-	return ROTATEZ(theta) * TRANS(a, 0.F, d) * ROTATEX(alpha);
+	return rotatez(theta) * trans(a, 0.f, d) * rotatex(alpha);
 }
 
-euler_zyz_t mat44::GetEulerZYZ()
+euler_zyz_t mat44::get_euler_zyz()
 {
-	CheckZero();
+	check_zero();
 	double phi, theta, psi;
 	theta = atan2(sqrt(m[0][2] * m[0][2] + m[1][2] * m[1][2]), m[2][2]); // theta 0 -- PI
 	if (fabs(sin(theta)) < EPS)
@@ -464,55 +440,14 @@ mat44 mat44::viewpoint(const point3d_t& f, const point3d_t& t, float twist, floa
 	rtwist = DEG2RAD(twist);
 	zm = zoom / 10.F;
 	return
-		TRANS((float)(winw / 2), (float)(winh / 2), 0.F) *
-		SCALE(zm, -zm, zm) *
-		PERSPECTIVE(focal_length) *
-		ROTATEZ(-rtwist - gamma) *
-		ROTATEY(-alpha) *
-		ROTATEZ(-beta) *
-		TRANS(-f.x, -f.y, -f.z);
+		trans((float)(winw / 2), (float)(winh / 2), 0.f) *
+		scale(zm, -zm, zm) *
+		perspective(focal_length) *
+		rotatez(-rtwist - gamma) *
+		rotatey(-alpha) *
+		rotatez(-beta) *
+		trans(-f.x, -f.y, -f.z);
 }
-
-#ifdef DASFASF
-mat44 mat44::viewpoint(const point3d_t& f, const point3d_t& t, float twist, float zoom, float focal_length, int winw, int winh, float eyeoff)
-{
-	float beta, alpha, gamma;
-	float rtwist, zm;
-	float r, theta;
-	point3d_t a;
-
-	a = f - t;
-
-	if ((a.x < .1) && (a.x > -.1) && (a.y < .1) && (a.y > -.1)) // aligned along z
-	{
-		beta = gamma = 0.F;
-		alpha = (a.z > 0.F) ? 0.F : (float)RPI;
-	}
-	else
-	{
-		gamma = (float)(RPI / 2.); // 90 degrees
-		beta = (float)atan2(a.y, a.x);
-		alpha = (float)atan2(sqrt(a.x * a.x + a.y * a.y), a.z);
-	}
-	rtwist = twist * (float)(RPI / 180.);
-	zm = zoom / 10.F;
-	theta = (float)atan2(eyeoff, sqrt(a.x * a.x + a.y * a.y));
-	r = (float)sqrt(eyeoff * eyeoff + a.x * a.x + a.y * a.y);
-	a.x = r * (float)cos(beta + theta);
-	a.y = r * (float)sin(beta + theta);
-	a += t;
-
-	return
-		TRANS((float)(winw / 2), (float)(winh / 2), 0.F) *
-		SCALE(zm, -zm, zm) *
-		PERSPECTIVE(focal_length) *
-		//		TRANS(eyeoff,0.F,0.F)*
-		ROTATEZ(-rtwist - gamma) *
-		ROTATEY(-alpha) *
-		ROTATEZ(-(beta + theta)) *
-		TRANS(-a.x, -a.y, -a.z);
-}
-#endif
 
 mat44 mat44::viewpoint(const point3d_t& f, const point3d_t& t, float twist, float zoom, float focal_length, int winw, int winh, float eyeoff)
 {
@@ -536,14 +471,14 @@ mat44 mat44::viewpoint(const point3d_t& f, const point3d_t& t, float twist, floa
 	rtwist = DEG2RAD(twist);
 	zm = zoom / 10.F;
 	return
-		TRANS((float)(winw / 2), (float)(winh / 2), 0.F) *
-		SCALE(zm, -zm, zm) *
-		PERSPECTIVE(focal_length) *
-		TRANS(eyeoff, 0.F, 0.F) *
-		ROTATEZ(-rtwist - gamma) *
-		ROTATEY(-alpha) *
-		ROTATEZ(-beta) *
-		TRANS(-f.x, -f.y, -f.z);
+		trans((float)(winw / 2), (float)(winh / 2), 0.f) *
+		scale(zm, -zm, zm) *
+		perspective(focal_length) *
+		trans(eyeoff, 0.f, 0.f) *
+		rotatez(-rtwist - gamma) *
+		rotatey(-alpha) *
+		rotatez(-beta) *
+		trans(-f.x, -f.y, -f.z);
 }
 
 bounding_box_t bounding_box_t::union_with(const bounding_box_t& bx) const
@@ -577,7 +512,7 @@ int bounding_box_t::box_collide(const bounding_box_t& b) const
 
 int bounding_box_t::edge_int_box(const point3d_t& p1, const point3d_t& p2) const
 {
-	FLOAT t1, t2, u1, l1, u2, l2;
+	float t1, t2, u1, l1, u2, l2;
 	point3d_t pt1, pt2;
 	pt1 = p1 - c;
 	pt2 = p2 - p1;
@@ -588,8 +523,8 @@ int bounding_box_t::edge_int_box(const point3d_t& p1, const point3d_t& p2) const
 	{
 		if (fabs(t1) > hd.x)
 			return(0);
-		u1 = (FLOAT)1.;
-		l1 = (FLOAT)0.;
+		u1 = 1.f;
+		l1 = 0.f;
 	}
 	else if (t2 > 0.0)
 	{
@@ -607,8 +542,8 @@ int bounding_box_t::edge_int_box(const point3d_t& p1, const point3d_t& p2) const
 	{
 		if (fabs(t1) > hd.y)
 			return(0);
-		u2 = (FLOAT)1.;
-		l2 = (FLOAT)0.;
+		u2 = 1.f;
+		l2 = 0.f;
 	}
 	else if (t2 > 0.0)
 	{
@@ -628,8 +563,8 @@ int bounding_box_t::edge_int_box(const point3d_t& p1, const point3d_t& p2) const
 	{
 		if (fabs(t1) > hd.z)
 			return(0);
-		u2 = (FLOAT)1.;
-		l2 = (FLOAT)0.;
+		u2 = 1.f;
+		l2 = 0.f;
 	}
 	else if (t2 > 0.0)
 	{
@@ -649,12 +584,12 @@ int bounding_box_t::edge_int_box(const point3d_t& p1, const point3d_t& p2) const
 }
 
 
-BOOL mat44::GetDH(float pt[4])
+bool mat44::get_dh(float pt[4])
 {
 	if (fabs(m[0][2]) > EPS) // Rotation about Y
-		return FALSE;
+		return false;
 	if (fabs(m[1][2] * m[2][3] - m[1][3] * m[2][2]) > EPS) // translation along Y
-		return FALSE;
+		return false;
 	pt[0] = (float)atan2((-m[1][2]), m[2][2]);
 	pt[2] = (float)atan2((-m[0][1]), m[0][0]);
 	pt[1] = m[0][3];
@@ -662,10 +597,10 @@ BOOL mat44::GetDH(float pt[4])
 		pt[3] = m[2][3] / m[2][2];
 	else
 		pt[3] = m[1][3] / m[1][2];
-	return TRUE;
+	return true;
 }
 
-void mat44::CheckZero()
+void mat44::check_zero()
 // Check every element of matrix for value near zero and make it zero if close enough.
 {
 	if (fabs(m[0][0]) < EPS)

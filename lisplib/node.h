@@ -1,9 +1,44 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <memory>
+#include <iostream>
+#include <iomanip>
 
 #include "rlerror.h"
 #include "rexcept.h"
+
+struct node_list_base_t
+{
+	virtual void clear_all_gc_flags() = 0;
+	virtual int delete_unused() = 0;
+	virtual void status(std::ostream& ostr) = 0;
+	virtual ~node_list_base_t() = 0
+	{
+	}
+
+	node_list_base_t();
+	void garbage_collect();
+};
+
+/* Contains an array of all node lists. */
+class node_list_array_t
+{
+	std::vector<node_list_base_t*> _data;
+	int _magic_value = 1234678;
+public:
+	void clear_all_gc_flags();
+	int delete_unused();
+	void status(std::ostream& ostr);
+	void add(node_list_base_t* node);
+};
+
+class busy_t
+{
+public:
+	busy_t();
+	~busy_t();
+};
 
 enum node_type_e
 {
@@ -27,21 +62,6 @@ enum node_type_e
 	TYPE_STREAM = 22
 };
 
-enum gc_flag_e
-{
-	FLAG_NODE_NONE = 0,
-	FLAG_NODE_IN_USE = 1,
-	FLAG_NODE_JUST_CREATED = 2
-};
-
-#define DECLARE_NODE(T, nodes_in_block) \
-public:\
-	static node_list_t<T, nodes_in_block> plist;\
-	void *operator new(size_t)\
-		{return plist.get_free_node();}\
-	void *operator new(size_t nSize, const char * lpszFileName, int nLine)\
-		{return plist.get_free_node();}
-
 class form_t;
 class node_t;
 class number_node_t;
@@ -50,27 +70,6 @@ class cons_t;
 typedef node_t *(*PFORMCALL)(cons_t *);
 typedef node_t *(*PFUNCCALL)(int,node_t **);
 typedef node_t *(*PNUMFUNCCALL)(int,number_node_t **);
-
-struct node_list_base_t
-{
-	virtual void clear_gc_flag() = 0;
-	virtual int delete_unused() = 0;
-	virtual void status(std::ostream& ostr) = 0;
-};
-
-/* Contains an array of all node lists. */
-class node_list_array_t
-{
-	std::vector<node_list_base_t*> _data;
-public:
-	bool _garbage_collected = false;
-	void clear_flags();
-	int garbage_collect();
-	void status(std::ostream &ostr);
-	void add(node_list_base_t* node);
-};
-
-extern node_list_array_t NodeListArray;
 
 /* Tracks a block of nodes. */
 template <typename T, size_t nodes_in_block>
@@ -81,6 +80,7 @@ struct node_block_t
 	char _map[nodes_in_block] = {};
 	T* node_of_block(size_t index)
 	{
+		assert(_map[index] == 1);
 		return (T*)(_data + index * sizeof(T));
 	}
 };
@@ -98,11 +98,11 @@ protected:
 	size_t _nodes_total = 0;
 	size_t _nodes_alloc = 0;
 	const char *_name;
+	friend class node_list_array_t;
 
 public:
 	node_list_t(const char* n) : _name(n)
 	{
-		NodeListArray.add(this);
 		add_entry();
 	}
 
@@ -114,7 +114,9 @@ public:
 			{
 				if (block->_map[j])
 				{
-					block->node_of_block(j)->~T();
+					auto node = block->node_of_block(j);
+					node->~T();
+					memset(node, 0, sizeof(T));
 					block->_map[j] = (char)0;
 					_nodes_alloc--;
 				}
@@ -147,7 +149,7 @@ public:
 				_current_node++;
 				/* Constructor will be called, but init everything to zero. */
 				memset(ptr, 0, node_size);
-				((node_t*)ptr)->set_gc_flag(FLAG_NODE_JUST_CREATED);
+				((node_t*)ptr)->_not_just_created = false;
 				return ptr;
 			}
 			_current_node++;
@@ -166,7 +168,6 @@ public:
 		5. if plenty of free nodes, reset current position to beginning
 		6. goto 1
 	*/
-
 	T* get_free_node()
 	{
 		/* See if free node in current block. */
@@ -183,10 +184,12 @@ public:
 				_current_block = 0;
 			_current_node = 0;
 			if ((ptr = get_node_in_current_block()) != nullptr)
+			{
 				return ptr;
+			}
 		}
 		/* Nothing available in any block. */
-		NodeListArray.garbage_collect();
+		garbage_collect();
 		if (_nodes_total < nodes_in_block + _nodes_alloc)
 		{
 			add_entry();
@@ -197,7 +200,7 @@ public:
 		return get_free_node();
 	}
 
-	void clear_gc_flag()
+	void clear_all_gc_flags() override
 	{
 		size_t n = _blocks.size();
 		for (size_t i = 0; i < n; i++)
@@ -205,16 +208,19 @@ public:
 			auto& block = _blocks[i];
 			for (size_t j = 0; j < nodes_in_block; j++)
 			{
-				auto ptr = block->node_of_block(j);
-				ptr->clear_gc_flags();
+				if (block->_map[j])
+				{
+					auto ptr = block->node_of_block(j);
+					assert(ptr->_type != 0);
+					ptr->clear_gc_flags();
+				}
 			}
 		}
 	}
 
-
 	/* delete_unused is called by garbage collection routines
 	   current_block and current_node are reset. */
-	int delete_unused()
+	int delete_unused() override
 	{
 		int cnt = 0;
 		for (auto& block : _blocks)
@@ -222,12 +228,12 @@ public:
 			auto& map = block->_map;
 			for (int j = 0; j < nodes_in_block; j++)
 			{
-				auto ptr = block->node_of_block(j);
 				if (map[j])
 				{
+					auto ptr = block->node_of_block(j);
 					if (!ptr->is_in_use() && !ptr->is_just_created())
 					{
-						ASSERT(ptr->get_type() != 0);
+						assert(ptr->get_type() != 0);
 						ptr->~T();
 						map[j] = (char)0;
 						cnt++;
@@ -242,29 +248,52 @@ public:
 
 	void status(std::ostream& ostr)
 	{
-		ostr << _name;
-		ostr << "   BS=" << nodes_in_block;
-		ostr << "   TS=" << _nodes_total * node_size;
-		ostr << "   TN=" << _nodes_total;
-		ostr << "   NA=" << _nodes_alloc;
-		ostr << "   LB=" << _current_block;
-		ostr << "   LN=" << _current_node;
+		static const int width = 13;
+		ostr << std::setw(15) << _name;
+		ostr << std::setw(width) << nodes_in_block;
+		ostr << std::setw(width) << node_size;
+		ostr << std::setw(width) << _blocks.size();
+		ostr << std::setw(width) << _nodes_total;
+		ostr << std::setw(width) << _nodes_alloc;
+		ostr << std::setw(width) << _current_block;
+		ostr << std::setw(width) << _current_node;
 		ostr << "\n";
 	}
 };
 
+#define DECLARE_NODE(T, nodes_in_block) \
+public:\
+	using node_list_type = node_list_t<T, nodes_in_block>;\
+	static node_list_type list;\
+	void *operator new(size_t)\
+		{return list.get_free_node();}\
+	void *operator new(size_t nSize, const char * lpszFileName, int nLine)\
+		{return list.get_free_node();}
+
 class node_t
 {
 protected:
-	node_type_e _type;
-	gc_flag_e _flags{ FLAG_NODE_JUST_CREATED };
 public:
+	// _not_just_created is set to false when just created. This keeps it from being gc'd.
+	// Once the object is incorporated into the system and either set_in_use or 
+	// clear_gc_flags is called, then _not_just_created will be set to true. We rely on false
+	// being equal to zero as __autoclassinit2 will zero out the memory of the object.
+	// Previously, we set a flag to "1" in the allocator, but __autoclassinit2 zeroes out
+	// memory and in certain cases this can cause a problem where two nodes get allocated
+	// before either constructor is called (e.g. cons_t::make_list).
+	bool _not_just_created = false;
+	// _in_use is cleared on all objects before marking occurs. Then, all reachable objects get
+	// _in_use set to true. All objects that are not in use and not just created are swept.
+	bool _in_use = false;
+
+	node_type_e _type;
+
 	node_t(node_type_e t) : _type(t)
 	{}
 	virtual ~node_t() {}
 
 	virtual node_t *eval() { return this;}
-	virtual void mark_in_use() {set_gc_flag(FLAG_NODE_IN_USE);}
+	virtual void mark_in_use() {set_in_use();}
 	virtual void print(std::ostream &) const = 0;
 	virtual void princ(std::ostream &ostr) const {print(ostr);}
 	virtual node_t *car() const {throw_eval_exception(BAD_ARG_TYPE);return NULL;}
@@ -272,24 +301,35 @@ public:
 
 	node_type_e get_type() const{ return _type;}
 	int is_a(node_type_e t) const {return t == _type;}
-	int is_a_number() const { return (_type==TYPE_FLOAT || _type== TYPE_LONG); }
-	void check_number() const {if (!is_a_number()) throw_eval_exception(this,BAD_ARG_TYPE);}
+	int is_a_number() const
+	{
+		return (_type==TYPE_FLOAT || _type== TYPE_LONG);
+	}
+	void check_number() const
+	{
+		if (!is_a_number())
+			throw_eval_exception(this,BAD_ARG_TYPE);
+	}
 
-	void check_arg_type(node_type_e type) const {if (!is_a(type)) throw_eval_exception(this,BAD_ARG_TYPE);}
+	void check_arg_type(node_type_e type) const
+	{
+		if (!is_a(type))
+			throw_eval_exception(this,BAD_ARG_TYPE);
+	}
+
 	template <typename T>
 	T* as()
 	{
-		ASSERT(T::verify(this));
+		assert(T::verify(this));
 		if (!T::verify(this))
 			throw_eval_exception(this, BAD_ARG_TYPE);
 		return static_cast<T*>(this);
 	}
 
-	void set_gc_flag(gc_flag_e tem) { _flags = static_cast<gc_flag_e>(_flags | tem); }
-	void clear_gc_flag(gc_flag_e tem) { _flags = static_cast<gc_flag_e>(_flags & ~tem); }
-	void clear_gc_flags() { _flags = FLAG_NODE_NONE; }
-	bool is_in_use() const { return (_flags & FLAG_NODE_IN_USE); }
-	bool is_just_created() const {return (_flags & FLAG_NODE_JUST_CREATED); }
+	bool is_in_use() const { return _in_use; }
+	bool is_just_created() const { return !_not_just_created; }
+	void set_in_use() { _in_use = true; _not_just_created = true; }
+	void clear_gc_flags() { _in_use = false; _not_just_created = true; }
 };
 
 enum symbol_flags_e
@@ -492,7 +532,7 @@ public:
 		return new cons_t{var1, make_list(var2...)};
 	}
 
-	node_t *eval();
+	node_t *eval() override;
 	void mark_in_use();
 	void print(std::ostream &) const;
 	void princ(std::ostream &) const;
@@ -512,23 +552,23 @@ public:
 	// Non-virtual helper methods for traversing cons.
 	node_t* Car() const
 	{
-		ASSERT(_type == TYPE_CONS);
+		assert(_type == TYPE_CONS);
 		return _left;
 	}
 	cons_t* CarCONS() const
 	{
-		ASSERT(_type == TYPE_CONS);
+		assert(_type == TYPE_CONS);
 		return (cons_t*)_left;
 	}
 
 	node_t* Cdr() const
 	{
-		ASSERT(_type == TYPE_CONS);
+		assert(_type == TYPE_CONS);
 		return _right;
 	}
 	cons_t* CdrCONS() const
 	{
-		ASSERT(_type == TYPE_CONS);
+		assert(_type == TYPE_CONS);
 		return (cons_t*)_right;
 	}
 
@@ -538,7 +578,7 @@ public:
 	node_t* Cddr() const { return CdrCONS()->Cdr(); }
 	cons_t* CddrCONS() const { return CdrCONS()->CdrCONS(); }
 
-	DECLARE_NODE(cons_t, 1024)
+	DECLARE_NODE(cons_t, 4096)
 };
 
 class string_node_t : public node_t
@@ -547,7 +587,7 @@ protected:
 	std::string _contents;
 public:
 	static bool verify(node_t* p) { return p->get_type() == TYPE_STRING; }
-	string_node_t::string_node_t(const char* s) : node_t(TYPE_STRING), _contents(s)
+	string_node_t(const char* s) : node_t(TYPE_STRING), _contents(s)
 	{
 	}
 
@@ -606,7 +646,7 @@ public:
 			  /    |
 			 /     |
 			/      |
-	special_form_t function
+	special_form_t function_t
 					/\
 				  /    \
 		usrfunction_t     sysfunction_t
@@ -630,7 +670,7 @@ private:
 public:
 	special_form_t(const char* name, PFORMCALL pf);
 	node_t* eval(cons_t* ths) override;
-	DECLARE_NODE(special_form_t, 32)
+	DECLARE_NODE(special_form_t, 64)
 };
 
 class macro_t : public special_form_t
@@ -641,23 +681,23 @@ public:
 	{
 		_type = TYPE_MACRO;
 	}
-	DECLARE_NODE(macro_t, 32)
+	DECLARE_NODE(macro_t, 64)
 };
 
-class function : public form_t
+class function_t : public form_t
 {
 	int _minargs;
 	int _maxargs;
 public:
 	static bool verify(node_t* p) { return p->get_type() == TYPE_FUNCTION; }
-	function(const char* name, int min, int max);
+	function_t(const char* name, int min, int max);
 	node_t* eval(cons_t* ths) override;
 	node_t* evalnoargs(cons_t* ths); // this function has special uses
 	virtual node_t* eval(int numargs, node_t** base) = 0;
 	void check_args(int n);
 };
 
-class usrfunction_t : public function
+class usrfunction_t : public function_t
 {
 protected:
 	cons_t* _bindings;
@@ -667,10 +707,10 @@ public:
 	usrfunction_t(const char* name, int min, int max, cons_t* varlist, cons_t* b, bound_symbol_t* e);
 	node_t* eval(int numargs, node_t** base) override;
 	void mark_in_use(void);
-	DECLARE_NODE(usrfunction_t, 32)
+	DECLARE_NODE(usrfunction_t, 64)
 };
 
-class sysfunction_t : public function
+class sysfunction_t : public function_t
 {
 protected:
 public:
@@ -678,17 +718,6 @@ public:
 	sysfunction_t(const char* name, PFUNCCALL pF, int min, int max);
 	node_t* eval(int numargs, node_t** base) override;
 	DECLARE_NODE(sysfunction_t, 256)
-};
-
-class hour_glass_t
-{
-private:
-	HCURSOR hCursor{ NULL };
-	static HCURSOR hHourGlass;
-	static int count;
-public:
-	hour_glass_t();
-	~hour_glass_t();
 };
 
 extern nil_t* nil;

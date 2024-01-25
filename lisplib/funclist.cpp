@@ -1,6 +1,7 @@
-#include "stdafx.h"
+#include "pch.h"
 #include "node.h"
 #include "argstack.h"
+#include "lisp_engine.h"
 
 /*
 				form_t
@@ -36,28 +37,28 @@ node_t* special_form_t::eval(cons_t* ths)
 		e->_function_names.insert(e->_function_names.begin(), _form_name.c_str());
 		throw;
 	}
-	ASSERT(false);
+	assert(false);
 	return nil;
 }
 
-function::function(const char* name, int min, int max) : form_t(TYPE_FUNCTION, name), _minargs(min), _maxargs(max)
+function_t::function_t(const char* name, int min, int max) : form_t(TYPE_FUNCTION, name), _minargs(min), _maxargs(max)
 {
 }
 
-node_t* function::eval(cons_t* ths)
+node_t* function_t::eval(cons_t* ths)
 {
 	node_t* res = NULL;
-	frame_stack_state_t state(g_frame_stack); // Resets stack when destroyed.
+	frame_stack_state_t state(lisp_engine._frame_stack); // Resets stack when destroyed.
 	try
 	{
 		int numargs = 0;
 		while (ths->is_a(TYPE_CONS))
 		{
-			g_frame_stack.push(ths->Car()->eval());
+			lisp_engine._frame_stack.push(ths->Car()->eval());
 			numargs++;
 			ths = ths->CdrCONS();
 		}
-		res = eval(numargs, g_frame_stack.get_base(numargs));
+		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
 	catch (robosim_exception_t* e)
 	{
@@ -69,20 +70,20 @@ node_t* function::eval(cons_t* ths)
 
 // evalnoargs doesn't eval the parameters passed in
 // this is useful in certain situations such as for inverse kinematics
-node_t* function::evalnoargs(cons_t* ths)
+node_t* function_t::evalnoargs(cons_t* ths)
 {
 	node_t* res = NULL;
-	frame_stack_state_t state(g_frame_stack); // Resets stack when destroyed.
+	frame_stack_state_t state(lisp_engine._frame_stack); // Resets stack when destroyed.
 	try
 	{
 		int numargs = 0;
 		while (ths->is_a(TYPE_CONS))
 		{
-			g_frame_stack.push(ths->Car());
+			lisp_engine._frame_stack.push(ths->Car());
 			numargs++;
 			ths = ths->CdrCONS();
 		}
-		res = eval(numargs, g_frame_stack.get_base(numargs));
+		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
 	catch (robosim_exception_t* e)
 	{
@@ -92,7 +93,7 @@ node_t* function::evalnoargs(cons_t* ths)
 	return res;
 }
 
-void function::check_args(int n)
+void function_t::check_args(int n)
 {
 	if (_minargs >= 0 && n < _minargs)
 		throw_eval_exception(TOO_FEW_ARGS);
@@ -100,7 +101,7 @@ void function::check_args(int n)
 		throw_eval_exception(TOO_MANY_ARGS);
 }
 
-sysfunction_t::sysfunction_t(const char* name, PFUNCCALL pF, int min, int max) : function(name, min, max), _pfunc(pF)
+sysfunction_t::sysfunction_t(const char* name, PFUNCCALL pF, int min, int max) : function_t(name, min, max), _pfunc(pF)
 {
 }
 
@@ -110,7 +111,8 @@ node_t* sysfunction_t::eval(int numargs, node_t** base)
 	return _pfunc(numargs, base);
 }
 
-usrfunction_t::usrfunction_t(const char* name, int min, int max, cons_t* varlist, cons_t* b, bound_symbol_t* e) : function(name, min, max), _bindings(varlist), _body(b), _env(e)
+usrfunction_t::usrfunction_t(const char* name, int min, int max, cons_t* varlist, cons_t* b, bound_symbol_t* e) : 
+	function_t(name, min, max), _bindings(varlist), _body(b), _env(e)
 {
 }
 
@@ -131,10 +133,11 @@ node_t* usrfunction_t::eval(int numargs, node_t** base)
 	node_t* result = nil;
 	cons_t* tbody = _body;
 
-	binding_stack_state_t bs_state(g_bind_stack, _env);
-	frame_stack_state_t ns_state(g_frame_stack); /* Clean up g_frame_stack. */
-	g_frame_stack.push(bs_state._prev);
-	int num = g_bind_stack.bind(_bindings, base);
+	binding_stack_state_t bs_state(lisp_engine._bind_stack, _env);
+	frame_stack_state_t ns_state(lisp_engine._frame_stack); /* Clean up _frame_stack. */
+	lisp_engine._frame_stack.push(bs_state._prev);
+	int num = lisp_engine._bind_stack.bind(_bindings, base);
+	unbinder_t u{ lisp_engine._bind_stack, num };
 
 	try
 	{
@@ -149,19 +152,10 @@ node_t* usrfunction_t::eval(int numargs, node_t** base)
 		if ((e->_block == nil) && (_form_name.size() == 0))
 			result = e->_retval;
 		else if (_form_name != e->_block->get_name())
-		{
-			g_bind_stack.unbind(num);
 			throw;
-		}
 		else
 			result = e->_retval;
 		e->Delete();
 	}
-	catch (CException*)
-	{
-		g_bind_stack.unbind(num);
-		throw;
-	}
-	g_bind_stack.unbind(num);
 	return result;
 }

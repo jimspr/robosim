@@ -1,5 +1,7 @@
-#include "stdafx.h"
+#include "pch.h"
+
 #include "argstack.h"
+#include "node.h"
 
 void frame_stack_t::print(std::ostream &ostr) const
 {
@@ -54,7 +56,7 @@ node_t** frame_stack_t::get_base(int n)
 {
 	if (n == 0)
 		return nullptr;
-	ASSERT(_args.size() - n >= 0);
+	assert(_args.size() - n >= 0);
 	return &_args[_args.size() - n];
 }
 
@@ -89,7 +91,7 @@ bound_symbol_t* binding_stack_t::pop_ns2()
 
 void binding_stack_t::print(std::ostream &ostr) const
 {
-	ostr << "#<g_bind_stack:";
+	ostr << "#<_bind_stack:";
 	for (bound_symbol_t *t = _cur; t; t = t->_child)
 		ostr << ' ' << t;
 	ostr << ">";

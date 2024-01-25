@@ -5,7 +5,7 @@
 #include <string>
 #include "question.h"
 
-class function;
+class function_t;
 class node_t;
 
 class spin_button_wnd_t : public CWnd
@@ -21,7 +21,7 @@ public:
 class ask_dialog_t : public CDialog
 {
 public:
-	ask_dialog_t(CWnd* p, function* pfn, std::vector<question>& q, const char* t);
+	ask_dialog_t(CWnd* p, function_t* pfn, std::vector<question>& q, const char* t);
 
 	// Dialog Data
 		//{{AFX_DATA(CAskDialog)
@@ -50,7 +50,7 @@ protected:
 	CButton _cancel;
 	CStatic _statframe;
 	CStatic _stattext;
-	function* _func;
+	function_t* _func;
 	CSize get_max_question_extent();
 	bool verify();
 	bool check_edit(int i);

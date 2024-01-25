@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <memory>
-#include <strstream>
+#include <sstream>
 #include "resource.h"
 #include "lispwin.h"
 #include "mainwin.h"
@@ -8,8 +8,12 @@
 #include "print.h"
 #include "dialogs.h"
 #include "grob.h"
+#include "host.h"
+#include "lisp_engine.h"
 
 using namespace std;
+
+extern void main_win_mark_in_use();
 
 main_window_t* simulation = nullptr;
 
@@ -18,6 +22,54 @@ simulation_t& get_sim()
 	ASSERT(simulation != nullptr);
 	return *simulation;
 }
+
+struct host_t : public lisp_host_t
+{
+	void periodic_notify() final
+	{
+		static MSG keymsg;
+		if (PeekMessage(&keymsg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
+			if (AfxMessageBox("Do you want to stop?", MB_YESNO | MB_APPLMODAL | MB_ICONQUESTION) == IDYES)
+				throw_interrupt_exception();
+		AfxGetApp()->OnIdle(0); // this makes sure cleanup occurs during long processing
+	}
+	void mark_in_use() final
+	{
+		main_win_mark_in_use();
+	}
+	void add_busy() final
+	{
+		if (!count)
+		{
+			hCursor = SetCursor(hHourGlass);
+			ShowCursor(TRUE);
+		}
+		SetCursor(hHourGlass);
+		count++;
+	}
+	virtual void release_busy() final
+	{
+		count--;
+		if (!count)
+		{
+			ShowCursor(FALSE);
+			SetCursor(hCursor);
+			hCursor = NULL;
+		}
+	}
+	virtual void exit() final
+	{
+		// The Lisp interpreter is ready to exit, but the app may be in the message loop.
+		// Close the main window to force the exit
+		AfxGetApp()->m_pMainWnd->PostMessage(WM_CLOSE);
+	}
+
+	HCURSOR hCursor{ NULL };
+	HCURSOR hHourGlass = LoadCursor(NULL, IDC_WAIT);
+	int count = 0;
+};
+
+host_t host;
 
 BEGIN_MESSAGE_MAP(main_window_t, CFrameWnd)
 	ON_WM_CREATE()
@@ -32,6 +84,7 @@ main_window_t::~main_window_t()
 
 main_window_t::main_window_t()
 {
+	lisp_engine._host = &host;
 	simulation = this;
 	VERIFY(LoadAccelTable("ACCEL"));
 	_view_wnd = NULL;
@@ -55,17 +108,18 @@ int main_window_t::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	ASSERT(_view_wnd == NULL);
-	_view_wnd = new view_wnd_t(*this);
-	if (!_view_wnd)
+	auto view_wnd = new view_wnd_t(*this);
+	_view_wnd = view_wnd;
+	if (!view_wnd)
 		return -1;
-	if (!_view_wnd->Create(this))
+	if (!view_wnd->Create(this))
 	{
-		delete _view_wnd;
-		_view_wnd = NULL;
+		delete view_wnd;
+		_view_wnd = nullptr;
 		return -1;
 	}
-	_view_wnd->ShowWindow(SW_SHOWNA);
-	_view_wnd->UpdateWindow();
+	view_wnd->ShowWindow(SW_SHOWNA);
+	view_wnd->UpdateWindow();
 
 	return 0;
 }
@@ -92,7 +146,7 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 		return FALSE;
 	if (idx >= (int)_menu_funcs.size())
 		return CFrameWnd::OnCommand(wParam, lParam);
-	hour_glass_t t;
+	busy_t t;
 
 	try
 	{
@@ -128,7 +182,7 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 	}
 	catch (CException* e)
 	{
-		AfxMessageBox("Error - Other Exception Caught", MB_OK | MB_ICONINFORMATION);
+		AfxMessageBox("Error - MFC Exception Caught", MB_OK | MB_ICONINFORMATION);
 		e->Delete();
 	}
 	return TRUE;
@@ -136,7 +190,7 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 
 bool main_window_t::copy_to_clibboard()
 {
-	view_wnd_t* pw = _view_wnd;
+	view_wnd_t* pw = static_cast<view_wnd_t*>(_view_wnd);
 	if (!pw)
 		return false;
 	pw->copy_to_clipboard();
@@ -222,7 +276,7 @@ void main_window_t::new_simulation()
 {
 	ASSERT(_view_wnd != NULL);
 	reset_simulation();
-	_view_wnd->Invalidate();
+	_view_wnd->invalidate();
 }
 
 bool main_window_t::display_help(const string& str)
@@ -242,7 +296,7 @@ void main_window_t::print()
 	int status = 1, cnt = 0;
 
 	GetWindowText(szDocName, sizeof(szDocName));
-	view_wnd_t* pw = _view_wnd;
+	view_wnd_t* pw = static_cast<view_wnd_t*>(_view_wnd);
 	if (!pw)
 		return;
 
@@ -271,10 +325,11 @@ endprint:
 
 void main_window_t::show_view_dialog()
 {
-	_view_wnd->_view_dialog->create();
+	view_wnd_t* pw = static_cast<view_wnd_t*>(_view_wnd);
+	pw->_view_dialog->create();
 }
 
-node_t* main_window_t::ask(function* pfn, std::vector<question>& pq, const char* title)
+node_t* main_window_t::ask(function_t* pfn, std::vector<question>& pq, const char* title)
 {
 	node_t* result;
 	ask_form = pfn;
@@ -284,6 +339,11 @@ node_t* main_window_t::ask(function* pfn, std::vector<question>& pq, const char*
 	{
 		result = (askd.DoModal() == IDOK) ? askd.get_list() : nil;
 		ask_form = NULL;
+	}
+	catch (base_exception_t*)
+	{
+		ask_form = NULL;
+		throw;
 	}
 	catch (CException*)
 	{
