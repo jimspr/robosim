@@ -127,7 +127,7 @@ void simob_t::set_joint_func(PMAT44FUNC p)
 void simob_t::set_parameter(float f)
 {
 	if (f<_minparm || f>_maxparm)
-		throw_other_exception(lisp_engine._package.get_symbol("JOINTLIMIT"),nil); // out of reach exception
+		throw lisp_exception_t(lisp_engine._package.get_symbol("JOINTLIMIT"),nil); // out of reach exception
 	_parameter=f;
 	pos_changed();
 }
@@ -323,7 +323,7 @@ void simob_t::add_vector(vector_t &v)
 {
 	size_t n = v.size();
 	if (n != 3 && n != 6)
-		throw_eval_exception(VECTOR_NOT_POINT);
+		throw eval_exception_t(VECTOR_NOT_POINT);
 	number_node_t *nx = (number_node_t *)v[0];
 	nx->check_number();
 	number_node_t *ny = (number_node_t *)v[1];
@@ -923,7 +923,7 @@ bool simob_t::make_agent(simob_t *plast,int numlinks)
 solution *simob_t::get_solution(mat44 *pmat,int idx)
 {
 	if (!_inverse_kinematics)
-		throw_eval_exception(NO_IK_AVAIL);
+		throw eval_exception_t(NO_IK_AVAIL);
 	if (idx == -1)
 		idx = 0;
 	if (idx < 0 || idx >= _num_solns)

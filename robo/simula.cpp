@@ -30,7 +30,7 @@ void simulation_t::redraw(bool bErase)
 	MSG keymsg;
 	if (PeekMessage(&keymsg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
 		if (AfxMessageBox("Do you want to stop?", MB_YESNO | MB_APPLMODAL | MB_ICONQUESTION) == IDYES)
-			throw_interrupt_exception();
+			throw interrupt_exception_t();
 	if (!_update)
 		return;
 	if (_view_wnd != nullptr)
@@ -89,9 +89,7 @@ bool simulation_t::check_collision(void)
 		for (j = i + 1; j < n; j++)
 		{
 			if (simob_t::check_collide(ps, _objects[j]))
-				throw_other_exception(lisp_engine._package.get_symbol("COLLISION"), nil); // out of reach exception
-//				throw_eval_exception(COLLISION_ERROR);
-//				return TRUE;
+				throw lisp_exception_t(lisp_engine._package.get_symbol("COLLISION"), nil); // out of reach exception
 		}
 	}
 	return false;

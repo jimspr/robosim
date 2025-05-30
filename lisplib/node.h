@@ -296,8 +296,8 @@ public:
 	virtual void mark_in_use() {set_in_use();}
 	virtual void print(std::ostream &) const = 0;
 	virtual void princ(std::ostream &ostr) const {print(ostr);}
-	virtual node_t *car() const {throw_eval_exception(BAD_ARG_TYPE);return NULL;}
-	virtual node_t *cdr() const {throw_eval_exception(BAD_ARG_TYPE);return NULL;}
+	virtual node_t *car() const {throw eval_exception_t(BAD_ARG_TYPE);return NULL;}
+	virtual node_t *cdr() const {throw eval_exception_t(BAD_ARG_TYPE);return NULL;}
 
 	node_type_e get_type() const{ return _type;}
 	int is_a(node_type_e t) const {return t == _type;}
@@ -308,13 +308,13 @@ public:
 	void check_number() const
 	{
 		if (!is_a_number())
-			throw_eval_exception(this,BAD_ARG_TYPE);
+			throw eval_exception_t{ this,BAD_ARG_TYPE };
 	}
 
 	void check_arg_type(node_type_e type) const
 	{
 		if (!is_a(type))
-			throw_eval_exception(this,BAD_ARG_TYPE);
+			throw eval_exception_t{ this,BAD_ARG_TYPE };
 	}
 
 	template <typename T>
@@ -322,7 +322,7 @@ public:
 	{
 		assert(T::verify(this));
 		if (!T::verify(this))
-			throw_eval_exception(this, BAD_ARG_TYPE);
+			throw eval_exception_t(this, BAD_ARG_TYPE);
 		return static_cast<T*>(this);
 	}
 
@@ -465,7 +465,7 @@ public:
 	void operator/=(const number_node_t &n)
 	{
 		if ( (float)n == 0.)
-			throw_eval_exception(DIVIDE_BY_ZERO);
+			throw eval_exception_t(DIVIDE_BY_ZERO);
 		if (is_a(TYPE_FLOAT))
 			fval /= (float)n;
 		else if (n.is_a(TYPE_FLOAT))

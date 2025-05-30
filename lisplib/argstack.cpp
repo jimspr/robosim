@@ -40,7 +40,7 @@ void frame_stack_t::pop(int n)
 		--n;
 	}
 	if (n != 0)
-		throw_eval_exception(STACK_CORRUPT);
+		throw eval_exception_t(STACK_CORRUPT);
 };
 
 void frame_stack_t::mark_in_use(void)
@@ -63,7 +63,7 @@ node_t** frame_stack_t::get_base(int n)
 void frame_stack_t::duplicate(int n)
 {
 	if (n > (int)_args.size())
-		throw_eval_exception(STACK_CORRUPT);
+		throw eval_exception_t(STACK_CORRUPT);
 	_args.insert(_args.end(), _args.end() - n, _args.end());
 }
 
@@ -125,7 +125,7 @@ void binding_stack_t::unbind(int numargs)
 	while(numargs--)
 	{
 		if (!_cur)
-			throw_eval_exception(STACK_CORRUPT);
+			throw eval_exception_t(STACK_CORRUPT);
 		_cur->swap_values();
 		if (!_cur->_symbol->is_special_value())
 		{
@@ -147,7 +147,7 @@ void binding_stack_t::unbind_to(bound_symbol_t *to)
 	while(_cur != to)
 	{
 		if (!_cur)
-			throw_eval_exception(STACK_CORRUPT);
+			throw eval_exception_t(STACK_CORRUPT);
 		if (!_cur->_symbol->is_special_value())
 			_cur->swap_values();
 		_cur = _cur->_child;

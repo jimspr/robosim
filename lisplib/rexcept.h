@@ -11,22 +11,6 @@ class symbol_t;
 
 struct base_exception_t
 {
-	base_exception_t(bool b)
-	{
-		assert(_count == 0);
-		++_count;
-		assert(b);
-	}
-	virtual ~base_exception_t()
-	{
-		--_count;
-	}
-	static int _count;
-	void Delete()
-	{
-		assert(_count == 1);
-		delete this;
-	}
 };
 
 class robosim_exception_t : public base_exception_t
@@ -35,44 +19,45 @@ public:
 	int _line_number = 0;
 	error_e _error_code = error_none;
 	const node_t* _evalnode = nullptr;
-	std::vector<const char*> _function_names;
+	std::vector<std::string> _function_names;
+	void prepend_function_name(const std::string& str)
+	{
+		_function_names.insert(_function_names.begin(), str);
+	}
+protected:
 	robosim_exception_t(const node_t* pnode, error_e err, int line) :
-		base_exception_t(true), _evalnode(pnode), _error_code(err), _line_number(line)
+		_evalnode(pnode), _error_code(err), _line_number(line)
 	{
 	}
-	robosim_exception_t(error_e err, int line) : base_exception_t(true), _line_number(line), _error_code(err)
+	robosim_exception_t(error_e err, int line) : _line_number(line), _error_code(err)
 	{
 	}
-	robosim_exception_t(bool auto_delete) : base_exception_t(auto_delete)
+	robosim_exception_t(error_e err) : _error_code(err)
 	{
 	}
-	robosim_exception_t() : base_exception_t(true)
+	robosim_exception_t()
 	{
 	}
-};
-
-class done_exception_t : public robosim_exception_t
-{
-public:
-	done_exception_t(bool bAutoDelete = true) : robosim_exception_t(bAutoDelete) {}
 };
 
 class read_exception_t : public robosim_exception_t
 {
 public:
-	read_exception_t(error_e err) : robosim_exception_t()
+	read_exception_t(error_e err) : robosim_exception_t(err)
 	{
-		_error_code = err;
 	}
 };
 
 class eval_exception_t : public robosim_exception_t
 {
 public:
-	eval_exception_t(const node_t* n, error_e err) : robosim_exception_t()
+	eval_exception_t(const node_t* n, error_e err) : robosim_exception_t(err)
 	{
 		_evalnode = n;
-		_error_code = err;
+	}
+	eval_exception_t(error_e err) : robosim_exception_t(err)
+	{
+		_evalnode = nullptr;
 	}
 };
 
@@ -81,6 +66,7 @@ class block_return_exception_t : public robosim_exception_t
 public:
 	const symbol_t* _block;
 	node_t* _retval;
+	// UNKNOWN_BLOCK_NAME will be used if the exception is not caught
 	block_return_exception_t(const symbol_t* b, node_t* val)
 		: robosim_exception_t(), _block(b), _retval(val)
 	{
@@ -95,23 +81,16 @@ public:
 	}
 };
 
-class other_exception_t : public robosim_exception_t
+// A lisp_exception_t represents an exception catchable in lisp code itself.
+class lisp_exception_t : public robosim_exception_t
 {
 public:
 	const node_t* _tag;
 	node_t* _retval;
-	other_exception_t(const node_t* p, node_t* val) : 
+	lisp_exception_t(const node_t* p, node_t* val) :
 		robosim_exception_t(), _tag(p), _retval(val)
 	{
 	}
 };
-
-void throw_done_exception();
-void throw_read_exception(error_e err);
-void throw_eval_exception(const node_t* n, error_e err);
-void throw_eval_exception(error_e err);
-void throw_block_return_exception(const symbol_t* b, node_t* val);
-void throw_interrupt_exception();
-void throw_other_exception(const node_t* p, node_t* val);
 
 #endif

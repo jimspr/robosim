@@ -77,9 +77,6 @@
     <ClCompile Include="node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="rexcept.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rlerror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

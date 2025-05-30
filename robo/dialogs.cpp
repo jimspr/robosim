@@ -348,48 +348,42 @@ bool ask_dialog_t::call_function(void)
 		int numq = (int)_questions.size();
 		res = _func->eval(numq, lisp_engine._frame_stack.get_base(numq));
 	}
-	catch(eval_exception_t* e)
+	catch(const eval_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(*e);
+		str += get_rlerror_msg(e);
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
-		e->Delete();
 	}
-	catch(block_return_exception_t* e)
+	catch(block_return_exception_t& e)
 	{
-		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_engine._env._readtable._line_cnt);
+		e._line_number = lisp_engine._env._readtable._line_cnt;
+//		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_engine._env._readtable._line_cnt);
 		ostringstream ostr;
 		ostr << "Error - \"";
-		e->_block->print(ostr);
-		ostr << "\" " << get_rlerror_msg(re) << endl << '\0';;
+		e._block->print(ostr);
+		ostr << "\" " << get_rlerror_msg(e) << endl << '\0';;
 		AfxMessageBox(ostr.str().c_str(), MB_OK | MB_ICONSTOP);
-		e->Delete();
 	}
-	catch(interrupt_exception_t* e)
+	catch(const interrupt_exception_t&)
 	{
-		e->Delete();
 	}
-	catch(read_exception_t* e)
+	catch(const read_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(*e);
+		str += get_rlerror_msg(e);
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
-		e->Delete();
 	}
-	catch(other_exception_t* e)
+	catch(const lisp_exception_t&)
 	{
 		AfxMessageBox("Error - Uncaught throw", MB_OK|MB_ICONINFORMATION);
-		e->Delete();
 	}
-	catch(robosim_exception_t* e)
+	catch(const robosim_exception_t&)
 	{
 		AfxMessageBox("Error - robosim_exception_t", MB_OK|MB_ICONINFORMATION);
-		e->Delete();
 	}
-	catch (base_exception_t* e)
+	catch (const base_exception_t&)
 	{
 		AfxMessageBox("Error - base_exception_t Caught", MB_OK | MB_ICONINFORMATION);
-		e->Delete();
 	}
 	catch(CException* e)
 	{

@@ -206,7 +206,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="readtabl.cpp" />
-    <ClCompile Include="rexcept.cpp" />
     <ClCompile Include="rlerror.cpp" />
     <ClCompile Include="vars.cpp" />
   </ItemGroup>

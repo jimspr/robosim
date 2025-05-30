@@ -132,7 +132,7 @@ static node_t *func_simobp(int numargs,node_t **args);
 static node_t *func_copy__window(int numargs,node_t **args);
 static node_t *func_use__kinematics(int numargs,node_t **args);
 static node_t *func_use__kinematics__lisp(int numargs,node_t **args);
-static node_t *func_make__composite(int numargs,node_t **args);
+//static node_t *func_make__composite(int numargs,node_t **args);
 
 static node_t *func_set__eye__separation(int numargs, node_t **args);
 static node_t *func_display__help(int numargs, node_t **args);
@@ -268,10 +268,10 @@ static void ParseFloatList1(float* pf, cons_t* p, float fmin, float fmax)
 {
 	p->check_arg_type(TYPE_CONS);
 	if (p->get_num_items() != 3)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	float f1 = *p->Car()->as<number_node_t>();
 	if (f1<fmin || f1>fmax)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	pf[0] = f1;
 }
 
@@ -279,14 +279,14 @@ static void ParseFloatList(float* pf, cons_t *p, float fmin, float fmax)
 {
 	p->check_arg_type(TYPE_CONS);
 	if (p->get_num_items() != 3)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	float f1 = *p->Car()->as<number_node_t>();
 	p = p->CdrCONS();
 	float f2 = *p->Car()->as<number_node_t>();
 	p = p->CdrCONS();
 	float f3 = *p->Car()->as<number_node_t>();
 	if (f1<fmin || f1>fmax || f2<fmin || f2>fmax || f3<fmin || f3>fmax)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	pf[0] = f1;
 	pf[1] = f2;
 	pf[2] = f3;
@@ -296,7 +296,7 @@ static void ParseFloatList(float* pf, cons_t *p)
 {
 	p->check_arg_type(TYPE_CONS);
 	if (p->get_num_items() != 3)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	float f1 = *p->Car()->as<number_node_t>();
 	p = p->CdrCONS();
 	float f2 = *p->Car()->as<number_node_t>();
@@ -329,7 +329,7 @@ static node_t *func_make__primitive(int numargs,node_t **args)
 		}
 	}
 	if (!numargs || !numvec)
-		throw_eval_exception(INVALID_GRAPHIC_PRIMITIVE);
+		throw eval_exception_t(INVALID_GRAPHIC_PRIMITIVE);
 	simob_t *pg = new simob_t();
 	pg->init(numvec,numargs);
 	for (i=0;i<numargs;i++)
@@ -372,7 +372,7 @@ static node_t *func_get__file__dialog(int numargs,node_t **args)
 	const char *defext = "All Files (*.*)|*.*|";
 	const char *filter = "All Files (*.*)|*.*|";
 	if (numargs == 1)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	if (numargs)
 	{
 		args[0]->check_arg_type(TYPE_STRING);
@@ -482,7 +482,7 @@ static void CheckMakeArgs(int numargs,node_t **args)
 	{
 		args[i]->check_number();
 		if ((float)(* (number_node_t *) args[i]) <= 0.)
-			throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+			throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	}
 }
 
@@ -508,7 +508,7 @@ static node_t *func_make__cylinder(int numargs,node_t **args)
 	if (numargs == 3)
 		n = (long)(* (number_node_t *) args[2]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_closedcyl(r,h,n);
 	return ps;
 }
@@ -523,7 +523,7 @@ static node_t *func_make__circle(int numargs,node_t **args)
 	if (numargs == 2)
 		n = (long)(* (number_node_t *) args[1]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_circle(r,n);
 	return ps;
 }
@@ -539,7 +539,7 @@ static node_t *func_make__cone(int numargs,node_t **args)
 	if (numargs == 3)
 		n = (long)(* (number_node_t *) args[2]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_closedcone(r,h,n);
 	return ps;
 }
@@ -556,7 +556,7 @@ static node_t *func_make__truncated__cone(int numargs,node_t **args)
 	if (numargs == 4)
 		n = (long)(* (number_node_t *) args[3]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_truncated_closedcone(ru,rl,h,n);
 	return ps;
 }
@@ -571,7 +571,7 @@ static node_t *func_make__sphere(int numargs,node_t **args)
 	if (numargs == 2)
 		n = (long)(* (number_node_t *) args[1]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_sphere(r,n);
 	return ps;
 }
@@ -586,7 +586,7 @@ static node_t *func_make__dome(int numargs,node_t **args)
 	if (numargs == 2)
 		n = (long)(* (number_node_t *) args[1]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	ps->make_closeddome(r,n);
 	return ps;
 }
@@ -607,7 +607,7 @@ static node_t *func_make__extrude__surface(int numargs,node_t **args)
 	args[0]->check_arg_type(TYPE_SIMOB);
 	args[1]->check_number();
 	if ( ((simob_t *)args[0])->get_num_poly() != 1)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	simob_t *pg = new simob_t();
 	pg->make_extrusion((simob_t *)args[0],(float) *(number_node_t *)args[1]);
 	return pg;
@@ -619,11 +619,11 @@ static node_t *func_make__revolve__surface(int numargs,node_t **args)
 	args[0]->check_arg_type(TYPE_SIMOB);
 	args[1]->check_number();
 	if ( ((simob_t *)args[0])->get_num_poly() != 1)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (numargs == 2)
 		n = (long)(* (number_node_t *) args[1]);
 	if (n <= 0.)
-		throw_eval_exception(ARG_SHOULD_BE_GREATER_THAN_ZERO);
+		throw eval_exception_t(ARG_SHOULD_BE_GREATER_THAN_ZERO);
 	simob_t *pg = new simob_t();
 	pg->make_revolution((simob_t *)args[0], n);
 	return pg;
@@ -667,14 +667,14 @@ static COLORREF ParseColor(cons_t *p)
 {
 	p->check_arg_type(TYPE_CONS);
 	if (p->get_num_items() != 3)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	int r = *p->Car()->as<number_node_t>();
 	p = p->CdrCONS();
 	int g = *p->Car()->as<number_node_t>();
 	p = p->CdrCONS();
 	int b = *p->Car()->as<number_node_t>();
 	if (r<0 || r>255 || g<0 || g>255 || b<0 || b>255)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	return RGB(r,g,b);
 }
 
@@ -683,7 +683,7 @@ static node_t *func_set__object(int numargs,node_t **args)
 	int i;
 	auto ps = args[0]->as<simob_t>();
 	if (numargs%2 == 0)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	for (i=1;i<numargs;i+=2)
 	{
 		args[i]->check_arg_type(TYPE_SYMBOL);
@@ -718,7 +718,7 @@ static node_t *func_set__object(int numargs,node_t **args)
 		}
 //		else if (args[i] == key_collision)
 		else
-			throw_eval_exception(BAD_ARG_TYPE);
+			throw eval_exception_t(BAD_ARG_TYPE);
 	}
 	if (numargs > 1)
 		get_sim().redraw(true);
@@ -728,12 +728,12 @@ static node_t *func_set__object(int numargs,node_t **args)
 static node_t *func_get__position(int numargs,node_t **args)
 {
 	if (numargs == 2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	args[0]->check_arg_type(TYPE_SIMOB);
 	if (numargs == 1)
 		return new mat44( ((simob_t *)args[0])->get_position());
 	if (args[1] != key_relative_to)
-		throw_eval_exception(BAD_KEYWORD);
+		throw eval_exception_t(BAD_KEYWORD);
 	args[2]->check_arg_type(TYPE_SIMOB);
 	mat44 *pmat = new mat44( ((simob_t *)args[0])->get_position());
 	pmat->premultiply( ((simob_t *)args[2])->get_position().fastinverse() );
@@ -743,7 +743,7 @@ static node_t *func_get__position(int numargs,node_t **args)
 static node_t *func_set__position(int numargs,node_t **args)
 {
 	if (numargs == 3)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	auto ps = args[0]->as<simob_t>();
 	mat44 tmat;
 	if (args[1] != nil)
@@ -754,7 +754,7 @@ static node_t *func_set__position(int numargs,node_t **args)
 	if (numargs == 4)
 	{
 		if (args[2] != key_relative_to)
-			throw_eval_exception(BAD_KEYWORD);
+			throw eval_exception_t(BAD_KEYWORD);
 		args[3]->check_arg_type(TYPE_SIMOB);
 		tmat.premultiply( ((simob_t *)args[3])->get_position());
 	}
@@ -766,7 +766,7 @@ static node_t *func_set__position(int numargs,node_t **args)
 static node_t *func_offset__position(int numargs,node_t **args)
 {
 	if (numargs == 3)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	auto ps = args[0]->as<simob_t>();
 	mat44 tmat;
 	if (args[1] != nil)
@@ -777,7 +777,7 @@ static node_t *func_offset__position(int numargs,node_t **args)
 	if (numargs == 4)
 	{
 		if (args[2] != key_relative_to)
-			throw_eval_exception(BAD_KEYWORD);
+			throw eval_exception_t(BAD_KEYWORD);
 		args[3]->check_arg_type(TYPE_SIMOB);
 		tmat.premultiply( ((simob_t *)args[3])->get_position());
 		tmat.postmultiply( ((simob_t *)args[3])->get_position().fastinverse());
@@ -875,12 +875,12 @@ static node_t *func_make__fixed__link(int numargs,node_t **args)
 	int i;
 	mat44 tmat;
 	if (numargs%2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	for (i=0;i<numargs;i+=2)
 	{
 		args[i]->check_arg_type(TYPE_SIMOB);
 		if (((simob_t *)args[i])->get_num_children())
-			throw_eval_exception(NO_COMPLEX_IN_LINK);
+			throw eval_exception_t(NO_COMPLEX_IN_LINK);
 		if (args[i+1] != nil)
 			args[i+1]->check_arg_type(TYPE_MAT44);
 	}
@@ -974,7 +974,7 @@ static node_t* func_make__serial__agent(int numargs, node_t** args)
 		numargs--;
 	}
 	if (!numargs || numargs % 2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	for (i = 0; i < numargs; i += 2)
 	{
 		args[i]->check_arg_type(TYPE_SIMOB);
@@ -1000,7 +1000,7 @@ static node_t *func_make__parallel__agent(int numargs,node_t **args)
 	if (numargs==0)
 		return nil;
 	if (numargs%2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	for (i=0;i<numargs;i+=2)
 	{
 		args[i]->check_arg_type(TYPE_SIMOB);
@@ -1027,7 +1027,7 @@ static node_t *func_maximize__active__window(int,node_t **)
 static node_t *func_set__double__buffer(int numargs,node_t **args)
 {
 	if (args[0]!=pTrue && args[0]!=nil)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	// Does nothing
 	return args[0];
 }
@@ -1036,7 +1036,7 @@ static node_t *func_set__command__lines(int numargs,node_t **args)
 {
 	int l = *args[0]->as<number_node_t>();
 	if (l<0 || l>24)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	get_sim().set_console_height(l);
 	return args[0];
 }
@@ -1089,14 +1089,14 @@ static void parmsub(simob_t *ps,cons_t *base)
 				base = base->CdrCONS();
 			}
 			if (!ps->get_child(idx) && base->is_a(TYPE_CONS))
-				throw_eval_exception(TOO_MANY_ARGS);
+				throw eval_exception_t(TOO_MANY_ARGS);
 			return;
 		}
 		else
 			ps = ps->get_child();
 	}
 	if (!ps && base->is_a(TYPE_CONS))
-		throw_eval_exception(TOO_MANY_ARGS);
+		throw eval_exception_t(TOO_MANY_ARGS);
 }
 
 static node_t *func_get__agent__joints(int numargs,node_t **args)
@@ -1259,7 +1259,7 @@ static node_t *func_grasp(int numargs,node_t **args)
 	auto ps = args[0]->as<simob_t>();
 	auto psa = args[1]->as<simob_t>();
 	if (!ps->is_serial_agent())
-		throw_eval_exception(NOT_SERIAL_AGENT);
+		throw eval_exception_t(NOT_SERIAL_AGENT);
 	ps->check_in_env();
 	psa->check_in_env();
 	if (!ps->grasp(psa))
@@ -1272,7 +1272,7 @@ static node_t *func_release(int numargs,node_t **args)
 {
 	auto ps = args[0]->as<simob_t>();
 	if (!ps->is_serial_agent())
-		throw_eval_exception(NOT_SERIAL_AGENT);
+		throw eval_exception_t(NOT_SERIAL_AGENT);
 	simob_t *psa = ps->release_grasp();
 	if (psa)
 	{
@@ -1286,7 +1286,7 @@ static node_t *func_set__num__facets(int numargs,node_t **args)
 {
 	int nf = *args[0]->as<number_node_t>();
 	if (nf < 4)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	deffac = nf;
 	return args[0];
 }
@@ -1430,14 +1430,14 @@ void drive_array_t::dparmsub(simob_t *ps,cons_t *base)
 				base = base->CdrCONS();
 			}
 			if (!ps->get_child(idx) && base->is_a(TYPE_CONS))
-				throw_eval_exception(TOO_MANY_ARGS);
+				throw eval_exception_t(TOO_MANY_ARGS);
 			return;
 		}
 		else
 			ps = ps->get_child();
 	}
 	if (!ps && base->is_a(TYPE_CONS))
-		throw_eval_exception(TOO_MANY_ARGS);
+		throw eval_exception_t(TOO_MANY_ARGS);
 }
 
 void drive_array_t::parmsub(simob_t *ps)
@@ -1504,7 +1504,7 @@ static node_t *func_get__solution(int numargs,node_t **args)
 	auto ps = args[0]->as<simob_t>();
 
 	if (!ps->is_serial_agent())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	args[1]->check_arg_type(TYPE_MAT44);
 	args[2]->check_number();
 	pq = ps->get_solution((mat44 *)args[1],(long)*(number_node_t *)args[2]);
@@ -1530,7 +1530,7 @@ static node_t *func_get__solutions(int numargs,node_t **args)
 	auto ps = args[0]->as<simob_t>();
 
 	if (!ps->is_serial_agent())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	args[1]->check_arg_type(TYPE_MAT44);
 	pq = ps->get_solution((mat44 *)args[1],-1);
 	if (pq) // if !pq -> no solutions
@@ -1561,7 +1561,7 @@ static node_t *func_get__num__solutions(int nuargs,node_t **args)
 {
 	auto ps = args[0]->as<simob_t>();
 	if (!ps->is_serial_agent())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	return new number_node_t( (long)ps->get_num_solutions());
 }
 
@@ -1577,13 +1577,13 @@ static node_t *func_move__inter__to(int numargs,node_t **args)
 	int steps = *args[3]->as<number_node_t>();
 
 	if (!ps->is_serial_agent())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (steps <=0)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 
 	pqe = ps->get_solution(pmat,solidx);
 	if (!pqe)
-		throw_other_exception(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
+		throw lisp_exception_t(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
 	drive_array_t da;
 	da.parmsub(ps);
 	for (size_t j = 0; j < da.vec.size(); ++j)
@@ -1613,9 +1613,9 @@ static node_t *func_move__straight__to(int numargs,node_t **args)
 	mat44 cmat;
 	
 	if (!ps->is_serial_agent())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (steps <=0)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 
 	cmat = ps->get_end_position();
 	point3d_t beg(cmat.m[0][3],cmat.m[1][3],cmat.m[2][3]);
@@ -1640,7 +1640,7 @@ static node_t *func_move__straight__to(int numargs,node_t **args)
 
 		pqe = ps->get_solution(&cmat,solidx);
 		if (!pqe)
-			throw_other_exception(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
+			throw lisp_exception_t(lisp_engine._package.get_symbol("REACH"),nil); // out of reach exception
 		for (size_t j=0;j<da.vec.size();j++)
 			da.vec[j].ps->set_parameter(pqe[0][j]);
 		get_sim().redraw(true);
@@ -1686,7 +1686,7 @@ static node_t *func_use__kinematics(int numargs,node_t **args)
 			lisp_engine._invkin.push_back(std::move(pik));
 		else
 		{
-			throw_eval_exception(IKLIB_NOT_VALID);
+			throw eval_exception_t(IKLIB_NOT_VALID);
 		}
 	}
 	return pTrue;
@@ -1703,7 +1703,7 @@ static node_t *func_use__kinematics__lisp(int numargs,node_t **args)
 		lisp_engine._invkin.push_back(std::move(pik));
 	else
 	{
-		throw_eval_exception(IKLIB_NOT_VALID);
+		throw eval_exception_t(IKLIB_NOT_VALID);
 	}
 	return pTrue;
 }
@@ -1733,7 +1733,7 @@ static node_t *func_tref(int numargs,node_t **args)
 	int nRow = *args[1]->as<number_node_t>();
 	int nCol = *args[2]->as<number_node_t>();
 	if (nRow <0 || nRow > 3 || nCol < 0 || nCol > 3)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 
 	return new number_node_t(pmat->m[nRow][nCol]);
 }
@@ -1746,10 +1746,10 @@ static node_t *func_adjust__lights(int numargs, node_t** args)
 static node_t *func_set__light(int numargs,node_t **args)
 {
 	if (numargs % 2 != 0)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	int nLight = *args[0]->as<number_node_t>();
 	if (nLight < 0 || nLight>7)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 
 	light_t light;
 	if (!get_sim().get_light(nLight, light))
@@ -1767,7 +1767,7 @@ static node_t *func_set__light(int numargs,node_t **args)
 		else if (args[i] == key_specular)
 			ParseFloatList(light._specular_properties, (cons_t *)args[i+1], -1.f, 1.f);
 		else
-			throw_eval_exception(BAD_ARG_TYPE);
+			throw eval_exception_t(BAD_ARG_TYPE);
 	}
 	get_sim().set_light(nLight, light);
 	return pTrue;

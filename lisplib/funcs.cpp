@@ -871,7 +871,7 @@ void init_funcs()
 	errno = 0;\
 	double t = ##x((double)(float)(*((number_node_t *)args[0])));\
 	if (errno != 0)\
-		throw_eval_exception(MATH_ERROR);\
+		throw eval_exception_t(MATH_ERROR);\
 	return new number_node_t((float)t)
 
 static node_t* func_abs(int, node_t** args) { singlemath(fabs); }
@@ -905,7 +905,7 @@ static node_t *func_atan(int numargs,node_t **args)
 			);
 	}
 	if (errno)
-		throw_eval_exception(MATH_ERROR);
+		throw eval_exception_t(MATH_ERROR);
 	return new number_node_t((float)t);
 }
 
@@ -1001,7 +1001,7 @@ static node_t *func_oddp(int,number_node_t **args)
 {
 	args[0]->check_number();
 	if (args[0]->get_sub_type() != TYPE_LONG)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	return ( args[0]->lval%2 == 0L ) ? nil : pTrue;
 }
 
@@ -1009,7 +1009,7 @@ static node_t *func_evenp(int,number_node_t **args)
 {
 	args[0]->check_number();
 	if (args[0]->get_sub_type() != TYPE_LONG)
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	return ( args[0]->lval%2 == 0L ) ? pTrue : nil;
 }
 
@@ -1380,7 +1380,7 @@ static node_t *func_load(int numargs,node_t **args)
 	auto str = args[0]->as<string_node_t>();
 	ifstream ifs(str->data(),ios::in | ios::_Nocreate);
 	if (!ifs.is_open())
-		throw_eval_exception(FILE_NOT_FOUND);
+		throw eval_exception_t(FILE_NOT_FOUND);
 	lisp_env_t env(str->data(), ifs, cout);
 	env.reploop();
 	return env._exit_status;
@@ -1411,7 +1411,7 @@ static node_t *func_eql(int,node_t **args)
 			return (((number_node_t *)args[0])->fval == ((number_node_t *)args[1])->fval) ? pTrue : nil;
 			break;
 	}
-	throw_eval_exception(UNKNOWN_NODE_TYPE);
+	throw eval_exception_t(UNKNOWN_NODE_TYPE);
 	return nil; // will never get here
 }
 
@@ -1437,7 +1437,7 @@ static node_t *helper_equal(node_t *n1,node_t *n2)
 			return (((number_node_t *)n1)->fval == ((number_node_t *)n2)->fval) ? pTrue : nil;
 			break;
 	}
-	throw_eval_exception(UNKNOWN_NODE_TYPE);
+	throw eval_exception_t(UNKNOWN_NODE_TYPE);
 	return nil; // will never get here
 }
 
@@ -1464,7 +1464,7 @@ static node_t *helper_equalp(node_t *n1,node_t *n2)
 			return (helper_equalp(((cons_t *)n1)->Car(),((cons_t *)n2)->Car()) && helper_equal(((cons_t *)n1)->Cdr(),((cons_t *)n2)->Cdr())) ? pTrue : nil;
 			break;
 	}
-	throw_eval_exception(UNKNOWN_NODE_TYPE);
+	throw eval_exception_t(UNKNOWN_NODE_TYPE);
 	return nil; // will never get here
 }
 
@@ -1480,7 +1480,7 @@ static node_t *func_endp(int,node_t **args)
 	else if (args[0]->is_a(TYPE_CONS))
 		return nil;
 	else
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	return nil; // should never get here
 }
 
@@ -1499,37 +1499,37 @@ static node_t *func_aref(int numargs,node_t **args)
 	if (args[0]->is_a(TYPE_VECTOR))
 	{
 		if (numargs > 2)
-			throw_eval_exception(TOO_MANY_ARGS);
+			throw eval_exception_t(TOO_MANY_ARGS);
 		if (numargs < 2)
-			throw_eval_exception(TOO_FEW_ARGS);
+			throw eval_exception_t(TOO_FEW_ARGS);
 		if (!args[1]->is_a(TYPE_LONG))
-			throw_eval_exception(BAD_ARG_TYPE);
+			throw eval_exception_t(BAD_ARG_TYPE);
 		long idx = (long)(*args[1]);
 		if (idx >= args[0]->pvector->dim)
-			throw_eval_exception(INDEX_OUT_OF_BOUNDS);
+			throw eval_exception_t(INDEX_OUT_OF_BOUNDS);
 		if (idx < 0)
-			throw_eval_exception(INDEX_OUT_OF_BOUNDS);
+			throw eval_exception_t(INDEX_OUT_OF_BOUNDS);
 		return args[0]->pvector->pvec[idx];
 	}
 	else if (args[0]->is_a(TYPE_ARRAY))
 	{
 		struct tagarray *pa = args[0]->parray;
 		if (numargs-1 < pa->rank)
-			throw_eval_exception(TOO_FEW_ARGS);
+			throw eval_exception_t(TOO_FEW_ARGS);
 		if (numargs-1 > pa->rank)
-			throw_eval_exception(TOO_MANY_ARGS);
+			throw eval_exception_t(TOO_MANY_ARGS);
 		long cnt=0,li,t;
 		for (li=0;li < pa->rank;li++)
 		{
 			t = (long)args[li+1];
 			if (t<0 || t >= pa->dims[li])
-				throw_eval_exception(INDEX_OUT_OF_BOUNDS);
+				throw eval_exception_t(INDEX_OUT_OF_BOUNDS);
 			cnt = (cnt * pa->dims[li])+t;
 		}
 		return pa->pvec[cnt];
 	}
 	else
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 #endif
 	return nil;
 }
@@ -1544,7 +1544,7 @@ static node_t *func_funcall(int numargs,node_t **args)
 		args[0]->check_arg_type(TYPE_SYMBOL);
 		pf = (function_t*)(((symbol_t *)args[0])->check_form());
 		if (!pf->is_a(TYPE_FUNCTION))
-			throw_eval_exception(NOT_A_FUNCTION);
+			throw eval_exception_t(NOT_A_FUNCTION);
 	}
 	return pf->eval(numargs-1,&args[1]);
 }
@@ -1562,7 +1562,7 @@ static node_t *func_apply(int numargs,node_t **args)
 		args[0]->check_arg_type(TYPE_SYMBOL);
 		pf = (function_t*)(((symbol_t *)args[0])->check_form());
 		if (!pf->is_a(TYPE_FUNCTION))
-			throw_eval_exception(NOT_A_FUNCTION);
+			throw eval_exception_t(NOT_A_FUNCTION);
 	}
 	/* There are zero or more arguments on the stack. */
 	if (numargs > 0)
@@ -1789,7 +1789,7 @@ static node_t *func_nth(int numargs,node_t **args)
 	cons_t *p = (cons_t *)args[1];
 	long n = (long)(*(number_node_t *)args[0]);
 	if (n < 0)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	while (n-- && p->is_a(TYPE_CONS))
 		p = p->CdrCONS();
 	return (p->is_a(TYPE_CONS)) ? p->Car() : nil;
@@ -1804,7 +1804,7 @@ static node_t *func_nthcdr(int numargs,node_t **args)
 	cons_t *p = (cons_t *)args[1];
 	long n = (long)(*(number_node_t *)args[0]);
 	if (n < 0)
-		throw_eval_exception(DOMAIN_ERROR);
+		throw eval_exception_t(DOMAIN_ERROR);
 	while (n-- && p->is_a(TYPE_CONS))
 		p = p->CdrCONS();
 	return p;

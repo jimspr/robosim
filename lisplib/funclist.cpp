@@ -32,9 +32,9 @@ node_t* special_form_t::eval(cons_t* ths)
 	{
 		return pfunc(ths);
 	}
-	catch (robosim_exception_t* e)
+	catch (robosim_exception_t& e)
 	{
-		e->_function_names.insert(e->_function_names.begin(), _form_name.c_str());
+		e.prepend_function_name(_form_name);
 		throw;
 	}
 	assert(false);
@@ -60,9 +60,9 @@ node_t* function_t::eval(cons_t* ths)
 		}
 		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
-	catch (robosim_exception_t* e)
+	catch (robosim_exception_t& e)
 	{
-		e->_function_names.insert(e->_function_names.begin(), _form_name.c_str());
+		e.prepend_function_name(_form_name);
 		throw;
 	}
 	return res;
@@ -85,9 +85,9 @@ node_t* function_t::evalnoargs(cons_t* ths)
 		}
 		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
-	catch (robosim_exception_t* e)
+	catch (robosim_exception_t& e)
 	{
-		e->_function_names.insert(e->_function_names.begin(), _form_name.c_str());
+		e.prepend_function_name(_form_name);
 		throw;
 	}
 	return res;
@@ -96,9 +96,9 @@ node_t* function_t::evalnoargs(cons_t* ths)
 void function_t::check_args(int n)
 {
 	if (_minargs >= 0 && n < _minargs)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	if (_maxargs >= 0 && n > _maxargs)
-		throw_eval_exception(TOO_MANY_ARGS);
+		throw eval_exception_t(TOO_MANY_ARGS);
 }
 
 sysfunction_t::sysfunction_t(const char* name, PFUNCCALL pF, int min, int max) : function_t(name, min, max), _pfunc(pF)
@@ -147,15 +147,14 @@ node_t* usrfunction_t::eval(int numargs, node_t** base)
 			tbody = tbody->CdrCONS();
 		}
 	}
-	catch (block_return_exception_t* e)
+	catch (const block_return_exception_t& e)
 	{
-		if ((e->_block == nil) && (_form_name.size() == 0))
-			result = e->_retval;
-		else if (_form_name != e->_block->get_name())
+		if ((e._block == nil) && (_form_name.size() == 0))
+			result = e._retval;
+		else if (_form_name != e._block->get_name())
 			throw;
 		else
-			result = e->_retval;
-		e->Delete();
+			result = e._retval;
 	}
 	return result;
 }

@@ -36,14 +36,13 @@ int lisp_env_t::read(void)
 			return 0;
 		}
 	}
-	catch(read_exception_t* e)
+	catch(read_exception_t& e)
 	{
-		e->_line_number = _readtable._line_cnt;
-		rlerror(_file_name, *e);
+		e._line_number = _readtable._line_cnt;
+		write_error(e, _file_name);
 		_top = nullptr;
 		if (!_is_top)
 			_exit_status = nil;
-		e->Delete();
 		return 0;
 	}
 	pPLUS3->set_value(pPLUS2->get_value());
@@ -56,49 +55,40 @@ int lisp_env_t::read(void)
 int lisp_env_t::eval(void)
 {
 	busy_t t;
+	int value = 0;
 	try
 	{
+		_result = nullptr;
 		_result = _top->eval();
+		value = 1;
 	}
-	catch(eval_exception_t* e)
+	catch(eval_exception_t& e)
 	{
-		e->_line_number = _readtable._line_cnt;
-		rlerror(_file_name, *e);
-		_result = nullptr;
+		e._line_number = _readtable._line_cnt;
+		write_error(e, _file_name);
 		if (!_is_top)
 			_exit_status = nil;
-		e->Delete();
-		return 0;
 	}
-	catch(block_return_exception_t* e)
+	catch(block_return_exception_t& e)
 	{
-		robosim_exception_t re(UNKNOWN_BLOCK_NAME, _readtable._line_cnt);
-		rlerror(_file_name, re);
-		_result = nullptr;
+		e._line_number = _readtable._line_cnt;
+		write_error(e, _file_name);
 		if (!_is_top)
 			_exit_status = nil;
-		e->Delete();
-		return 0;
 	}
-	catch(interrupt_exception_t* e)
+	catch(const interrupt_exception_t&)
 	{
-		_result = nullptr;
 		if (!_is_top)
 			_exit_status = nil;
-		e->Delete();
-		return 0;
 	}
-	catch(other_exception_t* e)
+	catch(lisp_exception_t& e)
 	{
-		robosim_exception_t re(e->_tag, UNCAUGHT_EXCEPTION, _readtable._line_cnt);
-		_result = nullptr;
-		rlerror(_file_name, re);
+		e._line_number = _readtable._line_cnt;
+		write_error(e, _file_name);
 		if (!_is_top)
 			_exit_status = nil;
-		e->Delete();
-		return 0;
 	}
-	return 1;
+	return value;
 }
 
 void lisp_env_t::print(void)
