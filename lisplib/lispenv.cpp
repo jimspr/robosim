@@ -38,8 +38,7 @@ int lisp_env_t::read(void)
 	}
 	catch(read_exception_t& e)
 	{
-		e._line_number = _readtable._line_cnt;
-		write_error(e, _file_name);
+		write_error(e, file_position_t{ _file_name, _readtable._line_cnt });
 		_top = nullptr;
 		if (!_is_top)
 			_exit_status = nil;
@@ -64,15 +63,13 @@ int lisp_env_t::eval(void)
 	}
 	catch(eval_exception_t& e)
 	{
-		e._line_number = _readtable._line_cnt;
-		write_error(e, _file_name);
+		write_error(e, file_position_t{ _file_name, _readtable._line_cnt });
 		if (!_is_top)
 			_exit_status = nil;
 	}
 	catch(block_return_exception_t& e)
 	{
-		e._line_number = _readtable._line_cnt;
-		write_error(e, _file_name);
+		write_error(e, file_position_t{ _file_name, _readtable._line_cnt });
 		if (!_is_top)
 			_exit_status = nil;
 	}
@@ -83,8 +80,7 @@ int lisp_env_t::eval(void)
 	}
 	catch(lisp_exception_t& e)
 	{
-		e._line_number = _readtable._line_cnt;
-		write_error(e, _file_name);
+		write_error(e, file_position_t{ _file_name, _readtable._line_cnt });
 		if (!_is_top)
 			_exit_status = nil;
 	}

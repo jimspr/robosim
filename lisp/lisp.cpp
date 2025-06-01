@@ -75,8 +75,8 @@ int main(int argc, char* argv[])
 		}
 		catch (eval_exception_t& e)
 		{
-			e._line_number = lisp_engine._env._readtable._line_cnt;
-			std::cout << get_rlerror_msg(e, argv[i]) << std::endl;
+			file_position_t position{ argv[i], lisp_engine._env._readtable._line_cnt };
+			std::cout << get_rlerror_msg(e, position) << std::endl;
 		}
 	}
 

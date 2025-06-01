@@ -50,58 +50,45 @@ static void get_exception_msg(ostringstream& ostr, const node_t* evalnode)
 	}
 }
 
-static void get_exception_msg(ostringstream& ostr, const char* filename, int line_number)
+static void get_exception_msg(ostringstream& ostr, const file_position_t& position)
 {
-	if (filename != nullptr)
-		ostr << "\nwhile loading " << filename << '(' << line_number << ")\n";
+	if (position.filename != nullptr)
+		ostr << "\nwhile loading " << position.filename << '(' << position.line << ")\n";
 }
 
-//std::string get_rlerror_msg(const robosim_exception_t& e, const char* filename)
-//{
-//	ostringstream ostr;
-//	get_exception_msg(ostr, e._function_names);
-//	get_exception_msg(ostr, e._error_code);
-//	get_exception_msg(ostr, e._evalnode);
-//	get_exception_msg(ostr, filename, e._line_number);
-//	return ostr.str();
-//}
-
-std::string get_rlerror_msg(const block_return_exception_t& e, const char* filename)
+std::string get_rlerror_msg(const block_return_exception_t& e, const file_position_t& position)
 {
 	ostringstream ostr;
 	get_exception_msg(ostr, e._function_names);
 	get_exception_msg(ostr, UNKNOWN_BLOCK_NAME);
-	get_exception_msg(ostr, e._evalnode);
-	get_exception_msg(ostr, filename, e._line_number);
+	get_exception_msg(ostr, position);
 	return ostr.str();
 }
 
-std::string get_rlerror_msg(const lisp_exception_t& e, const char* filename)
+std::string get_rlerror_msg(const lisp_exception_t& e, const file_position_t& position)
 {
 	ostringstream ostr;
 	get_exception_msg(ostr, e._function_names);
 	get_exception_msg(ostr, UNCAUGHT_EXCEPTION);
-	get_exception_msg(ostr, e._evalnode);
-	get_exception_msg(ostr, filename, e._line_number);
+	get_exception_msg(ostr, position);
 	return ostr.str();
 }
 
-std::string get_rlerror_msg(const read_exception_t& e, const char* filename)
+std::string get_rlerror_msg(const read_exception_t& e, const file_position_t& position)
+{
+	ostringstream ostr;
+	get_exception_msg(ostr, e._function_names);
+	get_exception_msg(ostr, e._error_code);
+	get_exception_msg(ostr, position);
+	return ostr.str();
+}
+
+std::string get_rlerror_msg(const eval_exception_t& e, const file_position_t& position)
 {
 	ostringstream ostr;
 	get_exception_msg(ostr, e._function_names);
 	get_exception_msg(ostr, e._error_code);
 	get_exception_msg(ostr, e._evalnode);
-	get_exception_msg(ostr, filename, e._line_number);
-	return ostr.str();
-}
-
-std::string get_rlerror_msg(const eval_exception_t& e, const char* filename)
-{
-	ostringstream ostr;
-	get_exception_msg(ostr, e._function_names);
-	get_exception_msg(ostr, e._error_code);
-	get_exception_msg(ostr, e._evalnode);
-	get_exception_msg(ostr, filename, e._line_number);
+	get_exception_msg(ostr, position);
 	return ostr.str();
 }

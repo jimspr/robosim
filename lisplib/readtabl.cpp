@@ -9,8 +9,6 @@ using namespace std;
 
 int read_table_t::_paren_level = 0;
 
-#define checkeof(x) if (x.eof()) throw read_exception_t(UNEXPECTED_EOF)
-
 void process_type(int type[256], const char* s, int cat)
 {
 	auto len = strlen(s);
@@ -148,7 +146,7 @@ node_t *read_table_t::parse_vector(istream &istr)
 			vec.push_back(t);
 		}
 	}
-	catch (const base_exception_t&)
+	catch (...)
 	{
 		_paren_level--;
 		throw;
@@ -191,7 +189,8 @@ node_t *read_table_t::parse_constituent(istream &istr)
 				else
 				{
 					_current = getnextchar(istr);
-					checkeof(istr);
+					if (istr.eof())
+						throw read_exception_t(UNEXPECTED_EOF);
 					_buffer.push_back((char)_current);
 					_in_escape = true;
 				}
@@ -388,7 +387,8 @@ node_t *read_table_t::parse_string(istream &istr)
 		{
 			case SINGLE_ESCAPE:
 				_current = getnextchar(istr);
-				checkeof(istr);
+				if (istr.eof())
+					throw read_exception_t(UNEXPECTED_EOF);
 				str.push_back((char)_current);
 				break;
 			default:

@@ -32,7 +32,7 @@ node_t* special_form_t::eval(cons_t* ths)
 	{
 		return pfunc(ths);
 	}
-	catch (robosim_exception_t& e)
+	catch (tracking_exception_t& e)
 	{
 		e.prepend_function_name(_form_name);
 		throw;
@@ -60,7 +60,7 @@ node_t* function_t::eval(cons_t* ths)
 		}
 		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
-	catch (robosim_exception_t& e)
+	catch (tracking_exception_t& e)
 	{
 		e.prepend_function_name(_form_name);
 		throw;
@@ -85,7 +85,7 @@ node_t* function_t::evalnoargs(cons_t* ths)
 		}
 		res = eval(numargs, lisp_engine._frame_stack.get_base(numargs));
 	}
-	catch (robosim_exception_t& e)
+	catch (tracking_exception_t& e)
 	{
 		e.prepend_function_name(_form_name);
 		throw;

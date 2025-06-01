@@ -81,8 +81,7 @@ BOOL robo_app_t::InitInstance(void)
 	}
 	catch(eval_exception_t& e)
 	{
-		e._line_number = lisp_engine._env._readtable._line_cnt;
-		AfxMessageBox(get_rlerror_msg(e, "STARTUP.LSP").c_str(), MB_OK|MB_ICONSTOP);
+		AfxMessageBox(get_rlerror_msg(e, { "STARTUP.LSP", lisp_engine._env._readtable._line_cnt }).c_str(), MB_OK | MB_ICONSTOP);
 	}
 	return TRUE;
 }

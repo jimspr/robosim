@@ -351,17 +351,15 @@ bool ask_dialog_t::call_function(void)
 	catch(const eval_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
 	}
 	catch(block_return_exception_t& e)
 	{
-		e._line_number = lisp_engine._env._readtable._line_cnt;
-//		robosim_exception_t re(UNKNOWN_BLOCK_NAME, lisp_engine._env._readtable._line_cnt);
 		ostringstream ostr;
 		ostr << "Error - \"";
 		e._block->print(ostr);
-		ostr << "\" " << get_rlerror_msg(e) << endl << '\0';;
+		ostr << "\" " << get_rlerror_msg(e, {}) << endl << '\0';;
 		AfxMessageBox(ostr.str().c_str(), MB_OK | MB_ICONSTOP);
 	}
 	catch(const interrupt_exception_t&)
@@ -370,25 +368,23 @@ bool ask_dialog_t::call_function(void)
 	catch(const read_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK|MB_ICONSTOP);
 	}
 	catch(const lisp_exception_t&)
 	{
 		AfxMessageBox("Error - Uncaught throw", MB_OK|MB_ICONINFORMATION);
 	}
-	catch(const robosim_exception_t&)
-	{
-		AfxMessageBox("Error - robosim_exception_t", MB_OK|MB_ICONINFORMATION);
-	}
-	catch (const base_exception_t&)
-	{
-		AfxMessageBox("Error - base_exception_t Caught", MB_OK | MB_ICONINFORMATION);
-	}
 	catch(CException* e)
 	{
 		AfxMessageBox("Error - MFC Exception Caught", MB_OK|MB_ICONINFORMATION);
 		e->Delete();
+	}
+	catch (...)
+	{
+		assert(false);
+		AfxMessageBox("Error - unknown exception type", MB_OK | MB_ICONINFORMATION);
+		throw;
 	}
 
 	if (res->is_a(TYPE_STRING))

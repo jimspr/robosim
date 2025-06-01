@@ -158,27 +158,33 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 	catch (const read_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
 	}
 	catch (const eval_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
+	}
+	catch (block_return_exception_t&)
+	{
+		AfxMessageBox("Error - Uncaught block_return_exception_t", MB_OK | MB_ICONINFORMATION);
 	}
 	catch (const lisp_exception_t&)
 	{
-		AfxMessageBox("Error - Uncaught throw", MB_OK | MB_ICONINFORMATION);
-	}
-	catch (const robosim_exception_t&)
-	{
-		AfxMessageBox("Error - robosim_exception_t", MB_OK | MB_ICONINFORMATION);
+		AfxMessageBox("Error - Uncaught throw in lisp code", MB_OK | MB_ICONINFORMATION);
 	}
 	catch (CException* e)
 	{
 		AfxMessageBox("Error - MFC Exception Caught", MB_OK | MB_ICONINFORMATION);
 		e->Delete();
+	}
+	catch (...)
+	{
+		assert(false);
+		AfxMessageBox("Error - unknown exception type", MB_OK | MB_ICONINFORMATION);
+		throw;
 	}
 	return TRUE;
 }
@@ -335,7 +341,7 @@ node_t* main_window_t::ask(function_t* pfn, std::vector<question>& pq, const cha
 		result = (askd.DoModal() == IDOK) ? askd.get_list() : nil;
 		ask_form = NULL;
 	}
-	catch (const base_exception_t&)
+	catch (const base_exception_t&) // TODO - handle specific exceptions
 	{
 		ask_form = NULL;
 		throw;
