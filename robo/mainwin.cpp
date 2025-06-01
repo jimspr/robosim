@@ -30,7 +30,7 @@ struct host_t : public lisp_host_t
 		static MSG keymsg;
 		if (PeekMessage(&keymsg, NULL, WM_KEYDOWN, WM_KEYDOWN, PM_NOREMOVE))
 			if (AfxMessageBox("Do you want to stop?", MB_YESNO | MB_APPLMODAL | MB_ICONQUESTION) == IDYES)
-				throw_interrupt_exception();
+				throw interrupt_exception_t();
 		AfxGetApp()->OnIdle(0); // this makes sure cleanup occurs during long processing
 	}
 	void mark_in_use() final
@@ -94,7 +94,7 @@ main_window_t::main_window_t()
 		LoadIcon(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDR_MAINFRAME))
 	);
 	Create(className.c_str(), "ROBOSIM II", WS_OVERLAPPEDWINDOW, rectDefault, NULL, MAKEINTRESOURCE(IDR_MAINFRAME));
-	_lisp_window->Create(8, this);
+	_lisp_window->Create(16 /*16 lines*/, this);
 	_lisp_window->ShowWindow(SW_SHOW);
 	_lisp_window->SetFocus();
 	ask_form = NULL;
@@ -152,38 +152,39 @@ BOOL main_window_t::OnCommand(WPARAM wParam, LPARAM lParam)
 	{
 		node_t* res = _menu_funcs[idx]->eval();
 	}
-	catch (interrupt_exception_t* e)
+	catch (const interrupt_exception_t&)
 	{
-		e->Delete();
 	}
-	catch (read_exception_t* e)
+	catch (const read_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(*e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
-		e->Delete();
 	}
-	catch (eval_exception_t* e)
+	catch (const eval_exception_t& e)
 	{
 		string str = "Error - ";
-		str += get_rlerror_msg(*e);
+		str += get_rlerror_msg(e, {});
 		AfxMessageBox(str.c_str(), MB_OK | MB_ICONSTOP);
-		e->Delete();
 	}
-	catch (other_exception_t* e)
+	catch (block_return_exception_t&)
 	{
-		AfxMessageBox("Error - Uncaught throw", MB_OK | MB_ICONINFORMATION);
-		e->Delete();
+		AfxMessageBox("Error - Uncaught block_return_exception_t", MB_OK | MB_ICONINFORMATION);
 	}
-	catch (robosim_exception_t* e)
+	catch (const lisp_exception_t&)
 	{
-		AfxMessageBox("Error - robosim_exception_t", MB_OK | MB_ICONINFORMATION);
-		e->Delete();
+		AfxMessageBox("Error - Uncaught throw in lisp code", MB_OK | MB_ICONINFORMATION);
 	}
 	catch (CException* e)
 	{
 		AfxMessageBox("Error - MFC Exception Caught", MB_OK | MB_ICONINFORMATION);
 		e->Delete();
+	}
+	catch (...)
+	{
+		assert(false);
+		AfxMessageBox("Error - unknown exception type", MB_OK | MB_ICONINFORMATION);
+		throw;
 	}
 	return TRUE;
 }
@@ -340,7 +341,7 @@ node_t* main_window_t::ask(function_t* pfn, std::vector<question>& pq, const cha
 		result = (askd.DoModal() == IDOK) ? askd.get_list() : nil;
 		ask_form = NULL;
 	}
-	catch (base_exception_t*)
+	catch (const base_exception_t&) // TODO - handle specific exceptions
 	{
 		ask_form = NULL;
 		throw;

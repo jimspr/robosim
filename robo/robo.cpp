@@ -37,16 +37,7 @@ robo_app_t::~robo_app_t()
 
 int robo_app_t::Run(void)
 {
-	try
-	{
-		lisp_engine._env.reploop();
-	}
-	catch(done_exception_t* e)
-	{
-		e->Delete();
-		ExitInstance();
-		return 1;
-	}
+	lisp_engine._env.reploop();
 
 	if (m_pMainWnd == nullptr)
 		return 0;
@@ -88,11 +79,9 @@ BOOL robo_app_t::InitInstance(void)
 	{
 		l->eval();
 	}
-	catch(eval_exception_t* e)
+	catch(eval_exception_t& e)
 	{
-		e->_line_number = lisp_engine._env._readtable._line_cnt;
-		AfxMessageBox(get_rlerror_msg("STARTUP.LSP", *e).c_str(), MB_OK|MB_ICONSTOP);
-		e->Delete();
+		AfxMessageBox(get_rlerror_msg(e, { "STARTUP.LSP", lisp_engine._env._readtable._line_cnt }).c_str(), MB_OK | MB_ICONSTOP);
 	}
 	return TRUE;
 }

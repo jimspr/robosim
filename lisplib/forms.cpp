@@ -209,7 +209,7 @@ public:
 	bool _pop = false;
 	void set(cons_t *n,int bStep);
 	vardecl(const vardecl&) = delete;
-	vardecl(vardecl&& v)
+	vardecl(vardecl&& v) noexcept
 	{
 		std::swap(psymbol, v.psymbol);
 		std::swap(init, v.init);
@@ -244,7 +244,7 @@ void vardecl::set(cons_t *var,int bStep)
 		}
 	}
 	else
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	lisp_engine._frame_stack.push(init);
 	lisp_engine._frame_stack.push(step);
 	_pop = true;
@@ -272,7 +272,7 @@ static int dobindings(vector<vardecl> &varlist,cons_t *b,int bStep)
 		for (shadowi=i=0;i<numvars;shadowi = ++i)
 			lisp_engine._bind_stack.bind(varlist[i].psymbol,varlist[i].init);
 	}
-	catch (base_exception_t*)
+	catch (const base_exception_t&)
 	{
 		// If exception occurs while binding, unbind.
 		lisp_engine._bind_stack.unbind(shadowi);
@@ -297,7 +297,7 @@ static int dostarbindings(vector<vardecl> &varlist,cons_t *b,int bStep)
 			lisp_engine._bind_stack.bind(varlist[i].psymbol,varlist[i].init);
 		}
 	}
-	catch (base_exception_t*)
+	catch (const base_exception_t&)
 	{
 		// If exception occurs while binding, unbind.
 		lisp_engine._bind_stack.unbind(shadowi);
@@ -327,7 +327,7 @@ static node_t *form_setq(cons_t *ths)
 {
 	int n = ths->get_num_items();
 	if (n%2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	node_t *res = nil;
 	while (ths->is_a(TYPE_CONS))
 	{
@@ -374,7 +374,7 @@ static node_t *form_unwind__protect(cons_t *ths)
 	{
 		res = ths->Car()->eval();
 	}
-	catch (base_exception_t*)
+	catch (const base_exception_t&)
 	{
 		ths = ths->CdrCONS();
 		while (ths->is_a(TYPE_CONS))
@@ -402,13 +402,10 @@ static node_t *form_block(cons_t *ths)
 	{
 		result = form_progn(ths->CdrCONS());
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == psym)
-		{
-			result = e->_retval;
-			e->Delete();
-		}
+		if (e._block == psym)
+			result = e._retval;
 		else
 			throw;
 	}
@@ -428,10 +425,10 @@ static node_t *form_function(cons_t *ths)
 	ths->check_min_num_args(2); // at least lambda and nil or a list of parms
 	symbol_t *lambda = ths->Car()->as<symbol_t>();
 	if (lambda != lisp_engine._package.get_symbol("LAMBDA"))
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	cons_t *varlist = ths->CadrCONS();
 	if (varlist != (cons_t *)nil && !varlist->is_a(TYPE_CONS))
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	int num = varlist->get_num_items();
 	return new usrfunction_t("",num,num,varlist,ths->CddrCONS(), lisp_engine._bind_stack.get_env());
 }
@@ -442,7 +439,7 @@ static node_t *form_return__from(cons_t *ths)
 	symbol_t *psym = ths->Car()->as<symbol_t>();
 	cons_t *value = ths->CdrCONS();
 	psym->check_arg_type(TYPE_SYMBOL);
-	throw_block_return_exception(psym,(value->is_a(TYPE_CONS)) ? value->Car()->eval() : nil);
+	throw block_return_exception_t(psym,(value->is_a(TYPE_CONS)) ? value->Car()->eval() : nil);
 	return nil;
 }
 
@@ -539,7 +536,7 @@ static node_t *macro_psetq(cons_t *ths)
 	node_t *t = ths;
 	int n = ths->get_num_items();
 	if (n%2)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	if (n==0)
 		return nil;
 	vector<node_t*> res(n / 2);
@@ -601,7 +598,7 @@ static node_t *macro_defun(cons_t *ths)
 	symbol_t *name = ths->Car()->as<symbol_t>();
 	cons_t *varlist = ths->CadrCONS();
 	if (varlist != (cons_t *)nil && !varlist->is_a(TYPE_CONS))
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	int num = varlist->get_num_items();
 	name->set_form(
 		new usrfunction_t(name->get_name(),
@@ -634,13 +631,10 @@ static node_t *macro_prog(cons_t *ths)  // identical to let except implicit nil 
 			body = body->CdrCONS();
 		}
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == nil)
-		{
-			retval = e->_retval;
-			e->Delete();
-		}
+		if (e._block == nil)
+			retval = e._retval;
 		else
 			throw;
 	}
@@ -672,13 +666,10 @@ static node_t *macro_prog_star(cons_t *ths)  // identical to let* except implici
 			body = body->CdrCONS();
 		}
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == nil)
-		{
-			retval = e->_retval;
-			e->Delete();
-		}
+		if (e._block == nil)
+			retval = e._retval;
 		else
 			throw;
 	}
@@ -753,7 +744,7 @@ static node_t *macro_cond(cons_t *ths)
 	{
 		cons_t *clause = ths->CarCONS();
 		if (!clause->is_a(TYPE_CONS)) // make sure clause is a list
-			throw_eval_exception(BAD_ARG_TYPE);
+			throw eval_exception_t(BAD_ARG_TYPE);
 		node_t *test = clause->Car()->eval();
 		if (test != nil) // evaluate car of clause
 		{
@@ -769,7 +760,7 @@ static node_t *macro_cond(cons_t *ths)
 
 static node_t *macro_return(cons_t *ths)
 {
-	throw_block_return_exception(nil,(ths->is_a(TYPE_CONS)) ? ths->Car()->eval() : nil);
+	throw block_return_exception_t(nil,(ths->is_a(TYPE_CONS)) ? ths->Car()->eval() : nil);
 	return nil;
 }
 
@@ -780,13 +771,10 @@ static node_t *macro_loop(cons_t *ths)
 		while (1)
 			form_progn(ths);
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == nil)
-		{
-			return e->_retval;
-			e->Delete();
-		}
+		if (e._block == nil)
+			return e._retval;
 		else
 			throw;
 	}
@@ -850,13 +838,10 @@ static node_t *macro_do(cons_t *ths)
 		}
 
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == nil)
-		{
-			retval = e->_retval;
-			e->Delete();
-		}
+		if (e._block == nil)
+			retval = e._retval;
 		else
 			throw;
 	}
@@ -911,13 +896,10 @@ static node_t *macro_do_star(cons_t *ths)
 		}
 
 	}
-	catch(block_return_exception_t* e)
+	catch(const block_return_exception_t& e)
 	{
-		if (e->_block == nil)
-		{
-			retval = e->_retval;
-			e->Delete();
-		}
+		if (e._block == nil)
+			retval = e._retval;
 		else
 			throw;
 	}
@@ -951,13 +933,10 @@ static node_t *form_catch(cons_t *ths)
 			ths = ths->CdrCONS();
 		}
 	}
-	catch(other_exception_t* e)
+	catch(const lisp_exception_t& e)
 	{
-		if (e->_tag == tag)
-		{
-			res = e->_retval;
-			e->Delete();
-		}
+		if (e._tag == tag)
+			res = e._retval;
 		else
 			throw;
 	}
@@ -969,6 +948,6 @@ static node_t *form_throw(cons_t *ths)
 	ths->check_num_args(2);
 	node_t *tag = ths->Car()->eval();
 	node_t *res = ths->CadrCONS()->eval();
-	throw_other_exception(tag,res);
+	throw lisp_exception_t(tag,res);
 	return nil;
 }

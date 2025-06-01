@@ -73,21 +73,13 @@ int main(int argc, char* argv[])
 			node->princ(std::cout);
 			std::cout << std::endl;
 		}
-		catch (eval_exception_t* e)
+		catch (eval_exception_t& e)
 		{
-			e->_line_number = lisp_engine._env._readtable._line_cnt;
-			std::cout << get_rlerror_msg(argv[i], *e) << std::endl;
-			e->Delete();
+			file_position_t position{ argv[i], lisp_engine._env._readtable._line_cnt };
+			std::cout << get_rlerror_msg(e, position) << std::endl;
 		}
 	}
 
-	try
-	{
-		lisp_engine._env.reploop();
-	}
-	catch (done_exception_t* e)
-	{
-		e->Delete();
-		return 1;
-	}
+	lisp_engine._env.reploop();
+	return 0;
 }

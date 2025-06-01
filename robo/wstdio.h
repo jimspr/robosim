@@ -19,7 +19,7 @@ protected:
 	int _cur_pos = 0;		// Current cursor position of current line.
 	int _num_left_char = 0; // Number of chars to right of caret on current line.
 
-	int _lines = 8;		// Number of displayable lines.
+	int _lines = 16;		// Number of displayable lines.
 
 	CFont _font;
 	int _char_width;// width and height of Stdio font chars

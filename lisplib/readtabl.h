@@ -25,10 +25,10 @@ public:
 	static int _paren_level;
 	std::string _buffer;
 	int _type[256]{};
-	int _current;
-	char _me; /* mult-escape */
-	bool _in_escape;
-	int _line_cnt;
+	int _current = 0;
+	char _me = 0; /* mult-escape */
+	bool _in_escape = false;
+	int _line_cnt = 0;
 
 
 	read_table_t();

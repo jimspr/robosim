@@ -12,7 +12,7 @@ void package_t::mark_in_use(void)
 	{
 		auto psym = entry.second;
 		if (!psym)
-			throw_eval_exception(FATAL_ERROR);
+			throw eval_exception_t(FATAL_ERROR);
 		psym->mark_in_use();
 	}
 }

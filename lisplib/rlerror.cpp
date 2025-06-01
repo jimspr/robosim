@@ -13,19 +13,17 @@ static const char* errors[] = {
 };
 #undef DAT
 
-const char* get_rlerror_msg(error_e type)
+static const char* get_error_description(error_e type)
 {
 	if (type && (type < NUM_ERRMSGS))
 		return errors[type];
 	else
 		return errors[NUM_ERRMSGS];
 }
-
-std::string get_rlerror_msg(const char* pszFileName, robosim_exception_t& e)
+static void get_exception_msg(ostringstream& ostr, const std::vector<std::string>& names)
 {
-	ostringstream ostr;
 	int i = 0, j;
-	for (auto& name : e._function_names)
+	for (auto& name : names)
 	{
 		for (j = 0; j < i; j++)
 			ostr << "  ";
@@ -36,25 +34,61 @@ std::string get_rlerror_msg(const char* pszFileName, robosim_exception_t& e)
 		ostr << ')';
 	if (i != 0)
 		ostr << '\n';
-	ostr << get_rlerror_msg(e._error_code);
-	if (e._evalnode != nullptr)
+}
+
+static void get_exception_msg(ostringstream& ostr, error_e error_code)
+{
+	ostr << get_error_description(error_code);
+}
+
+static void get_exception_msg(ostringstream& ostr, const node_t* evalnode)
+{
+	if (evalnode != nullptr)
 	{
 		ostr << " : ";
-		e._evalnode->print(ostr);
+		evalnode->print(ostr);
 	}
-	if (pszFileName != nullptr)
-		ostr << "\nwhile loading " << pszFileName << '(' << e._line_number << ")\n";
-	ostr << (char)0;
+}
+
+static void get_exception_msg(ostringstream& ostr, const file_position_t& position)
+{
+	if (position.filename != nullptr)
+		ostr << "\nwhile loading " << position.filename << '(' << position.line << ")\n";
+}
+
+std::string get_rlerror_msg(const block_return_exception_t& e, const file_position_t& position)
+{
+	ostringstream ostr;
+	get_exception_msg(ostr, e._function_names);
+	get_exception_msg(ostr, UNKNOWN_BLOCK_NAME);
+	get_exception_msg(ostr, position);
 	return ostr.str();
 }
 
-std::string get_rlerror_msg(robosim_exception_t& e)
+std::string get_rlerror_msg(const lisp_exception_t& e, const file_position_t& position)
 {
-	return get_rlerror_msg(nullptr, e);
+	ostringstream ostr;
+	get_exception_msg(ostr, e._function_names);
+	get_exception_msg(ostr, UNCAUGHT_EXCEPTION);
+	get_exception_msg(ostr, position);
+	return ostr.str();
 }
 
-void rlerror(const char* fname, robosim_exception_t& e)
+std::string get_rlerror_msg(const read_exception_t& e, const file_position_t& position)
 {
-	cerr << get_rlerror_msg(fname, e) << '\n';
-	cerr.flush();
+	ostringstream ostr;
+	get_exception_msg(ostr, e._function_names);
+	get_exception_msg(ostr, e._error_code);
+	get_exception_msg(ostr, position);
+	return ostr.str();
+}
+
+std::string get_rlerror_msg(const eval_exception_t& e, const file_position_t& position)
+{
+	ostringstream ostr;
+	get_exception_msg(ostr, e._function_names);
+	get_exception_msg(ostr, e._error_code);
+	get_exception_msg(ostr, e._evalnode);
+	get_exception_msg(ostr, position);
+	return ostr.str();
 }

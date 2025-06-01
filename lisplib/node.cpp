@@ -62,7 +62,7 @@ void symbol_t::princ(ostream &ostr) const
 node_t *symbol_t::eval()
 {
 	if (!_value)
-		throw_eval_exception(this,UNBOUND_VARIABLE);
+		throw eval_exception_t(this,UNBOUND_VARIABLE);
 	return _value;
 }
 
@@ -80,9 +80,9 @@ void symbol_t::mark_in_use()
 void symbol_t::verify_can_set()
 {
 	if (is_constant_value())
-		throw_eval_exception(REDEF_CONSTANT);
+		throw eval_exception_t(REDEF_CONSTANT);
 	if (is_constant_form())
-		throw_eval_exception(REDEF_FORM);
+		throw eval_exception_t(REDEF_FORM);
 }
 
 void symbol_t::set_value(node_t *v)
@@ -125,7 +125,7 @@ void symbol_t::set_special_variable(node_t *v)
 form_t *symbol_t::check_form() const
 {
 	if (!_form)
-		throw_eval_exception(UNBOUND_FUNCTION);
+		throw eval_exception_t(UNBOUND_FUNCTION);
 	return _form;
 }
 
@@ -146,7 +146,7 @@ void number_node_t::print(ostream &ostr) const
 number_node_t number_node_t::operator+(const number_node_t &n) const
 {
 	if (!is_a_number() || !n.is_a_number())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (is_a(TYPE_FLOAT) || n.is_a(TYPE_FLOAT))
 	{
 		return number_node_t((float)(*this) + (float)n);
@@ -158,7 +158,7 @@ number_node_t number_node_t::operator+(const number_node_t &n) const
 number_node_t number_node_t::operator-(const number_node_t &n) const
 {
 	if (!is_a_number() || !n.is_a_number())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (is_a(TYPE_FLOAT) || n.is_a(TYPE_FLOAT))
 	{
 		return number_node_t((float)(*this) - (float)n);
@@ -170,7 +170,7 @@ number_node_t number_node_t::operator-(const number_node_t &n) const
 number_node_t number_node_t::operator*(const number_node_t &n) const
 {
 	if (!is_a_number() || !n.is_a_number())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if (is_a(TYPE_FLOAT) || n.is_a(TYPE_FLOAT))
 	{
 		return number_node_t((float)(*this) * (float)n);
@@ -182,9 +182,9 @@ number_node_t number_node_t::operator*(const number_node_t &n) const
 number_node_t number_node_t::operator/(const number_node_t &n) const
 {
 	if (!is_a_number() || !n.is_a_number())
-		throw_eval_exception(BAD_ARG_TYPE);
+		throw eval_exception_t(BAD_ARG_TYPE);
 	if ( (float)n == 0.)
-		throw_eval_exception(DIVIDE_BY_ZERO);
+		throw eval_exception_t(DIVIDE_BY_ZERO);
 	if (is_a(TYPE_FLOAT) || n.is_a(TYPE_FLOAT))
 		return number_node_t((float)(*this) / (float)n);
 	else
@@ -361,15 +361,15 @@ node_t *cons_t::eval()
 	lisp_engine.post_garbage_collect();
 	lisp_engine._host->notify_eval();
 	if (!Car()->is_a(TYPE_SYMBOL))
-		throw_eval_exception(Car(),BAD_FUNCTION);
+		throw eval_exception_t(Car(),BAD_FUNCTION);
 	try
 	{
 		return Car()->as<symbol_t>()->check_form()->eval(CdrCONS());
 	}
-	catch(eval_exception_t* e)
+	catch(eval_exception_t& e)
 	{
-		if (!e->_evalnode)
-			e->_evalnode = this;
+		if (!e._evalnode)
+			e._evalnode = this;
 		throw;
 	}
 	return NULL;
@@ -464,9 +464,9 @@ int cons_t::check_range_num_args(int l,int u) const
 {
 	int numargs = get_num_items();
 	if (l>=0 && numargs<l)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	else if (u>=0 && numargs > u)
-		throw_eval_exception(TOO_MANY_ARGS);
+		throw eval_exception_t(TOO_MANY_ARGS);
 	return numargs;
 }
 
@@ -476,16 +476,16 @@ void cons_t::check_num_args(int n) const
 	if (numargs == n)
 		return;
 	else if (numargs<n)
-		throw_eval_exception(TOO_FEW_ARGS);
+		throw eval_exception_t(TOO_FEW_ARGS);
 	else // numargs > n
-		throw_eval_exception(TOO_MANY_ARGS);
+		throw eval_exception_t(TOO_MANY_ARGS);
 }
 
 void cons_t::check_min_num_args(int n) const
 {
 	if (get_num_items() >= n)
 		return;
-	throw_eval_exception(TOO_FEW_ARGS);
+	throw eval_exception_t(TOO_FEW_ARGS);
 }
 
 stream_node_t::stream_node_t(const char *s) : node_t(TYPE_STREAM), _name(s)
@@ -508,9 +508,9 @@ void stream_node_t::close()
 void stream_node_t::check_stream()
 {
 	if (!_stream)
-		throw_eval_exception(INVALID_STREAM);
+		throw eval_exception_t(INVALID_STREAM);
 	if (!_stream->is_open())
-		throw_eval_exception(INVALID_STREAM);
+		throw eval_exception_t(INVALID_STREAM);
 }
 
 /************************************************

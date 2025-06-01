@@ -133,7 +133,7 @@ public:
 	//
 	bool is_attached() const { return (pmatparent) ? true : false; }
 	bool is_in_env() const { return _is_in_env; }
-	void check_in_env() const { if (!_is_in_env) throw_eval_exception(OBJECT_NOT_IN_ENV); }
+	void check_in_env() const { if (!_is_in_env) throw eval_exception_t(OBJECT_NOT_IN_ENV); }
 	void set_in_env(bool b) { _is_in_env = b; }
 	simob_t* get_child(int idx = 0);
 	simob_t* get_child(size_t idx);

@@ -9,8 +9,6 @@ using namespace std;
 
 int read_table_t::_paren_level = 0;
 
-#define checkeof(x) if (x.eof()) throw_read_exception(UNEXPECTED_EOF)
-
 void process_type(int type[256], const char* s, int cat)
 {
 	auto len = strlen(s);
@@ -56,7 +54,7 @@ node_t *read_table_t::read(istream &istr,int btop)
 		{
 			case ILLEGAL:
 				consume(istr);
-				throw_read_exception(ILLEGAL_CHAR);
+				throw read_exception_t(ILLEGAL_CHAR);
 				break;
 			case NONTERM_MACRO:
 				return parse_ntmacro(istr);
@@ -81,13 +79,13 @@ node_t *read_table_t::read(istream &istr,int btop)
 			default:
 				consume(istr);
 				cout << (int)_current << " " << _type[_current] << "\n";
-				throw_read_exception(READTABLE_CORRUPT);
+				throw read_exception_t(READTABLE_CORRUPT);
 				break;
 		}
 		_current = getnextchar(istr);
 	}
 	if (!btop)
-		throw_read_exception(UNEXPECTED_EOF);
+		throw read_exception_t(UNEXPECTED_EOF);
 	return (node_t *)NULL;
 }
 
@@ -107,10 +105,10 @@ node_t *read_table_t::parse_tmacro(istream &istr)
 			return parse_string(istr);
 		default:
 			consume(istr);
-			throw_read_exception(INVALID_TMACRO);
+			throw read_exception_t(INVALID_TMACRO);
 			break;
 	}
-	throw_read_exception(FATAL_ERROR);
+	throw read_exception_t(FATAL_ERROR);
 	return nil; // will never get here
 }
 
@@ -125,9 +123,9 @@ node_t *read_table_t::parse_ntmacro(istream &istr)
 			return parse_function(istr);
 		default:
 			consume(istr);
-			throw_read_exception(ILLEGAL_NT_MACRO);
+			throw read_exception_t(ILLEGAL_NT_MACRO);
 	}
-	throw_read_exception(FATAL_ERROR);
+	throw read_exception_t(FATAL_ERROR);
 	return nil; // will never get here
 }
 
@@ -143,12 +141,12 @@ node_t *read_table_t::parse_vector(istream &istr)
 			if (is_dot(t))
 			{
 				consume(istr);
-				throw_read_exception(INVALID_DOTTED_PAIR);
+				throw read_exception_t(INVALID_DOTTED_PAIR);
 			}
 			vec.push_back(t);
 		}
 	}
-	catch (base_exception_t*)
+	catch (...)
 	{
 		_paren_level--;
 		throw;
@@ -191,7 +189,8 @@ node_t *read_table_t::parse_constituent(istream &istr)
 				else
 				{
 					_current = getnextchar(istr);
-					checkeof(istr);
+					if (istr.eof())
+						throw read_exception_t(UNEXPECTED_EOF);
 					_buffer.push_back((char)_current);
 					_in_escape = true;
 				}
@@ -202,22 +201,22 @@ node_t *read_table_t::parse_constituent(istream &istr)
 				break;
 			case ILLEGAL:
 				consume(istr);
-				throw_read_exception(ILLEGAL_CHAR);
+				throw read_exception_t(ILLEGAL_CHAR);
 				break;
 			default:
 				cout << (int)_current << " " << _type[_current] << "\n";
 				consume(istr);
-				throw_read_exception(READTABLE_CORRUPT);
+				throw read_exception_t(READTABLE_CORRUPT);
 				break;
 		}
 		if (_buffer.size() >= (MAX_CONSTITUENT_LENGTH-1))
 		{
 			consume(istr);
-			throw_read_exception(CONSTITUENT_TOO_LONG);
+			throw read_exception_t(CONSTITUENT_TOO_LONG);
 		}
 		_current = getnextchar(istr);
 	}
-	throw_read_exception(UNEXPECTED_EOF);
+	throw read_exception_t(UNEXPECTED_EOF);
 	return nil; // will never get here
 }
 
@@ -246,30 +245,30 @@ node_t *read_table_t::parse_dot(istream &istr)
 					return dot_node;
 				}
 				consume(istr);
-				throw_read_exception(INVALID_SYMBOL);
+				throw read_exception_t(INVALID_SYMBOL);
 				break;
 			case PACKAGE_MARKER:
 				consume(istr);
-				throw_read_exception(INVALID_PACKAGE_NAME);
+				throw read_exception_t(INVALID_PACKAGE_NAME);
 				break;
 			case ILLEGAL:
 				consume(istr);
-				throw_read_exception(ILLEGAL_CHAR);
+				throw read_exception_t(ILLEGAL_CHAR);
 				break;
 			default:
 				cout << (int)_current << " " << _type[_current] << "\n";
 				consume(istr);
-				throw_read_exception(READTABLE_CORRUPT);
+				throw read_exception_t(READTABLE_CORRUPT);
 				break;
 		}
 		if (_buffer.size() >= (MAX_CONSTITUENT_LENGTH-1))
 		{
 			consume(istr);
-			throw_read_exception(CONSTITUENT_TOO_LONG);
+			throw read_exception_t(CONSTITUENT_TOO_LONG);
 		}
 		_current = getnextchar(istr);
 	}
-	throw_read_exception(UNEXPECTED_EOF);
+	throw read_exception_t(UNEXPECTED_EOF);
 	return nil; // will never get here
 }
 
@@ -285,7 +284,7 @@ node_t *read_table_t::parse_lparen(istream &istr)
 	if (is_dot(t))
 	{
 		consume(istr);
-		throw_read_exception(INVALID_DOTTED_PAIR);
+		throw read_exception_t(INVALID_DOTTED_PAIR);
 	}
 	trr = top = new cons_t(t,nil);
 	while (trr->is_a(TYPE_CONS))
@@ -299,19 +298,19 @@ node_t *read_table_t::parse_lparen(istream &istr)
 			if (!t)
 			{
 				consume(istr);
-				throw_read_exception(INVALID_DOTTED_PAIR);
+				throw read_exception_t(INVALID_DOTTED_PAIR);
 			}
 			if (is_dot(t))
 			{
 				consume(istr);
-				throw_read_exception(INVALID_DOTTED_PAIR);
+				throw read_exception_t(INVALID_DOTTED_PAIR);
 			}
 			trr->set_cdr(t);
 			t = read(istr,0);
 			if (t)
 			{
 				consume(istr);
-				throw_read_exception(INVALID_DOTTED_PAIR);
+				throw read_exception_t(INVALID_DOTTED_PAIR);
 			}
 			return top;
 		}
@@ -327,7 +326,7 @@ node_t *read_table_t::parse_rparen(istream &istr)
 	if (!_paren_level)
 	{
 		consume(istr);
-		throw_read_exception(UNEXPECTED_RPAREN);
+		throw read_exception_t(UNEXPECTED_RPAREN);
 	}
 	_paren_level--;
 	return (node_t *)NULL;
@@ -340,12 +339,12 @@ node_t *read_table_t::parse_quote(istream &istr)
 	if (!t)
 	{
 		consume(istr);
-		throw_read_exception(UNEXPECTED_RPAREN);
+		throw read_exception_t(UNEXPECTED_RPAREN);
 	}
 	if (is_dot(t))
 	{
 		consume(istr);
-		throw_read_exception(INVALID_DOTTED_PAIR);
+		throw read_exception_t(INVALID_DOTTED_PAIR);
 	}
 	return cons_t::make_list(lisp_engine._package.get_symbol("QUOTE"), t);
 }
@@ -357,12 +356,12 @@ node_t *read_table_t::parse_function(istream &istr)
 	if (!t)
 	{
 		consume(istr);
-		throw_read_exception(UNEXPECTED_RPAREN);
+		throw read_exception_t(UNEXPECTED_RPAREN);
 	}
 	if (is_dot(t))
 	{
 		consume(istr);
-		throw_read_exception(INVALID_DOTTED_PAIR);
+		throw read_exception_t(INVALID_DOTTED_PAIR);
 	}
 	return cons_t::make_list(lisp_engine._package.get_symbol("FUNCTION"), t);
 }
@@ -388,7 +387,8 @@ node_t *read_table_t::parse_string(istream &istr)
 		{
 			case SINGLE_ESCAPE:
 				_current = getnextchar(istr);
-				checkeof(istr);
+				if (istr.eof())
+					throw read_exception_t(UNEXPECTED_EOF);
 				str.push_back((char)_current);
 				break;
 			default:
@@ -397,7 +397,7 @@ node_t *read_table_t::parse_string(istream &istr)
 		}
 		_current = getnextchar(istr);
 	}
-	throw_read_exception(UNEXPECTED_EOF);
+	throw read_exception_t(UNEXPECTED_EOF);
 	return nil; // will never get here
 }
 
